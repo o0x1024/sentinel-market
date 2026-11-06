@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SKILL_DIR="/Users/like/Library/Application Support/sentinel-ai/skills/sentinel-slides"
+PY_BIN="$SKILL_DIR/.venv/bin/python"
+if [[ ! -x "$PY_BIN" ]]; then
+  PY_BIN="python3"
+fi
+
+case "${1:-}" in
+  ""|-h|--help|help)
+    cat <<'HELP'
+NAME
+    sentinel-slides - Unified PPTX & PPTD presentation toolkit for Sentinel AI
+
+USAGE
+    sentinel-slides <command> [options]
+
+DSL WORKFLOW COMMANDS (.pptd <-> .pptx)
+    convert       Convert a PPTX file to a PPTD directory
+    check         Validate and auto-repair a PPTD directory (--level keep|auto)
+    screenshot    Render PPTD slides to high-DPI PNG images
+    fold          Compile a PPTD directory back into a standard PPTX file (alias: export)
+
+SURGICAL IN-PLACE COMMANDS (lossless .pptx XML text editing)
+    prep          Inspect slide inventory and paragraph IDs (sN#pM) of a PPTX file
+    edit          Perform lossless in-place paragraph replacements via --ops JSON
+    verify        Verify OPC package integrity (--self or --before/--after)
+HELP
+    exit 0
+    ;;
+  fold|export)
+    shift
+    exec "$PY_BIN" "$SKILL_DIR/scripts/pptd_to_pptx.py" "$@"
+    ;;
+  prep)
+    shift
+    exec "$PY_BIN" "$SKILL_DIR/scripts/prep.py" "$@"
+    ;;
+  edit)
+    shift
+    exec "$PY_BIN" "$SKILL_DIR/scripts/edit.py" "$@"
+    ;;
+  verify)
+    shift
+    exec "$PY_BIN" "$SKILL_DIR/scripts/verify.py" "$@"
+    ;;
+  *)
+    exec "$SKILL_DIR/bin/slides-engine" "$@"
+    ;;
+esac

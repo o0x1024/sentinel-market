@@ -1,0 +1,1606 @@
+{
+  "schema_version": 1,
+  "kind": "distilled_knowledge_provenance",
+  "source_collection": "x-bugbounty",
+  "distilled_on": "2026-10-09",
+  "usage": "Knowledge is written into skill-internal topics. Source URLs and hashes are optional provenance, not runtime dependencies. No raw corpus or source directory is required.",
+  "review_limits": {
+    "all_local_files_inventoried": true,
+    "all_post_bodies_machine_parsed": true,
+    "all_media_ocr_attempted": true,
+    "all_posts_semantically_reviewed": false,
+    "all_images_visually_reviewed": false,
+    "external_originals_checked_for_this_batch": false,
+    "source_code_executed": false,
+    "historical_targets_tested": false
+  },
+  "material_summary": {
+    "snapshot_sha256": "ef54baec95da4c7bf163e7bf1b83abd66f47820c5df93e061ad2fd7bb079a5bd",
+    "file_count": 134840,
+    "file_roles": {
+      "os_metadata": 1,
+      "diagnostic": 69,
+      "media": 81961,
+      "post": 52716,
+      "manifest": 93
+    },
+    "post_count": 52716,
+    "unique_body_count": 51463,
+    "body_reviewed": 72,
+    "unique_media_count": 29700,
+    "media_ocr_status": {
+      "machine_extracted": 23994,
+      "no_text_detected": 5703,
+      "failed": 3
+    },
+    "media_visually_reviewed": 2,
+    "missing_post_media_refs": 1,
+    "posts_with_truncation_hint": 2820
+  },
+  "adoption_summary": {
+    "knowledge_groups": 31,
+    "reviewed_post_bodies": 72,
+    "integrated_post_bodies": 63,
+    "corrected_post_bodies": 9,
+    "visually_reviewed_images": 2,
+    "disposition_meaning": "integrated adopts a mechanism with independent controls; corrected preserves only the corrected inference or bounded method, not the source recommendation"
+  },
+  "knowledge": [
+    {
+      "id": "D01",
+      "title": "资产关系与具体路径",
+      "topic": "references/discovery/passive-and-services.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1251964013249888256",
+        "1796492569892851743",
+        "1978907087712219272"
+      ]
+    },
+    {
+      "id": "D02",
+      "title": "客户端与历史端点",
+      "topic": "references/discovery/client-and-cloud.md",
+      "related_topics": [
+        "references/discovery/web-and-api.md"
+      ],
+      "integration": "expanded",
+      "source_ids": [
+        "1461007901485514758",
+        "1464622093035839491"
+      ]
+    },
+    {
+      "id": "D03",
+      "title": "角色、对象、操作与字段",
+      "topic": "references/by-type/idor-access-control.md",
+      "related_topics": [
+        "references/by-type/api-property-pollution.md"
+      ],
+      "integration": "expanded",
+      "source_ids": [
+        "1234892448372944896",
+        "1267028794751119360",
+        "1589271985766682626",
+        "1902748225062555801"
+      ]
+    },
+    {
+      "id": "D04",
+      "title": "客户端放行与服务端认证",
+      "topic": "references/by-type/authn-session.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1692575873684193343",
+        "1695771976592417060"
+      ]
+    },
+    {
+      "id": "D05",
+      "title": "恢复与会话生命周期",
+      "topic": "references/by-type/authn-session.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1242202533184995330",
+        "1423534834035556352"
+      ]
+    },
+    {
+      "id": "D06",
+      "title": "联邦身份绑定",
+      "topic": "references/by-type/oauth-oidc.md",
+      "related_topics": [
+        "references/by-type/jwt.md"
+      ],
+      "integration": "expanded",
+      "source_ids": [
+        "1241355358079156225",
+        "1274313774111920128",
+        "1292508771441205249",
+        "1612791423354507266"
+      ]
+    },
+    {
+      "id": "D07",
+      "title": "跨端身份与资源合并",
+      "topic": "references/business-modeling.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1685341918711169024"
+      ]
+    },
+    {
+      "id": "D08",
+      "title": "存储字段与真实消费者",
+      "topic": "references/by-type/xss.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1606765008423043072",
+        "1648338436213051392",
+        "1698934838898696295",
+        "1706138452423520661",
+        "1891870956458533213"
+      ]
+    },
+    {
+      "id": "D09",
+      "title": "浏览器跨源读取",
+      "topic": "references/by-type/cors.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1169838280214401024",
+        "1374794202530287619",
+        "1522774663021010945"
+      ]
+    },
+    {
+      "id": "D10",
+      "title": "内容类型与跨站构造",
+      "topic": "references/by-type/csrf.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1794344246176297070"
+      ]
+    },
+    {
+      "id": "D11",
+      "title": "缓存键与跨身份复用",
+      "topic": "references/by-type/cache-deception.md",
+      "related_topics": [
+        "references/by-type/cache-poisoning.md"
+      ],
+      "integration": "merged_existing",
+      "source_ids": [
+        "1349018410869518337",
+        "1768805723792695495"
+      ]
+    },
+    {
+      "id": "D12",
+      "title": "拒绝响应与解析路径",
+      "topic": "references/by-type/waf-bypass.md",
+      "related_topics": [
+        "references/by-type/host-header.md"
+      ],
+      "integration": "merged_existing",
+      "source_ids": [
+        "1646165273664425984",
+        "1710693803877707845"
+      ]
+    },
+    {
+      "id": "D13",
+      "title": "注入观测与算术纠错",
+      "topic": "references/by-type/ssti.md",
+      "related_topics": [
+        "references/by-type/sql-injection.md",
+        "references/by-type/xxe.md"
+      ],
+      "integration": "expanded",
+      "source_ids": [
+        "1233806638810664967",
+        "1480671985785098250",
+        "1602026761633816577",
+        "1625915078447964160"
+      ]
+    },
+    {
+      "id": "D14",
+      "title": "URL 消费者与请求归因",
+      "topic": "references/by-type/ssrf.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1114317490157494272",
+        "1845506536426377515"
+      ]
+    },
+    {
+      "id": "D15",
+      "title": "文件、目录与网络路径",
+      "topic": "references/by-type/lfi-path-traversal.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1534512339231588353",
+        "1587830035188170752"
+      ]
+    },
+    {
+      "id": "D16",
+      "title": "上传衍生件与最终渲染",
+      "topic": "references/by-type/file-upload.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1420412479079862280",
+        "1606765008423043072"
+      ]
+    },
+    {
+      "id": "D17",
+      "title": "标识、秘密与实际权限",
+      "topic": "references/by-type/info-secrets.md",
+      "related_topics": [
+        "references/cloud/cloud-iam.md"
+      ],
+      "integration": "expanded",
+      "source_ids": [
+        "1192615223733243904",
+        "1464622093035839491",
+        "2078366728032337993"
+      ]
+    },
+    {
+      "id": "D18",
+      "title": "悬空引用与绑定条件",
+      "topic": "references/by-type/subdomain-takeover.md",
+      "related_topics": [],
+      "integration": "merged_existing",
+      "source_ids": [
+        "1377647222230245376"
+      ]
+    },
+    {
+      "id": "D19",
+      "title": "GraphQL 与等价业务状态",
+      "topic": "references/by-type/graphql.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1516034319894159366",
+        "1539952405147795457",
+        "1579596762209472513",
+        "1800749475335692664"
+      ]
+    },
+    {
+      "id": "D20",
+      "title": "奖励回滚与折扣账本",
+      "topic": "references/by-type/business-logic.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1406335239954309122",
+        "1631412773048418304",
+        "1927265174215393377"
+      ]
+    },
+    {
+      "id": "D21",
+      "title": "一次性与金额守恒",
+      "topic": "references/by-type/race-conditions.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1598760891289567237",
+        "1663367955957321728"
+      ]
+    },
+    {
+      "id": "D22",
+      "title": "客户端攻击身份与后台消费者",
+      "topic": "references/by-type/mobile-android.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1648338436213051392",
+        "1889256016443019731",
+        "2078366728032337993"
+      ]
+    },
+    {
+      "id": "D23",
+      "title": "依赖解析与事件输入",
+      "topic": "references/by-type/cicd-supply-chain.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1670204835373654016",
+        "1710485079485477337"
+      ]
+    },
+    {
+      "id": "D24",
+      "title": "模型文本与真实边界",
+      "topic": "references/by-type/ai-application.md",
+      "related_topics": [],
+      "integration": "merged_existing",
+      "source_ids": [
+        "1823960483239444736",
+        "1979116232885375076"
+      ]
+    },
+    {
+      "id": "D25",
+      "title": "报告与修复事实",
+      "topic": "references/reporting.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1587509989006258178",
+        "2004900773113864314"
+      ]
+    },
+    {
+      "id": "D26",
+      "title": "根因迁移与逐边证明",
+      "topic": "references/expert-reasoning.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1677217415082676224",
+        "1690584714766364673",
+        "1958231897357881512"
+      ]
+    },
+    {
+      "id": "D27",
+      "title": "采集状态与来源缺口",
+      "topic": "references/discovery/records-and-incremental.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1375961830665953281",
+        "1891870956458533213"
+      ]
+    },
+    {
+      "id": "D28",
+      "title": "双向数据流与部署可达性",
+      "topic": "references/source-audit.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1219307053153472513",
+        "1549866072534392833"
+      ]
+    },
+    {
+      "id": "D29",
+      "title": "实时消息与 DOM 消费者",
+      "topic": "references/by-type/websocket.md",
+      "related_topics": [
+        "references/by-type/dom-messaging.md"
+      ],
+      "integration": "expanded",
+      "source_ids": [
+        "1228674240255127553",
+        "1349769962043236357",
+        "1752526022648766866"
+      ]
+    },
+    {
+      "id": "D30",
+      "title": "原生解析器与内存错误",
+      "topic": "references/by-type/desktop-client.md",
+      "related_topics": [],
+      "integration": "expanded",
+      "source_ids": [
+        "1819929697293054111"
+      ]
+    },
+    {
+      "id": "D31",
+      "title": "合约权限与资产状态",
+      "topic": "references/by-type/smart-contract.md",
+      "related_topics": [],
+      "integration": "new_topic",
+      "source_ids": [
+        "1636670438129508352",
+        "1638481298447638530",
+        "1642814439781982208"
+      ]
+    }
+  ],
+  "posts": [
+    {
+      "id": "1114317490157494272",
+      "url": "https://x.com/LooseSecurity/status/1114317490157494272",
+      "author_handle": "LooseSecurity",
+      "published_at": "2019-04-06T00:02:47.000Z",
+      "document_sha256": "4c79316ce9712d5e1c72ec299bedd1599ecf823f5a73904593ff5159273184cc",
+      "body_sha256": "57a0aa0077e7731bfa1e39cb9365027f96e4bc59f4d6741b9d95714f46332b49",
+      "knowledge_ids": [
+        "D14"
+      ],
+      "disposition": "integrated",
+      "reason": "区分 URL 下载、重定向与真正请求者；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1169838280214401024",
+      "url": "https://x.com/leoalgare/status/1169838280214401024",
+      "author_handle": "leoalgare",
+      "published_at": "2019-09-06T05:02:35.000Z",
+      "document_sha256": "9464b78c2ab8d4fa83aca378c10a36c72872f5ae5acea11ba8724162a5be7e8c",
+      "body_sha256": "f605585132c1ec470e0ad456a6d699ca12091b5a397eb3be0a8bc3f5a5a73766",
+      "knowledge_ids": [
+        "D09"
+      ],
+      "disposition": "integrated",
+      "reason": "用真实浏览器确认跨源读取；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1192615223733243904",
+      "url": "https://x.com/KHIZER_JAVED47/status/1192615223733243904",
+      "author_handle": "KHIZER_JAVED47",
+      "published_at": "2019-11-08T01:30:01.000Z",
+      "document_sha256": "10520d388d04ad8088983349531d64db909ad3f719ffd24e07ec7e5c629483af",
+      "body_sha256": "149ecfc396176a0e990bdaa9fa1336657b04320cc4135ddf21f9aca899dee52a",
+      "knowledge_ids": [
+        "D17"
+      ],
+      "disposition": "integrated",
+      "reason": "公开标识、秘密与权限分别判断；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1219307053153472513",
+      "url": "https://x.com/SamuelAnttila/status/1219307053153472513",
+      "author_handle": "SamuelAnttila",
+      "published_at": "2020-01-20T17:13:49.000Z",
+      "document_sha256": "37a8e83ed4f9e235747203d3169b4ff7e2efc6773188ba531e6953b7fcdfb032",
+      "body_sha256": "bbed450b39a9aace976639112783f7cb5d64a2188dd850b7a63ba9b33d6ceb58",
+      "knowledge_ids": [
+        "D28"
+      ],
+      "disposition": "integrated",
+      "reason": "按机制建立候选与最小对照；不继承检查表/线程的漏洞存在、严重度或可利用性结论",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1228674240255127553",
+      "url": "https://x.com/admin_login/status/1228674240255127553",
+      "author_handle": "admin_login",
+      "published_at": "2020-02-15T13:35:41.000Z",
+      "document_sha256": "65acd6f6cfe5a4c7e1c5d0a95eefc0c179a069154150bcc51f2e7081cb22703e",
+      "body_sha256": "15350967fe9088f40aa52b802bbf36995328f67d325aadd34ec35fc1b7204e6f",
+      "knowledge_ids": [
+        "D29"
+      ],
+      "disposition": "integrated",
+      "reason": "按机制建立候选与最小对照；不继承检查表/线程的漏洞存在、严重度或可利用性结论",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1233806638810664967",
+      "url": "https://x.com/bugbountyvillag/status/1233806638810664967",
+      "author_handle": "bugbountyvillag",
+      "published_at": "2020-02-29T17:30:00.000Z",
+      "document_sha256": "0d555815c1457cbff7d45c0af336c112596f60ecfa5a1090cc6b751929f00cef",
+      "body_sha256": "f2645e78d792d4ac7ddcf617e87464e9a52de9128563acdbc2c0b1594301c193",
+      "knowledge_ids": [
+        "D13"
+      ],
+      "disposition": "integrated",
+      "reason": "先证实后端 XML 解析，再提出外部实体假设；不将 Content-Type 接受直接判为 XXE",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1234892448372944896",
+      "url": "https://x.com/Hackers_Guild/status/1234892448372944896",
+      "author_handle": "Hackers_Guild",
+      "published_at": "2020-03-03T17:24:37.000Z",
+      "document_sha256": "aa4ac6121a9011a7a1f27f757b2c6fe12026167412f6d1d141e604b2cd8c6de9",
+      "body_sha256": "035f0956803821338d8306a4df069fa3dcec91f7cfdcde4cb2444efa90acf086",
+      "knowledge_ids": [
+        "D03"
+      ],
+      "disposition": "integrated",
+      "reason": "用主体×对象×操作×字段检查权限；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1241355358079156225",
+      "url": "https://x.com/Conan0x3/status/1241355358079156225",
+      "author_handle": "Conan0x3",
+      "published_at": "2020-03-21T13:25:55.000Z",
+      "document_sha256": "2dfbb6ef7601d12994f6b199f67a1d6d9439b13ed293fe22eba650e4b9f87f55",
+      "body_sha256": "5425c3be42a4486e47a06648490c2375978c7f63dae3622a12e2cd323f922784",
+      "knowledge_ids": [
+        "D06"
+      ],
+      "disposition": "integrated",
+      "reason": "验证联邦身份的绑定关系；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1242202533184995330",
+      "url": "https://x.com/d3tonator/status/1242202533184995330",
+      "author_handle": "d3tonator",
+      "published_at": "2020-03-23T21:32:17.000Z",
+      "document_sha256": "dbd5a59768524ddddccee0ff40bd51303e88db18ec9c5981fa95f7480fed171a",
+      "body_sha256": "77c2bd5866c38b2ca35d71757820e188f2cdb058e0b9ffb4ccdda3d09c9a9ddc",
+      "knowledge_ids": [
+        "D05"
+      ],
+      "disposition": "integrated",
+      "reason": "恢复令牌与会话撤销是不同生命周期；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1251964013249888256",
+      "url": "https://x.com/harshbothra_/status/1251964013249888256",
+      "author_handle": "harshbothra_",
+      "published_at": "2020-04-19T20:00:55.000Z",
+      "document_sha256": "19592a9e8deb2464f1d002465354543e7576e53a9eda9c7e70653480d1bc0a83",
+      "body_sha256": "1496a7873321ea15c5ce16afad6b3bd5d765f8c68611c292510ee79e5e27906b",
+      "knowledge_ids": [
+        "D01"
+      ],
+      "disposition": "integrated",
+      "reason": "从可证明的资产关系扩展发现；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1267028794751119360",
+      "url": "https://x.com/RogueSMG/status/1267028794751119360",
+      "author_handle": "RogueSMG",
+      "published_at": "2020-05-31T09:42:59.000Z",
+      "document_sha256": "d12bd3fa2cbc5e423efe3c4979e95ec37fae2f1c7d891eb7138ec7db0eb67fb7",
+      "body_sha256": "496cdf53dae28757087f2dc393e7b486caeda7e2573cf47e909e6e3001bcf77b",
+      "knowledge_ids": [
+        "D03"
+      ],
+      "disposition": "integrated",
+      "reason": "用主体×对象×操作×字段检查权限；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1274313774111920128",
+      "url": "https://x.com/HackerHumble/status/1274313774111920128",
+      "author_handle": "HackerHumble",
+      "published_at": "2020-06-20T12:10:54.000Z",
+      "document_sha256": "5d0037127879c8362d191078918dc76ea8bc4b3001e743116f1c04ee9580418b",
+      "body_sha256": "2f7dae3ef4d7a505df7641fc2487464c31f2fe2c3a2bb137fa194d341d6b67d2",
+      "knowledge_ids": [
+        "D06"
+      ],
+      "disposition": "integrated",
+      "reason": "验证联邦身份的绑定关系；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1292508771441205249",
+      "url": "https://x.com/naman_1910/status/1292508771441205249",
+      "author_handle": "naman_1910",
+      "published_at": "2020-08-09T17:11:19.000Z",
+      "document_sha256": "cb7b5a0e87ff5cc75152d9b56dbcae95344553a92e8f2b3a31df3fb3880aa11d",
+      "body_sha256": "401793dd819c0ed453c7bec8aedf3f8e9dd77cad6069498545d949fcbe328b1f",
+      "knowledge_ids": [
+        "D06"
+      ],
+      "disposition": "integrated",
+      "reason": "验证联邦身份的绑定关系；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1349018410869518337",
+      "url": "https://x.com/imranparray101/status/1349018410869518337",
+      "author_handle": "imranparray101",
+      "published_at": "2021-01-12T15:40:27.000Z",
+      "document_sha256": "0537945b657d0fa97cc181109b938a0232db4ac354332152f787c49b441de2e9",
+      "body_sha256": "080326182b253a04c76ae62896934cb20fc31121dd05e5b3435538b2cab1270d",
+      "knowledge_ids": [
+        "D11"
+      ],
+      "disposition": "integrated",
+      "reason": "缓存键必须实测，私密响应必须跨身份核对；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1349769962043236357",
+      "url": "https://x.com/harshbothra_/status/1349769962043236357",
+      "author_handle": "harshbothra_",
+      "published_at": "2021-01-14T17:26:51.000Z",
+      "document_sha256": "535551ca9da5ca7a8855f047f5d0a4216ff026580097f8b4bf368c56d2af3ace",
+      "body_sha256": "910f1bd61827919dd725681be1aef23168f3c7ac799f569f4f43abc8a490744f",
+      "knowledge_ids": [
+        "D29"
+      ],
+      "disposition": "integrated",
+      "reason": "按机制建立候选与最小对照；不继承检查表/线程的漏洞存在、严重度或可利用性结论",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1374794202530287619",
+      "url": "https://x.com/mayank_pandey01/status/1374794202530287619",
+      "author_handle": "mayank_pandey01",
+      "published_at": "2021-03-24T18:44:14.000Z",
+      "document_sha256": "40d76243c4491f4675eb677e8bea548e9c776faeaf34380fb64f6f919f850a1a",
+      "body_sha256": "ff058b073da356343dbbee0ccb26dbbd4fed0ed0cee4f064977234ee556591b2",
+      "knowledge_ids": [
+        "D09"
+      ],
+      "disposition": "integrated",
+      "reason": "用真实浏览器确认跨源读取；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1375961830665953281",
+      "url": "https://x.com/hacktivist1337/status/1375961830665953281",
+      "author_handle": "hacktivist1337",
+      "published_at": "2021-03-28T00:03:59.000Z",
+      "document_sha256": "77bb3da8eaa091f5f4cdcb5c62127caea70314f8897e66a569e7be60ab02c8b8",
+      "body_sha256": "9d9e4057387f53ec67f68f9002bb7c966d97a0a99c3619745028fb5c27dc8210",
+      "knowledge_ids": [
+        "D27"
+      ],
+      "disposition": "corrected",
+      "reason": "采集与来源缺口必须进入结论；保留为误判反例，不采纳原帖的确定性结论/操作建议",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1377647222230245376",
+      "url": "https://x.com/syed__umar/status/1377647222230245376",
+      "author_handle": "syed__umar",
+      "published_at": "2021-04-01T15:41:07.000Z",
+      "document_sha256": "9396467fad1d406e43e50547095e04efaaa8d997a1b86ff5117a3ea4370a38de",
+      "body_sha256": "1f1534dc9487e4f51558f2a3aa87b65482580f7a9dc0868e7f62920d6cc0d3f0",
+      "knowledge_ids": [
+        "D18"
+      ],
+      "disposition": "integrated",
+      "reason": "悬空引用只支持接管候选；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1406335239954309122",
+      "url": "https://x.com/theXSSrat/status/1406335239954309122",
+      "author_handle": "theXSSrat",
+      "published_at": "2021-06-19T19:37:04.000Z",
+      "document_sha256": "a03d275da99552233029b2aaaabbbde90833c8425ed5e8cd06987adaa1c85fb6",
+      "body_sha256": "aabaf562d4199eef4129363a482e54795f41557380c42cb32697f35474cdfad2",
+      "knowledge_ids": [
+        "D20"
+      ],
+      "disposition": "integrated",
+      "reason": "用业务守恒关系解释输入变体；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1420412479079862280",
+      "url": "https://x.com/InonShkedy/status/1420412479079862280",
+      "author_handle": "InonShkedy",
+      "published_at": "2021-07-28T15:54:59.000Z",
+      "document_sha256": "e0f4c965e2268c76a348c50b2d51cf3790aeac57b6c9c3ef1d1ac7f90387ad71",
+      "body_sha256": "dccfe9530a941b36698f18e5d483b48e422ddebad9a9225cc12e89bbf51c56fb",
+      "knowledge_ids": [
+        "D16"
+      ],
+      "disposition": "integrated",
+      "reason": "上传、存储、下载与渲染分开建模；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1423534834035556352",
+      "url": "https://x.com/mamunwhh/status/1423534834035556352",
+      "author_handle": "mamunwhh",
+      "published_at": "2021-08-06T06:42:07.000Z",
+      "document_sha256": "bb0e9cd0255e9ca4240cae1627a60a00919ec4612d142c5c71b56ea9293320d3",
+      "body_sha256": "59daa9967ebd9967c8ac6ca7013927c8fbe8efdc4ca5a7e461bf59a2f9b7298a",
+      "knowledge_ids": [
+        "D05"
+      ],
+      "disposition": "integrated",
+      "reason": "恢复令牌与会话撤销是不同生命周期；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1461007901485514758",
+      "url": "https://x.com/basu_banakar/status/1461007901485514758",
+      "author_handle": "basu_banakar",
+      "published_at": "2021-11-17T16:26:42.000Z",
+      "document_sha256": "b9ed1b4e0a3b3046a5e9cefbadb4043f310c120d5df59c3185435b79caa41347",
+      "body_sha256": "268750d0cd25902437df0639c6cc5481a0ae55deccd4ee9514556dd23ab96822",
+      "knowledge_ids": [
+        "D02"
+      ],
+      "disposition": "integrated",
+      "reason": "将客户端与历史材料当作路由线索；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1464622093035839491",
+      "url": "https://x.com/0xmahmoudJo0/status/1464622093035839491",
+      "author_handle": "0xmahmoudJo0",
+      "published_at": "2021-11-27T15:48:12.000Z",
+      "document_sha256": "d6d7b5a27e2d1d45013cf65a0c24bde5526b68cccbc1f77f2ac2fe794ebed007",
+      "body_sha256": "efa8d425b8cae63639922641cad320cdf85356bd77a45daad152a07d914f9ad0",
+      "knowledge_ids": [
+        "D02",
+        "D17"
+      ],
+      "disposition": "integrated",
+      "reason": "将客户端与历史材料当作路由线索；公开标识、秘密与权限分别判断；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1480671985785098250",
+      "url": "https://x.com/ghostlulz1337/status/1480671985785098250",
+      "author_handle": "ghostlulz1337",
+      "published_at": "2022-01-10T22:44:45.000Z",
+      "document_sha256": "5c1907210b14d50c50aa1e5c6f8c580c0f970a29bee8245bcd85b8667d1b7851",
+      "body_sha256": "cc4944dc3e19b21b40461030e9ff1d146deb43d1dcd4b0c2ec48a8ac0464cc73",
+      "knowledge_ids": [
+        "D13"
+      ],
+      "disposition": "corrected",
+      "reason": "校验观测渠道，再判断注入；保留为误判反例，不采纳原帖的确定性结论/操作建议",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1516034319894159366",
+      "url": "https://x.com/UrielYochpaz/status/1516034319894159366",
+      "author_handle": "UrielYochpaz",
+      "published_at": "2022-04-18T12:42:03.000Z",
+      "document_sha256": "7012659d3049ca8ac8bce46e475ae1b16ac21e3b3e8e6a4ac42c743f79f74221",
+      "body_sha256": "dc15a343cdfac6338af54a50687459879bfc142f354fb4868f1075bae19d0a95",
+      "knowledge_ids": [
+        "D19"
+      ],
+      "disposition": "integrated",
+      "reason": "GraphQL 覆盖 resolver、字段和 mutation；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1522774663021010945",
+      "url": "https://x.com/zeroauth/status/1522774663021010945",
+      "author_handle": "zeroauth",
+      "published_at": "2022-05-07T03:05:46.000Z",
+      "document_sha256": "fb59cc18d68e458e25c5e1bdcb32853565ea4e039bbdac8e9298599d68874781",
+      "body_sha256": "6821b8df5c4fc865a28f55bdde166492562d0458ca962934809321d17e30a0a9",
+      "knowledge_ids": [
+        "D09"
+      ],
+      "disposition": "corrected",
+      "reason": "用真实浏览器确认跨源读取；保留为误判反例，不采纳原帖的确定性结论/操作建议",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1534512339231588353",
+      "url": "https://x.com/meispi_/status/1534512339231588353",
+      "author_handle": "meispi_",
+      "published_at": "2022-06-08T12:27:06.000Z",
+      "document_sha256": "4186845a25bf10420b69433d15ad781caa554e8ea708888030ee7dcd748ee1d6",
+      "body_sha256": "d37f25deaf3902ad65ae9a68d6f72b96a27a7b9852cdc5f5cfc943b83eaad10a",
+      "knowledge_ids": [
+        "D15"
+      ],
+      "disposition": "integrated",
+      "reason": "文件、目录与远程路径由实际 API 决定；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1539952405147795457",
+      "url": "https://x.com/0xroot/status/1539952405147795457",
+      "author_handle": "0xroot",
+      "published_at": "2022-06-23T12:43:58.000Z",
+      "document_sha256": "9198b10bb777ff3449e0240ba4c22fc069770cd23a0c08434a79c55102b08956",
+      "body_sha256": "ec46b4122511f2669c6c3d15511f879e2a5239261345b7a86a8eddcaa0284ce1",
+      "knowledge_ids": [
+        "D19"
+      ],
+      "disposition": "corrected",
+      "reason": "GraphQL 覆盖 resolver、字段和 mutation；保留为误判反例，不采纳原帖的确定性结论/操作建议",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1549866072534392833",
+      "url": "https://x.com/DiogoSecurity22/status/1549866072534392833",
+      "author_handle": "DiogoSecurity22",
+      "published_at": "2022-07-20T21:17:21.000Z",
+      "document_sha256": "9a5c5c0aebfb46fab90043e47f4605555be03bd830e4f84546ac71952e4546cc",
+      "body_sha256": "5f5aad4b200da68b2a1e9e6244b261dad097f83c05146419ea2fafb7174a33f9",
+      "knowledge_ids": [
+        "D28"
+      ],
+      "disposition": "integrated",
+      "reason": "按机制建立候选与最小对照；不继承检查表/线程的漏洞存在、严重度或可利用性结论",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1579596762209472513",
+      "url": "https://x.com/_Base_64/status/1579596762209472513",
+      "author_handle": "_Base_64",
+      "published_at": "2022-10-10T22:16:30.000Z",
+      "document_sha256": "d19531cd27c140e0c39b9e0a7b6a7f58774ad5f813ebdf8c994275f3c8da2c7d",
+      "body_sha256": "b34e37c36732912e43ccd4dbf32ea8be06f5212e99962104509525957485403c",
+      "knowledge_ids": [
+        "D19"
+      ],
+      "disposition": "integrated",
+      "reason": "GraphQL 覆盖 resolver、字段和 mutation；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1587509989006258178",
+      "url": "https://x.com/ArchAngelDDay/status/1587509989006258178",
+      "author_handle": "ArchAngelDDay",
+      "published_at": "2022-11-01T18:20:50.000Z",
+      "document_sha256": "8cf86f98752ccd41a7800877be11ef241b21cb900d717a8293216876b6a3356d",
+      "body_sha256": "a4264b04aee7258b8269c2fb569e35d197189ea03bae0b0696a85f73cd3f2501",
+      "knowledge_ids": [
+        "D25"
+      ],
+      "disposition": "integrated",
+      "reason": "报告按已证明影响交付，复测绑定修复事实；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1587830035188170752",
+      "url": "https://x.com/0xTib3rius/status/1587830035188170752",
+      "author_handle": "0xTib3rius",
+      "published_at": "2022-11-02T15:32:35.000Z",
+      "document_sha256": "f1fac4e9f05be80537b3cf1b06730fb7de24dec9e3452fb389a1043eaf402611",
+      "body_sha256": "9ee5a2edae652525750707d24bb4ba931cc0a706ca24187ec1dc729cf0d32530",
+      "knowledge_ids": [
+        "D15"
+      ],
+      "disposition": "integrated",
+      "reason": "文件、目录与远程路径由实际 API 决定；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1589271985766682626",
+      "url": "https://x.com/moblig_/status/1589271985766682626",
+      "author_handle": "moblig_",
+      "published_at": "2022-11-06T15:02:23.000Z",
+      "document_sha256": "f944a02515306a0c50cfd6a0503d03314a80b179c8d67136f56e89572cf69ecd",
+      "body_sha256": "f89194a58c0651c5e4c9e5e66762917571439aa5d15d3c54ea4ec2276dd949cd",
+      "knowledge_ids": [
+        "D03"
+      ],
+      "disposition": "integrated",
+      "reason": "用主体×对象×操作×字段检查权限；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1598760891289567237",
+      "url": "https://x.com/0x0SojalSec/status/1598760891289567237",
+      "author_handle": "0x0SojalSec",
+      "published_at": "2022-12-02T19:27:54.000Z",
+      "document_sha256": "3086486aae30f966163bcd1c1491f9c30cb523625ff4f11a7381c2f9f968e15a",
+      "body_sha256": "bb97d7489ab77a95beb1ea6a1390b14369a5b529b29e13101cb398e24f3ef245",
+      "knowledge_ids": [
+        "D21"
+      ],
+      "disposition": "corrected",
+      "reason": "竞态验证一次性约束，避免把并发当压力测试；保留为误判反例，不采纳原帖的确定性结论/操作建议",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1602026761633816577",
+      "url": "https://x.com/0x0SojalSec/status/1602026761633816577",
+      "author_handle": "0x0SojalSec",
+      "published_at": "2022-12-11T19:45:18.000Z",
+      "document_sha256": "a0c172a39b490944c3344cf7258677d2c42aec548f2bb49bcdfe3c0eb016716b",
+      "body_sha256": "b1a110c32add24bbf331b2406e5ca3f42caa36f0852a07a3f6b29f324da43613",
+      "knowledge_ids": [
+        "D13"
+      ],
+      "disposition": "corrected",
+      "reason": "校验观测渠道，再判断注入；保留为误判反例，不采纳原帖的确定性结论/操作建议",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1606765008423043072",
+      "url": "https://x.com/Asaad0x/status/1606765008423043072",
+      "author_handle": "Asaad0x",
+      "published_at": "2022-12-24T21:33:24.000Z",
+      "document_sha256": "930de1d62b8c8d04168d57eb1cf91a361cf27017c81e0a81e1e10bb6417a3bc9",
+      "body_sha256": "0fc1a94ab579b55f36b8668cc3e32cb80a9cf74a5eefc3eb2a19c3beb1642e19",
+      "knowledge_ids": [
+        "D08",
+        "D16"
+      ],
+      "disposition": "integrated",
+      "reason": "跟随存储字段到每个真实消费者；上传、存储、下载与渲染分开建模；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1612791423354507266",
+      "url": "https://x.com/thebinarybot/status/1612791423354507266",
+      "author_handle": "thebinarybot",
+      "published_at": "2023-01-10T12:40:14.000Z",
+      "document_sha256": "9b015ae7a2cc0502eaf0ba9411b91159d6edcbe40bb40d10525c858d89faf517",
+      "body_sha256": "8abe45552ae69a7ed71d3366f73b4066ed0a4041bd0c0c61d7acf2b82881fceb",
+      "knowledge_ids": [
+        "D06"
+      ],
+      "disposition": "corrected",
+      "reason": "验证联邦身份的绑定关系；保留为误判反例，不采纳原帖的确定性结论/操作建议",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1625915078447964160",
+      "url": "https://x.com/0xTib3rius/status/1625915078447964160",
+      "author_handle": "0xTib3rius",
+      "published_at": "2023-02-15T17:48:57.000Z",
+      "document_sha256": "d03db01130c9519c587655ae4490e4ecf061afc7c04a1f7322f0bffc820927aa",
+      "body_sha256": "006cb15ef7997b0d1712a2893f7131952bd36d50f1f3c4934e53092d0e34c0f0",
+      "knowledge_ids": [
+        "D13"
+      ],
+      "disposition": "integrated",
+      "reason": "校验观测渠道，再判断注入；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1631412773048418304",
+      "url": "https://x.com/silentgh00st/status/1631412773048418304",
+      "author_handle": "silentgh00st",
+      "published_at": "2023-03-02T21:54:49.000Z",
+      "document_sha256": "bf42c096f490c2b3b1460e1761ffeb2db9457b8d1520ae7dda1cf767ddab8221",
+      "body_sha256": "1bb8dc0a92361b0c15e1b7cfd2bbeb75a4e670aef1b2f4372f21745aaf6663d0",
+      "knowledge_ids": [
+        "D20"
+      ],
+      "disposition": "integrated",
+      "reason": "用业务守恒关系解释输入变体；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1636670438129508352",
+      "url": "https://x.com/HackenProof/status/1636670438129508352",
+      "author_handle": "HackenProof",
+      "published_at": "2023-03-17T10:06:54.000Z",
+      "document_sha256": "51b6b60b860947cb17881c9d23cd7a291400ede16904bdae11bffbc52a729a5c",
+      "body_sha256": "94289aa6cbce19edbd23c7bc3f13ba3f1b764a345b24cabc9df5bd0c5335684e",
+      "knowledge_ids": [
+        "D31"
+      ],
+      "disposition": "integrated",
+      "reason": "按机制建立候选与最小对照；不继承检查表/线程的漏洞存在、严重度或可利用性结论",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1638481298447638530",
+      "url": "https://x.com/HackenProof/status/1638481298447638530",
+      "author_handle": "HackenProof",
+      "published_at": "2023-03-22T10:02:37.000Z",
+      "document_sha256": "99db21c5d101277e272c7d928bd6150e68515493b4a9612da180fcaf31979ab0",
+      "body_sha256": "684971a2613285e3f9e6bf726b0a86b225a6cfba952d8f32fc14109d377343fd",
+      "knowledge_ids": [
+        "D31"
+      ],
+      "disposition": "integrated",
+      "reason": "按机制建立候选与最小对照；不继承检查表/线程的漏洞存在、严重度或可利用性结论",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1642814439781982208",
+      "url": "https://x.com/HackenProof/status/1642814439781982208",
+      "author_handle": "HackenProof",
+      "published_at": "2023-04-03T09:00:59.000Z",
+      "document_sha256": "98e4a86823ec353e4d43596a04cfff8b4ba3313545e8dcba981339480b21d64b",
+      "body_sha256": "6660ad68e4991799ae1404b60d78ee61008d71f07ce0582b53f697da32a7fda7",
+      "knowledge_ids": [
+        "D31"
+      ],
+      "disposition": "integrated",
+      "reason": "按机制建立候选与最小对照；不继承检查表/线程的漏洞存在、严重度或可利用性结论",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1646165273664425984",
+      "url": "https://x.com/NinadMishra5/status/1646165273664425984",
+      "author_handle": "NinadMishra5",
+      "published_at": "2023-04-12T14:56:00.000Z",
+      "document_sha256": "717f47659e686647e89a8c85f8abbf81de3452024a3a33599c915af3465ca282",
+      "body_sha256": "a495e824e63d363037fe90baa9b4e5dc0a2a25bb08860ef70270ed6df43d1b34",
+      "knowledge_ids": [
+        "D12"
+      ],
+      "disposition": "integrated",
+      "reason": "把“403 技巧”改写为解析与鉴权路径假设；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1648338436213051392",
+      "url": "https://x.com/0x0SojalSec/status/1648338436213051392",
+      "author_handle": "0x0SojalSec",
+      "published_at": "2023-04-18T14:51:22.000Z",
+      "document_sha256": "3accea449d2b65f3e86ceef70c4ae46962adbba10f531d59e5102befc14979cd",
+      "body_sha256": "e0ba53391daf8c1770a088621f7c77605da4b4d8c1e78f4e6cfa4b6b2504b7a3",
+      "knowledge_ids": [
+        "D08",
+        "D22"
+      ],
+      "disposition": "integrated",
+      "reason": "跟随存储字段到每个真实消费者；客户端入口必须按真实攻击者权限核对；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1663367955957321728",
+      "url": "https://x.com/bug_vs_me/status/1663367955957321728",
+      "author_handle": "bug_vs_me",
+      "published_at": "2023-05-30T02:13:19.000Z",
+      "document_sha256": "6340ae1a1f2a24e9a7b674da0b13cd0a92c2b88183180872b4d4f0bb0034ff80",
+      "body_sha256": "d008aa32f446a909fec04b135e18ea941bd8c0be264f7a4373051b6ccc41059a",
+      "knowledge_ids": [
+        "D21"
+      ],
+      "disposition": "integrated",
+      "reason": "竞态验证一次性约束，避免把并发当压力测试；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1670204835373654016",
+      "url": "https://x.com/deadvolvo/status/1670204835373654016",
+      "author_handle": "deadvolvo",
+      "published_at": "2023-06-17T23:00:38.000Z",
+      "document_sha256": "40d9814862ff733be9a46c6efe44198bb2cb2e429d8287d655610c6e17e2e976",
+      "body_sha256": "fc596f338119d5c1955e44829196df583e92b58d394281b535ef4b75eee720fc",
+      "knowledge_ids": [
+        "D23"
+      ],
+      "disposition": "integrated",
+      "reason": "供应链关注消费路径与执行身份；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1677217415082676224",
+      "url": "https://x.com/exposedapi/status/1677217415082676224",
+      "author_handle": "exposedapi",
+      "published_at": "2023-07-07T07:26:07.000Z",
+      "document_sha256": "0c57ff5ac313733793558a0e1d6a565a12199d933a90e81970be8fc79b7e37dc",
+      "body_sha256": "6f2919c512a9c8ec16aaee307ae445f5ccd15f7c93b47e9a320abb6afd6ee844",
+      "knowledge_ids": [
+        "D26"
+      ],
+      "disposition": "integrated",
+      "reason": "通过共同根因迁移，逐边证明组合链；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1685341918711169024",
+      "url": "https://x.com/NinadMishra5/status/1685341918711169024",
+      "author_handle": "NinadMishra5",
+      "published_at": "2023-07-29T17:30:00.000Z",
+      "document_sha256": "bfd4c53606763dfdab843b745acb89aa262398b8e26d0f05d4aed5fe6dc0f96b",
+      "body_sha256": "c7124a723337a46cc3d539b9178b3d3d882b8f6a24907df8eee15fac6429b448",
+      "knowledge_ids": [
+        "D07"
+      ],
+      "disposition": "integrated",
+      "reason": "比较跨端身份合并与注册差异；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1690584714766364673",
+      "url": "https://x.com/NinadMishra5/status/1690584714766364673",
+      "author_handle": "NinadMishra5",
+      "published_at": "2023-08-13T04:43:00.000Z",
+      "document_sha256": "f57d2a2c3ec7be3173e9225efcc275afd82339cbe70b8e0fb1ac47689f8a20e4",
+      "body_sha256": "f2f5177e7d29fc3c2d8a004e6934dc5e9ff6c4d1597e6215ae22d1d5c161ea69",
+      "knowledge_ids": [
+        "D26"
+      ],
+      "disposition": "integrated",
+      "reason": "通过共同根因迁移，逐边证明组合链；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1692575873684193343",
+      "url": "https://x.com/0x2nac0nda/status/1692575873684193343",
+      "author_handle": "0x2nac0nda",
+      "published_at": "2023-08-18T16:35:09.000Z",
+      "document_sha256": "7d77c61086262ed18d2d6110ff2292210331929bd6763242d26404125155595a",
+      "body_sha256": "75490470693553f5473446bfd07df0e99827f5c6e00c8b6ae2544c46ff925df0",
+      "knowledge_ids": [
+        "D04"
+      ],
+      "disposition": "integrated",
+      "reason": "认证成功由服务端能力证明；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1695771976592417060",
+      "url": "https://x.com/0xmahamsec/status/1695771976592417060",
+      "author_handle": "0xmahamsec",
+      "published_at": "2023-08-27T12:15:19.000Z",
+      "document_sha256": "8e1b05ef777e7f0eb064b1013a8733851f4c42ff5de7de70f173cc53b735d9ad",
+      "body_sha256": "89addfc58ebd063c3cbcaf2286dd8c5f5157db63b32272cc9b38161b72e41d2f",
+      "knowledge_ids": [
+        "D04"
+      ],
+      "disposition": "corrected",
+      "reason": "认证成功由服务端能力证明；保留为误判反例，不采纳原帖的确定性结论/操作建议",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1698934838898696295",
+      "url": "https://x.com/dirtycoder0124/status/1698934838898696295",
+      "author_handle": "dirtycoder0124",
+      "published_at": "2023-09-05T05:43:24.000Z",
+      "document_sha256": "42d6416681e969f7955cf1f8f41791ed287cb680225d0717ebb3236e40118eb5",
+      "body_sha256": "3f6252a3125915cc311796da3da76c34683b156f6d3354c3f82adfc2de66e8fe",
+      "knowledge_ids": [
+        "D08"
+      ],
+      "disposition": "integrated",
+      "reason": "跟随存储字段到每个真实消费者；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1706138452423520661",
+      "url": "https://x.com/InventiveRepair/status/1706138452423520661",
+      "author_handle": "InventiveRepair",
+      "published_at": "2023-09-25T02:48:00.000Z",
+      "document_sha256": "b225bcada896e37dd7b28553584e66fc1562f03d49e592024db0000012e26027",
+      "body_sha256": "0ce8d7d7b2b84bc2ea8874635d54fee45ed261b081bb739615419393d172a8c8",
+      "knowledge_ids": [
+        "D08"
+      ],
+      "disposition": "integrated",
+      "reason": "跟随存储字段到每个真实消费者；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1710485079485477337",
+      "url": "https://x.com/elvtnx/status/1710485079485477337",
+      "author_handle": "elvtnx",
+      "published_at": "2023-10-07T02:39:56.000Z",
+      "document_sha256": "2be202ef565d9ac7c40b18379e069338bb957b9c589759c31e42b64a25405113",
+      "body_sha256": "a5a00a44bd28816004e7a4a2ee1eaee45a83c7e4cdaf5d178b8d6897e8471316",
+      "knowledge_ids": [
+        "D23"
+      ],
+      "disposition": "integrated",
+      "reason": "供应链关注消费路径与执行身份；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1710693803877707845",
+      "url": "https://x.com/Maakthon/status/1710693803877707845",
+      "author_handle": "Maakthon",
+      "published_at": "2023-10-07T16:29:20.000Z",
+      "document_sha256": "5d4241523bd149d88551aca00614fef4395b2fa4c1a2803a098a0bb1e4deddab",
+      "body_sha256": "4996511c37bbb8718ce542b7da8943ed070d70b4abba3b60c112848fcae5aa58",
+      "knowledge_ids": [
+        "D12"
+      ],
+      "disposition": "integrated",
+      "reason": "把“403 技巧”改写为解析与鉴权路径假设；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1752526022648766866",
+      "url": "https://x.com/chen9918b/status/1752526022648766866",
+      "author_handle": "chen9918b",
+      "published_at": "2024-01-31T02:55:38.000Z",
+      "document_sha256": "1ecfea4b510b2fca695b2e24e5b6eb3cd430571ec08bcf1ffd103fc6a173a3f2",
+      "body_sha256": "dea2b0f051d3cc973d0bc59ab4fa03f284829c7b0825f542b0d27bb2f0a67f45",
+      "knowledge_ids": [
+        "D29"
+      ],
+      "disposition": "integrated",
+      "reason": "按机制建立候选与最小对照；不继承检查表/线程的漏洞存在、严重度或可利用性结论",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1768805723792695495",
+      "url": "https://x.com/zhero___/status/1768805723792695495",
+      "author_handle": "zhero___",
+      "published_at": "2024-03-16T01:05:22.000Z",
+      "document_sha256": "3af9d9e1b3140e97be670a2b9af3b3129ec5f33cbd4822f13eda4ead589bb53e",
+      "body_sha256": "5d69648226de7ef9a2549cd01da658ac1d1aa0aeb4f0ca62d95ecaed1162736e",
+      "knowledge_ids": [
+        "D11"
+      ],
+      "disposition": "integrated",
+      "reason": "缓存键必须实测，私密响应必须跨身份核对；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1794344246176297070",
+      "url": "https://x.com/cybernetic_res/status/1794344246176297070",
+      "author_handle": "cybernetic_res",
+      "published_at": "2024-05-25T12:26:20.000Z",
+      "document_sha256": "211586fed0d300fe0115b63ee7c39a31b6bce6447fd63daf9308ce5fef05e87a",
+      "body_sha256": "0587f7cf9079d31533da047ab27b354ba61479d7527f9872d4bc45797a41b147",
+      "knowledge_ids": [
+        "D10"
+      ],
+      "disposition": "integrated",
+      "reason": "内容类型宽容与 CSRF 要分阶段验证；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1796492569892851743",
+      "url": "https://x.com/theXSSrat/status/1796492569892851743",
+      "author_handle": "theXSSrat",
+      "published_at": "2024-05-31T10:43:00.000Z",
+      "document_sha256": "54d8098b40a12783b7da67d9816cfb164347f93c3b7f54db4ad19739dd6248d5",
+      "body_sha256": "bb2fbbd0e2296ea995f288f6bf3cd8efc083c681d49241b7879b9b10176596f4",
+      "knowledge_ids": [
+        "D01"
+      ],
+      "disposition": "integrated",
+      "reason": "从可证明的资产关系扩展发现；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1800749475335692664",
+      "url": "https://x.com/Saitleop/status/1800749475335692664",
+      "author_handle": "Saitleop",
+      "published_at": "2024-06-12T04:38:25.000Z",
+      "document_sha256": "b02ed66727981ca09c03ce7324be86436074c911fcab075dea65ee8b89a41653",
+      "body_sha256": "4743b17dfe307f33eff659243846f5b97a54708efef6a601048d97b1eab8b452",
+      "knowledge_ids": [
+        "D19"
+      ],
+      "disposition": "integrated",
+      "reason": "GraphQL 覆盖 resolver、字段和 mutation；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1819929697293054111",
+      "url": "https://x.com/cyb3ramit/status/1819929697293054111",
+      "author_handle": "cyb3ramit",
+      "published_at": "2024-08-04T02:53:47.000Z",
+      "document_sha256": "b0298e51d3196eca0fe3a9c71e8dcff1c88d8dc4f51de065c756d48512ad9a2b",
+      "body_sha256": "985c3d1997ba580f49ad0a58ea0a1f91ce1060a5530407e35f51a87d578674ee",
+      "knowledge_ids": [
+        "D30"
+      ],
+      "disposition": "integrated",
+      "reason": "按机制建立候选与最小对照；不继承检查表/线程的漏洞存在、严重度或可利用性结论",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1823960483239444736",
+      "url": "https://x.com/HaitamHayteex/status/1823960483239444736",
+      "author_handle": "HaitamHayteex",
+      "published_at": "2024-08-15T05:50:41.000Z",
+      "document_sha256": "def1a30603969ab160e30ed0fa4ee3128e9d009cfd36eb9d5d387a9e5b9fa828",
+      "body_sha256": "eba668f2744ceabc3879cd6cdd3e6874e9157b53a6ea291b29ea6261a82d2ea4",
+      "knowledge_ids": [
+        "D24"
+      ],
+      "disposition": "integrated",
+      "reason": "AI 行为必须落到工具或数据边界；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1845506536426377515",
+      "url": "https://x.com/spencer_5cent/status/1845506536426377515",
+      "author_handle": "spencer_5cent",
+      "published_at": "2024-10-13T16:47:00.000Z",
+      "document_sha256": "dd2c7fd0f1d1af160e2ccaa272c3f971afbf907f453c7b1acfac0f372baa3f80",
+      "body_sha256": "b9d2db3411f5921fac2087bbe174d016a50ddc0e329c67b35bd2b5cb89d4a5df",
+      "knowledge_ids": [
+        "D14"
+      ],
+      "disposition": "integrated",
+      "reason": "区分 URL 下载、重定向与真正请求者；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1889256016443019731",
+      "url": "https://x.com/viehgroup/status/1889256016443019731",
+      "author_handle": "viehgroup",
+      "published_at": "2025-02-11T10:11:49.000Z",
+      "document_sha256": "158cd1b9b383474c5286b158ef5d8b2a59c076f341471fd9417f87893df930b1",
+      "body_sha256": "59e87816dd2e3a0487bdbd1d522054e1816a0f859582b3e2e1c6e24e359462e3",
+      "knowledge_ids": [
+        "D22"
+      ],
+      "disposition": "integrated",
+      "reason": "客户端入口必须按真实攻击者权限核对；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1891870956458533213",
+      "url": "https://x.com/0xJin/status/1891870956458533213",
+      "author_handle": "0xJin",
+      "published_at": "2025-02-18T15:22:39.000Z",
+      "document_sha256": "53c913f485b3d949dff91c0c01c993606dd4230b629e48261d6525d2dbfaabad",
+      "body_sha256": "58c9800f363bd44ee4c42df94c76d930431d802b0973a395592300a116d53c3a",
+      "knowledge_ids": [
+        "D08",
+        "D27"
+      ],
+      "disposition": "corrected",
+      "reason": "跟随存储字段到每个真实消费者；采集与来源缺口必须进入结论；保留为误判反例，不采纳原帖的确定性结论/操作建议",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1902748225062555801",
+      "url": "https://x.com/Joyerz5/status/1902748225062555801",
+      "author_handle": "Joyerz5",
+      "published_at": "2025-03-20T15:45:02.000Z",
+      "document_sha256": "50db7a0657b5259bd3d7f4c4c4bfa656e720793ae5d6e5079f57a2ad5d18b7cb",
+      "body_sha256": "ef9215aadd5b1df2cb336eb013bc260e183632c282835e8d1164151a8b2078ff",
+      "knowledge_ids": [
+        "D03"
+      ],
+      "disposition": "integrated",
+      "reason": "用主体×对象×操作×字段检查权限；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1927265174215393377",
+      "url": "https://x.com/0xabfe/status/1927265174215393377",
+      "author_handle": "0xabfe",
+      "published_at": "2025-05-27T07:26:39.000Z",
+      "document_sha256": "1462d41715364e59b70c372d2c7efbb77645f7d26e65de82b376b681313c261a",
+      "body_sha256": "1fc6579c751ae535aa5b9c1c34d0f0e2a0ace826ab002df19016c048f1e2a729",
+      "knowledge_ids": [
+        "D20"
+      ],
+      "disposition": "integrated",
+      "reason": "用业务守恒关系解释输入变体；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1958231897357881512",
+      "url": "https://x.com/deadvolvo/status/1958231897357881512",
+      "author_handle": "deadvolvo",
+      "published_at": "2025-08-20T18:17:21.000Z",
+      "document_sha256": "1fec2ec819facc781984ee2cb871a0d7eaf23a514319519ab9f8f05fb55b70aa",
+      "body_sha256": "983b81e9b294db1c5f16955125f5edfc11d199e79ecd642be02de6efbba7529b",
+      "knowledge_ids": [
+        "D26"
+      ],
+      "disposition": "integrated",
+      "reason": "通过共同根因迁移，逐边证明组合链；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1978907087712219272",
+      "url": "https://x.com/_baler3ion/status/1978907087712219272",
+      "author_handle": "_baler3ion",
+      "published_at": "2025-10-16T19:33:10.000Z",
+      "document_sha256": "74d4e6f4d6d725003f31525705787c01a8563b0c1bf03a5d526c15bf78079bb7",
+      "body_sha256": "aefce3ab722533a935ee0198ea01fdf492a278185234b14758e5a5c65841511f",
+      "knowledge_ids": [
+        "D01"
+      ],
+      "disposition": "integrated",
+      "reason": "从可证明的资产关系扩展发现；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "1979116232885375076",
+      "url": "https://x.com/IfrahIman_/status/1979116232885375076",
+      "author_handle": "IfrahIman_",
+      "published_at": "2025-10-17T09:24:14.000Z",
+      "document_sha256": "ddc8d4453646acfb9c3fbe3bc7ae5877984e17ff060928a1c439b254aecfa12a",
+      "body_sha256": "92d003c3568757559a17b1a5098a80ca02c1be5a7081a91536df2417099be88f",
+      "knowledge_ids": [
+        "D24"
+      ],
+      "disposition": "integrated",
+      "reason": "AI 行为必须落到工具或数据边界；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "2004900773113864314",
+      "url": "https://x.com/LoganOpSec/status/2004900773113864314",
+      "author_handle": "LoganOpSec",
+      "published_at": "2025-12-27T13:02:48.000Z",
+      "document_sha256": "17dda4fbccb0dacfff6da7ea0cbfcb3ca0a8cac9448b930796dfde79caa0e71d",
+      "body_sha256": "f91a6c5fa40dbdaf0586b5934235d62d3e7b33123ca867b34ad5ef9dc45467da",
+      "knowledge_ids": [
+        "D25"
+      ],
+      "disposition": "integrated",
+      "reason": "报告按已证明影响交付，复测绑定修复事实；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    },
+    {
+      "id": "2078366728032337993",
+      "url": "https://x.com/bbr_bug/status/2078366728032337993",
+      "author_handle": "bbr_bug",
+      "published_at": "2026-07-18T06:30:16.000Z",
+      "document_sha256": "880e320aec0de6fd60d410b21cd48db23fb1e8e1b8dce446ccd6f530229ddf44",
+      "body_sha256": "3cf8ed57e62f44bf6e9b745fe888c2ddcd52024f731a5985fa3fa77cef68919e",
+      "knowledge_ids": [
+        "D17",
+        "D22"
+      ],
+      "disposition": "integrated",
+      "reason": "公开标识、秘密与权限分别判断；客户端入口必须按真实攻击者权限核对；只迁移机制和有界对照，不继承成功/影响/奖励宣称",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "saved post body only; external links, full thread and platform timeline not checked",
+      "external_original_checked": false
+    }
+  ],
+  "images": [
+    {
+      "sha256": "5439e90fa614ac18fa0cf51a195902e00b4f41c000e144e8f18d793b39b8b119",
+      "post_id": "1752526022648766866",
+      "post_url": "https://x.com/chen9918b/status/1752526022648766866",
+      "knowledge_ids": [
+        "D29"
+      ],
+      "reason": "完整可见 postMessage→innerHTML 样例；核对代码符号与 OCR 差异，未运行 demo",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "entire visible image; no code execution, external link or real product verification"
+    },
+    {
+      "sha256": "6184529a125e1720dd43e046d7161cc3e9ca5d695d3b76aefdaa0ea4d52e8fc7",
+      "post_id": "1819929697293054111",
+      "post_url": "https://x.com/cyb3ramit/status/1819929697293054111",
+      "knowledge_ids": [
+        "D30"
+      ],
+      "reason": "完整可见检查表；仅迁移隔离诊断与根因判读，不证明列举漏洞或执行利用",
+      "reviewed_on": "2026-10-09",
+      "review_scope": "entire visible image; no code execution, external link or real product verification"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>GAME_TITLE</title>
+</head>
+<body>
+  <!-- 只用普通 <script>，不要用 type="module"（双击 file:// 打开会失败） -->
+  <!-- 加载顺序：engine → config → 其它 → game（game.js 最后，负责启动） -->
+  <script src="engine.js"></script>
+  <script src="config.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,1470 @@
+{
+  "schema_version": 1,
+  "research_date": "2026-09-14",
+  "interpretation": "Sources describe mechanisms and historical cases, not proof of current-target vulnerabilities. Null publication date means not established, not recent. Read means relevant visible text read; not all images, attachments, videos, or cited links. No source PoC was executed.",
+  "sources": [
+    {
+      "id": "PS-access",
+      "title": "Access control",
+      "url": "https://portswigger.net/web-security/access-control",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/idor-access-control.md"
+      ]
+    },
+    {
+      "id": "PS-auth",
+      "title": "Authentication",
+      "url": "https://portswigger.net/web-security/authentication",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/authn-session.md"
+      ]
+    },
+    {
+      "id": "PS-xss",
+      "title": "Cross-site scripting",
+      "url": "https://portswigger.net/web-security/cross-site-scripting",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/xss.md"
+      ]
+    },
+    {
+      "id": "PS-sql",
+      "title": "SQL injection",
+      "url": "https://portswigger.net/web-security/sql-injection",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/sql-injection.md"
+      ]
+    },
+    {
+      "id": "PS-csrf",
+      "title": "CSRF",
+      "url": "https://portswigger.net/web-security/csrf",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/csrf.md"
+      ]
+    },
+    {
+      "id": "PS-cors",
+      "title": "CORS",
+      "url": "https://portswigger.net/web-security/cors",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/cors.md"
+      ]
+    },
+    {
+      "id": "PS-ssrf",
+      "title": "SSRF",
+      "url": "https://portswigger.net/web-security/ssrf",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/ssrf.md"
+      ]
+    },
+    {
+      "id": "PS-upload",
+      "title": "File upload vulnerabilities",
+      "url": "https://portswigger.net/web-security/file-upload",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/file-upload.md"
+      ]
+    },
+    {
+      "id": "PS-api",
+      "title": "API testing",
+      "url": "https://portswigger.net/web-security/api-testing",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/api-property-pollution.md"
+      ]
+    },
+    {
+      "id": "PS-logic",
+      "title": "Business logic vulnerabilities",
+      "url": "https://portswigger.net/web-security/logic-flaws",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/business-logic.md"
+      ]
+    },
+    {
+      "id": "PS-race",
+      "title": "Race conditions",
+      "url": "https://portswigger.net/web-security/race-conditions",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/race-conditions.md"
+      ]
+    },
+    {
+      "id": "PS-xxe",
+      "title": "XXE",
+      "url": "https://portswigger.net/web-security/xxe",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/xxe.md"
+      ]
+    },
+    {
+      "id": "PS-nosql",
+      "title": "NoSQL injection",
+      "url": "https://portswigger.net/web-security/nosql-injection",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/nosql-injection.md"
+      ]
+    },
+    {
+      "id": "PS-graphql",
+      "title": "GraphQL API vulnerabilities",
+      "url": "https://portswigger.net/web-security/graphql",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/graphql.md"
+      ]
+    },
+    {
+      "id": "PS-ws",
+      "title": "WebSockets",
+      "url": "https://portswigger.net/web-security/websockets",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/websocket.md"
+      ]
+    },
+    {
+      "id": "PS-cswsh",
+      "title": "Cross-site WebSocket hijacking",
+      "url": "https://portswigger.net/web-security/websockets/cross-site-websocket-hijacking",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/websocket.md"
+      ]
+    },
+    {
+      "id": "PS-ssti",
+      "title": "Server-side template injection",
+      "url": "https://portswigger.net/web-security/server-side-template-injection",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/ssti.md"
+      ]
+    },
+    {
+      "id": "PS-proto",
+      "title": "Prototype pollution",
+      "url": "https://portswigger.net/web-security/prototype-pollution",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/prototype-pollution.md"
+      ]
+    },
+    {
+      "id": "PS-cmd",
+      "title": "OS command injection",
+      "url": "https://portswigger.net/web-security/os-command-injection",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/cmd-injection-rce.md"
+      ]
+    },
+    {
+      "id": "PS-deserialize",
+      "title": "Insecure deserialization",
+      "url": "https://portswigger.net/web-security/deserialization",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/deserialization-rce.md"
+      ]
+    },
+    {
+      "id": "PS-path",
+      "title": "Path traversal",
+      "url": "https://portswigger.net/web-security/file-path-traversal",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/lfi-path-traversal.md"
+      ]
+    },
+    {
+      "id": "PS-host",
+      "title": "HTTP Host header attacks",
+      "url": "https://portswigger.net/web-security/host-header",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/host-header.md"
+      ]
+    },
+    {
+      "id": "PS-cache-poison",
+      "title": "Web cache poisoning",
+      "url": "https://portswigger.net/web-security/web-cache-poisoning",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/cache-poisoning.md"
+      ]
+    },
+    {
+      "id": "PS-cache-deceive",
+      "title": "Web cache deception",
+      "url": "https://portswigger.net/web-security/web-cache-deception",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/cache-deception.md"
+      ]
+    },
+    {
+      "id": "PS-desync",
+      "title": "HTTP request smuggling",
+      "url": "https://portswigger.net/web-security/request-smuggling",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/request-smuggling.md"
+      ]
+    },
+    {
+      "id": "PS-message",
+      "title": "Controlling the web message source",
+      "url": "https://portswigger.net/web-security/dom-based/controlling-the-web-message-source",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/dom-messaging.md"
+      ]
+    },
+    {
+      "id": "PS-clobber",
+      "title": "DOM clobbering",
+      "url": "https://portswigger.net/web-security/dom-based/dom-clobbering",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/dom-messaging.md"
+      ]
+    },
+    {
+      "id": "PS-click",
+      "title": "Clickjacking",
+      "url": "https://portswigger.net/web-security/clickjacking",
+      "publisher": "PortSwigger Web Security Academy",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/clickjacking.md"
+      ]
+    },
+    {
+      "id": "H1-trends",
+      "title": "2025 Hacker-Powered Security Report: researcher signals",
+      "url": "https://www.hackerone.com/blog/2025-hpsr-researcher-signals",
+      "publisher": "HackerOne",
+      "kind": "platform_trends",
+      "published_or_version": "2025 report",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/vulnerability-catalog.md"
+      ]
+    },
+    {
+      "id": "H1-quality",
+      "title": "Quality Reports",
+      "url": "https://docs.hackerone.com/en/articles/8475116-quality-reports",
+      "publisher": "HackerOne",
+      "kind": "primary_guide",
+      "published_or_version": "2025-02-05",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/research/community-notes.md"
+      ]
+    },
+    {
+      "id": "H1-cache",
+      "title": "Report #1096609: Host header web cache poisoning",
+      "url": "https://hackerone.com/reports/1096609",
+      "publisher": "g4mm4 / Shopify on HackerOne",
+      "kind": "public_report",
+      "published_or_version": "reported 2021-02-05; disclosed 2021-04-08",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/cache-poisoning.md",
+        "references/research/community-notes.md"
+      ]
+    },
+    {
+      "id": "H1-xxe",
+      "title": "Report #312543: XXE in Site Audit",
+      "url": "https://hackerone.com/reports/312543",
+      "publisher": "ajxchapman / Semrush on HackerOne",
+      "kind": "public_report",
+      "published_or_version": "reported 2018-02-05; disclosed 2018-03-13",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/xxe.md",
+        "references/research/community-notes.md"
+      ]
+    },
+    {
+      "id": "H1-xss",
+      "title": "Report #192210: Stored XSS in blog comments through Shopify API",
+      "url": "https://hackerone.com/reports/192210",
+      "publisher": "prakharprasad / Shopify on HackerOne",
+      "kind": "public_report",
+      "published_or_version": "reported 2016-12-18; disclosed 2017-03-16",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/xss.md",
+        "references/research/community-notes.md"
+      ]
+    },
+    {
+      "id": "RFC-jwt",
+      "title": "RFC 8725: JSON Web Token Best Current Practices",
+      "url": "https://www.rfc-editor.org/rfc/rfc8725.html",
+      "publisher": "IETF",
+      "kind": "standard",
+      "published_or_version": "RFC 8725, 2020-02",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/jwt.md"
+      ]
+    },
+    {
+      "id": "RFC-oauth",
+      "title": "RFC 9700: Best Current Practice for OAuth 2.0 Security",
+      "url": "https://www.rfc-editor.org/rfc/rfc9700.html",
+      "publisher": "IETF",
+      "kind": "standard",
+      "published_or_version": "RFC 9700, 2025-01",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/oauth-oidc.md"
+      ]
+    },
+    {
+      "id": "MDN-cors",
+      "title": "Cross-Origin Resource Sharing",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS",
+      "publisher": "MDN",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/cors.md",
+        "references/by-type/csrf.md"
+      ]
+    },
+    {
+      "id": "OWASP-api3",
+      "title": "API3:2023 Broken Object Property Level Authorization",
+      "url": "https://owasp.org/API-Security/editions/2023/en/0xa3-broken-object-property-level-authorization/",
+      "publisher": "OWASP",
+      "kind": "primary_guide",
+      "published_or_version": "API Security Top 10 2023",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/idor-access-control.md",
+        "references/by-type/api-property-pollution.md",
+        "references/by-type/graphql.md"
+      ]
+    },
+    {
+      "id": "OWASP-redirect",
+      "title": "Unvalidated Redirects and Forwards",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html",
+      "publisher": "OWASP",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/open-redirect.md"
+      ]
+    },
+    {
+      "id": "OWASP-saml",
+      "title": "SAML Security Cheat Sheet",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/SAML_Security_Cheat_Sheet.html",
+      "publisher": "OWASP",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/saml-sso.md"
+      ]
+    },
+    {
+      "id": "OWASP-ldap",
+      "title": "Testing for LDAP Injection",
+      "url": "https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Injection_Testing/06-Testing_for_LDAP_Injection",
+      "publisher": "OWASP",
+      "kind": "primary_guide",
+      "published_or_version": "WSTG latest snapshot",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/ldap-xpath.md"
+      ]
+    },
+    {
+      "id": "OWASP-xpath",
+      "title": "Testing for XPath Injection",
+      "url": "https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/07-Input_Validation_Testing/09-Testing_for_XPath_Injection",
+      "publisher": "OWASP",
+      "kind": "primary_guide",
+      "published_or_version": "WSTG v4.2",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/ldap-xpath.md"
+      ]
+    },
+    {
+      "id": "CF-normalize",
+      "title": "How URL normalization works",
+      "url": "https://developers.cloudflare.com/rules/normalization/how-it-works/",
+      "publisher": "Cloudflare",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/waf-bypass.md"
+      ]
+    },
+    {
+      "id": "AWS-waf",
+      "title": "Oversize web request components in AWS WAF",
+      "url": "https://docs.aws.amazon.com/waf/latest/developerguide/waf-oversize-request-components.html",
+      "publisher": "AWS",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/waf-bypass.md"
+      ]
+    },
+    {
+      "id": "WAFFLED",
+      "title": "WAFFLED: Exploiting Parsing Discrepancies to Bypass Web Application Firewalls",
+      "url": "https://arxiv.org/abs/2503.10846",
+      "publisher": "Akhavani et al.",
+      "kind": "research_paper",
+      "published_or_version": "arXiv v4 2026-03-13; ACSAC 2025",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "abstract_read",
+      "used_by": [
+        "references/by-type/waf-bypass.md",
+        "references/research/community-notes.md"
+      ]
+    },
+    {
+      "id": "PMNH-waf",
+      "title": "RCE via SSTI on Spring Boot Error Page with Akamai WAF Bypass",
+      "url": "https://www.pmnh.site/post/writeup_spring_el_waf_bypass/",
+      "publisher": "pmnh",
+      "kind": "researcher_writeup",
+      "published_or_version": "2022-12-04",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/cmd-injection-rce.md",
+        "references/by-type/ssti.md",
+        "references/by-type/waf-bypass.md",
+        "references/research/community-notes.md"
+      ]
+    },
+    {
+      "id": "PS-cache-research",
+      "title": "Gotta cache 'em all: bending the rules of web cache exploitation",
+      "url": "https://portswigger.net/research/gotta-cache-em-all",
+      "publisher": "Martin Doyhenard / PortSwigger",
+      "kind": "original_research",
+      "published_or_version": "published 2024-08-08; updated 2026-01-08",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/cache-deception.md",
+        "references/research/community-notes.md"
+      ]
+    },
+    {
+      "id": "Android-exported",
+      "title": "android:exported",
+      "url": "https://developer.android.com/privacy-and-security/risks/android-exported",
+      "publisher": "Android Developers",
+      "kind": "primary_guide",
+      "published_or_version": "updated 2024-09-24",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/mobile-android.md",
+        "references/research/community-notes.md"
+      ]
+    },
+    {
+      "id": "Android-links",
+      "title": "Unsafe use of deep links",
+      "url": "https://developer.android.com/privacy-and-security/risks/unsafe-use-of-deeplinks",
+      "publisher": "Android Developers",
+      "kind": "primary_guide",
+      "published_or_version": "updated 2024-10-24",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/mobile-android.md",
+        "references/research/community-notes.md"
+      ]
+    },
+    {
+      "id": "Azure-dns",
+      "title": "Prevent dangling DNS entries and avoid subdomain takeover",
+      "url": "https://learn.microsoft.com/en-us/azure/security/fundamentals/subdomain-takeover",
+      "publisher": "Microsoft",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/subdomain-takeover.md"
+      ]
+    },
+    {
+      "id": "GH-secrets",
+      "title": "About secret scanning",
+      "url": "https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning",
+      "publisher": "GitHub",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/info-secrets.md"
+      ]
+    },
+    {
+      "id": "GH-actions",
+      "title": "Secure use reference",
+      "url": "https://docs.github.com/en/actions/reference/security/secure-use",
+      "publisher": "GitHub",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/by-type/cicd-supply-chain.md"
+      ]
+    },
+    {
+      "id": "AWS-s3",
+      "title": "Blocking public access to your Amazon S3 storage",
+      "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html",
+      "publisher": "AWS",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/cloud/cloud-misconfiguration.md"
+      ]
+    },
+    {
+      "id": "AWS-sts",
+      "title": "get-caller-identity",
+      "url": "https://docs.aws.amazon.com/cli/latest/reference/sts/get-caller-identity.html",
+      "publisher": "AWS",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/cloud/cloud-iam.md"
+      ]
+    },
+    {
+      "id": "K8S-rbac",
+      "title": "Using RBAC Authorization",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/",
+      "publisher": "Kubernetes",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/cloud/container-k8s-security.md"
+      ]
+    },
+    {
+      "id": "K8S-anon",
+      "title": "Anonymous requests",
+      "url": "https://kubernetes.io/docs/reference/access-authn-authz/authentication/#anonymous-requests",
+      "publisher": "Kubernetes",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "read",
+      "used_by": [
+        "references/cloud/container-k8s-security.md"
+      ]
+    },
+    {
+      "id": "X-cache",
+      "title": "Cache report thread linking HackerOne #1096609",
+      "url": "https://x.com/bbr_bug/status/2088719154455126187",
+      "publisher": "@bbr_bug",
+      "kind": "community_lead",
+      "published_or_version": "2026-08-15 UTC",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "post_read_primary_report_checked",
+      "used_by": [
+        "references/research/community-notes.md"
+      ]
+    },
+    {
+      "id": "X-waf",
+      "title": "Link to pmnh Spring/SpEL WAF writeup",
+      "url": "https://x.com/mqst_/status/2066875947077296434",
+      "publisher": "@mqst_",
+      "kind": "community_lead",
+      "published_or_version": "2026-06-16 UTC",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "post_read_primary_writeup_checked",
+      "used_by": [
+        "references/research/community-notes.md"
+      ]
+    },
+    {
+      "id": "X-cache-research",
+      "title": "Recommendation of Martin Doyhenard cache research",
+      "url": "https://x.com/albinowax/status/1826581787180478699",
+      "publisher": "@albinowax",
+      "kind": "community_lead",
+      "published_or_version": "2024-08-22 UTC",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "post_read_primary_research_checked",
+      "used_by": [
+        "references/research/community-notes.md"
+      ]
+    },
+    {
+      "id": "X-android",
+      "title": "Android static triage workflow",
+      "url": "https://x.com/dirtycoder0124/status/2097280683924467834",
+      "publisher": "@dirtycoder0124",
+      "kind": "community_lead",
+      "published_or_version": "2026-09-08 UTC",
+      "accessed_at": "2026-09-14",
+      "evidence_status": "post_read_concept_checked_tool_unverified",
+      "used_by": [
+        "references/research/community-notes.md"
+      ]
+    },
+    {
+      "id": "CX-b71b12b78ace",
+      "title": "支付类漏洞挖掘技巧总结",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/butian/2778-%E6%94%AF%E4%BB%98%E7%B1%BB%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E6%8A%80%E5%B7%A7%E6%80%BB%E7%BB%93.md",
+      "original_url": "https://forum.butian.net/share/2778",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "fc528578043c17c3c56312df7549579d6fd7199a6473858c2bb8d8145d2194e6",
+      "used_by": [
+        "references/by-type/business-logic.md"
+      ]
+    },
+    {
+      "id": "CX-052396af43c9",
+      "title": "某积分商城任意金额支付漏洞分析利用及思考",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/butian/2949-%E6%9F%90%E7%A7%AF%E5%88%86%E5%95%86%E5%9F%8E%E4%BB%BB%E6%84%8F%E9%87%91%E9%A2%9D%E6%94%AF%E4%BB%98%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E5%88%A9%E7%94%A8%E5%8F%8A%E6%80%9D%E8%80%83.md",
+      "original_url": "https://forum.butian.net/share/2949",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "f9f41b6032f763b139525065c622304e4fadc836121d28c290a4bb36929854a6",
+      "used_by": [
+        "references/by-type/business-logic.md"
+      ]
+    },
+    {
+      "id": "CX-675aaef44ca6",
+      "title": "企业SRC支付漏洞&EDUSRC&众测挖掘思路技巧操作分享-先知社区",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/xianzhi/18389-%E4%BC%81%E4%B8%9ASRC%E6%94%AF%E4%BB%98%E6%BC%8F%E6%B4%9E%26EDUSRC%26%E4%BC%97%E6%B5%8B%E6%8C%96%E6%8E%98%E6%80%9D%E8%B7%AF%E6%8A%80%E5%B7%A7%E6%93%8D%E4%BD%9C%E5%88%86%E4%BA%AB-%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA.md",
+      "original_url": "https://xz.aliyun.com/news/18389",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "55ff9d8f4754fe1395ecdbf2a2aa84e98e6f7e40ac4f199e3574f1f89ddcb656",
+      "used_by": [
+        "references/by-type/business-logic.md",
+        "references/by-type/race-conditions.md"
+      ]
+    },
+    {
+      "id": "CX-edb851da5cd0",
+      "title": "实战SRC挖掘｜微信小程序渗透漏洞复盘-先知社区",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/xianzhi/18037-%E5%AE%9E%E6%88%98SRC%E6%8C%96%E6%8E%98%EF%BD%9C%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%9B%98-%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA.md",
+      "original_url": "https://xz.aliyun.com/news/18037",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "1fce4f7470d27c33817f12d96bf2034fab9ace87c017c07851d171b3e8d4acf4",
+      "used_by": [
+        "references/by-type/idor-access-control.md",
+        "references/by-type/miniapp-security.md"
+      ]
+    },
+    {
+      "id": "CX-e5989d518b20",
+      "title": "深度解析微信小程序漏洞挖掘-先知社区",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/xianzhi/17139-%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98-%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA.md",
+      "original_url": "https://xz.aliyun.com/news/17139",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "891dae12d537e939b2a71ebde9f561720abc33b08bd93779b79b9af001ee4ab4",
+      "used_by": [
+        "references/by-type/idor-access-control.md",
+        "references/by-type/miniapp-security.md"
+      ]
+    },
+    {
+      "id": "CX-4b8d20df3615",
+      "title": "签名从哪来？小程序 API 请求签名的逆向与验证-先知社区",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/xianzhi/18682-%E7%AD%BE%E5%90%8D%E4%BB%8E%E5%93%AA%E6%9D%A5%EF%BC%9F%E5%B0%8F%E7%A8%8B%E5%BA%8F%20API%20%E8%AF%B7%E6%B1%82%E7%AD%BE%E5%90%8D%E7%9A%84%E9%80%86%E5%90%91%E4%B8%8E%E9%AA%8C%E8%AF%81-%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA.md",
+      "original_url": "https://xz.aliyun.com/news/18682",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "0bc7afbb183ba39e0ea0cae9a8862c57885de252839a45d3dee709e19d53579c",
+      "used_by": [
+        "references/by-type/authn-session.md",
+        "references/by-type/miniapp-security.md"
+      ]
+    },
+    {
+      "id": "CX-880af357cb23",
+      "title": "死磕某小程序",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/butian/2940-%E6%AD%BB%E7%A3%95%E6%9F%90%E5%B0%8F%E7%A8%8B%E5%BA%8F.md",
+      "original_url": "https://forum.butian.net/share/2940",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "43bf4093a7f9a6cb2347d9ddf1520129c346a2b757729d42f8bc49e1382c49f2",
+      "used_by": [
+        "references/by-type/authn-session.md",
+        "references/by-type/miniapp-security.md"
+      ]
+    },
+    {
+      "id": "CX-45e99409562f",
+      "title": "基于yii框架的系统审计",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/butian/2407-%E5%9F%BA%E4%BA%8Eyii%E6%A1%86%E6%9E%B6%E7%9A%84%E7%B3%BB%E7%BB%9F%E5%AE%A1%E8%AE%A1.md",
+      "original_url": "https://forum.butian.net/share/2407",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "86850707745b5d7b197e87e6c90834448764f9435f9b5979bc77da5d5503914b",
+      "used_by": [
+        "references/by-type/sql-injection.md",
+        "references/source-audit.md"
+      ]
+    },
+    {
+      "id": "CX-504158156093",
+      "title": "Jimureport1.7.8越权漏洞代码分析及修复代码分析(CVE-2024-44893)-先知社区",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/xianzhi/17344-Jimureport1.7.8%E8%B6%8A%E6%9D%83%E6%BC%8F%E6%B4%9E%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E5%8F%8A%E4%BF%AE%E5%A4%8D%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%28CVE-2024-44893%29-%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA.md",
+      "original_url": "https://xz.aliyun.com/news/17344",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "552e13a147d23357400bd63be1b13ed2a68a6d3b1b1ee720b5bf059b79fdbd32",
+      "used_by": [
+        "references/by-type/idor-access-control.md",
+        "references/source-audit.md"
+      ]
+    },
+    {
+      "id": "CX-8cfca8b5541a",
+      "title": "xxl-job子任务越权漏洞代码分析及修复代码分析(CVE-2024-42681)-先知社区",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/xianzhi/17435-xxl-job%E5%AD%90%E4%BB%BB%E5%8A%A1%E8%B6%8A%E6%9D%83%E6%BC%8F%E6%B4%9E%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E5%8F%8A%E4%BF%AE%E5%A4%8D%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%28CVE-2024-42681%29-%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA.md",
+      "original_url": "https://xz.aliyun.com/news/17435",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "0564bc15bd05a23cdab129b07ec8418ae86aefb3da9b617abd75ec3973fddc39",
+      "used_by": [
+        "references/by-type/idor-access-control.md",
+        "references/source-audit.md"
+      ]
+    },
+    {
+      "id": "CX-c58e22e26b2a",
+      "title": "Next.js中间件权限绕过漏洞分析（CVE-2025-29927）-先知社区",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/xianzhi/17403-Next.js%E4%B8%AD%E9%97%B4%E4%BB%B6%E6%9D%83%E9%99%90%E7%BB%95%E8%BF%87%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%EF%BC%88CVE-2025-29927%EF%BC%89-%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA.md",
+      "original_url": "https://xz.aliyun.com/news/17403",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "ff54ca848b812969591aa7d95882e8f903b713a53bd30a80d31c6b03b9719a8c",
+      "used_by": [
+        "references/by-type/authn-session.md",
+        "references/source-audit.md"
+      ]
+    },
+    {
+      "id": "CX-6e67eeb66eb1",
+      "title": "记一次从xss到任意文件读取",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/butian/2409-%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BB%8Exss%E5%88%B0%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96.md",
+      "original_url": "https://forum.butian.net/share/2409",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "a4439c4fae26d7c2ac82c22571a2615d529117a27332f83fc145cd7007a27f46",
+      "used_by": [
+        "references/by-type/document-rendering.md",
+        "references/by-type/ssrf.md",
+        "references/by-type/xss.md"
+      ]
+    },
+    {
+      "id": "CX-27742e5d7da0",
+      "title": "契约锁电子签章系统 pdfverifier 远程代码执行漏洞分析（补丁包逆向分析）-先知社区",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/xianzhi/18482-%E5%A5%91%E7%BA%A6%E9%94%81%E7%94%B5%E5%AD%90%E7%AD%BE%E7%AB%A0%E7%B3%BB%E7%BB%9F%20pdfverifier%20%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%EF%BC%88%E8%A1%A5%E4%B8%81%E5%8C%85%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%EF%BC%89-%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA.md",
+      "original_url": "https://xz.aliyun.com/news/18482",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "887fdbeb1af54a7b9411a4adaa1b68727a2dfe19e0919d68bd591257882f1507",
+      "used_by": [
+        "references/by-type/document-rendering.md",
+        "references/by-type/file-upload.md",
+        "references/by-type/lfi-path-traversal.md"
+      ]
+    },
+    {
+      "id": "CX-18988a234457",
+      "title": "利用解压缩报错中断绕过WAF分析-先知社区",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/xianzhi/16642-%E5%88%A9%E7%94%A8%E8%A7%A3%E5%8E%8B%E7%BC%A9%E6%8A%A5%E9%94%99%E4%B8%AD%E6%96%AD%E7%BB%95%E8%BF%87WAF%E5%88%86%E6%9E%90-%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA.md",
+      "original_url": "https://xz.aliyun.com/news/16642",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "91c2f59bd8b3d048a6833ce92aef1e20f08037e12529ea6fb7ee95b6cb7299e5",
+      "used_by": [
+        "references/by-type/document-rendering.md",
+        "references/by-type/file-upload.md",
+        "references/by-type/lfi-path-traversal.md"
+      ]
+    },
+    {
+      "id": "CX-dc66ff443203",
+      "title": "Content-Encoding 协议层面 WAF 绕过思路-先知社区",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/xianzhi/18812-Content-Encoding%20%E5%8D%8F%E8%AE%AE%E5%B1%82%E9%9D%A2%20WAF%20%E7%BB%95%E8%BF%87%E6%80%9D%E8%B7%AF-%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA.md",
+      "original_url": "https://xz.aliyun.com/news/18812",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "f8e3a95b31a579ba38fee6364f6178fe981b7f67e1fb716144be006ce0762702",
+      "used_by": [
+        "references/by-type/waf-bypass.md"
+      ]
+    },
+    {
+      "id": "CX-30ef97f948f1",
+      "title": "探究python中pickle，_pickle和pickletools的解析差异问题-先知社区",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/xianzhi/18669-%E6%8E%A2%E7%A9%B6python%E4%B8%ADpickle%EF%BC%8C_pickle%E5%92%8Cpickletools%E7%9A%84%E8%A7%A3%E6%9E%90%E5%B7%AE%E5%BC%82%E9%97%AE%E9%A2%98-%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA.md",
+      "original_url": "https://xz.aliyun.com/news/18669",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "4d631869090dc8174ce681ee7571034890ddfbe235e5559adf4f70c96da11607",
+      "used_by": [
+        "references/by-type/deserialization-rce.md",
+        "references/by-type/waf-bypass.md"
+      ]
+    },
+    {
+      "id": "CX-b9dc92ba081d",
+      "title": "征服 JDBC WAF：从防护到绕过的代码解析-先知社区",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/xianzhi/18906-%E5%BE%81%E6%9C%8D%20JDBC%20WAF%EF%BC%9A%E4%BB%8E%E9%98%B2%E6%8A%A4%E5%88%B0%E7%BB%95%E8%BF%87%E7%9A%84%E4%BB%A3%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA.md",
+      "original_url": "https://xz.aliyun.com/news/18906",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "4a0b67cf3fd0494cf6055f5ebe8f8c8e6e6ee96885e942aa8e449c3677f5a61f",
+      "used_by": [
+        "references/by-type/deserialization-rce.md",
+        "references/by-type/waf-bypass.md"
+      ]
+    },
+    {
+      "id": "CX-5a0b90e5f333",
+      "title": "JsonPickle调试分析原理及WAF绕过-先知社区",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/xianzhi/16098-JsonPickle%E8%B0%83%E8%AF%95%E5%88%86%E6%9E%90%E5%8E%9F%E7%90%86%E5%8F%8AWAF%E7%BB%95%E8%BF%87-%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA.md",
+      "original_url": "https://xz.aliyun.com/news/16098",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "8c4e941acecc58a2bce0611bfb9f30a15650f649770da9dcef03544ea414aaba",
+      "used_by": [
+        "references/by-type/deserialization-rce.md",
+        "references/by-type/waf-bypass.md"
+      ]
+    },
+    {
+      "id": "CX-8ec06be74dd0",
+      "title": "从源码看JsonPickle反序列化利用与绕WAF-先知社区",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/xianzhi/16133-%E4%BB%8E%E6%BA%90%E7%A0%81%E7%9C%8BJsonPickle%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E4%B8%8E%E7%BB%95WAF-%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA.md",
+      "original_url": "https://xz.aliyun.com/news/16133",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "df0473a07a4a35f6bff9b4a41650b602a70bdb09bd6cf11a54ff8f675cd1c193",
+      "used_by": [
+        "references/by-type/deserialization-rce.md",
+        "references/by-type/waf-bypass.md"
+      ]
+    },
+    {
+      "id": "CX-86637690a94b",
+      "title": "fastjson之parse和parseobject利用差异-先知社区",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/xianzhi/16117-fastjson%E4%B9%8Bparse%E5%92%8Cparseobject%E5%88%A9%E7%94%A8%E5%B7%AE%E5%BC%82-%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA.md",
+      "original_url": "https://xz.aliyun.com/news/16117",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "7c8609f3e3efb9ffb5f176be0b8e90ac1c30ea04f45c7974b54f813121c1a0c3",
+      "used_by": [
+        "references/by-type/deserialization-rce.md",
+        "references/by-type/waf-bypass.md"
+      ]
+    },
+    {
+      "id": "CX-b8ff578b52a8",
+      "title": "【漏洞挖掘】记一次985证书站Oracle注入绕WAF",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/butian/2996-%E3%80%90%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E3%80%91%E8%AE%B0%E4%B8%80%E6%AC%A1985%E8%AF%81%E4%B9%A6%E7%AB%99Oracle%E6%B3%A8%E5%85%A5%E7%BB%95WAF.md",
+      "original_url": "https://forum.butian.net/share/2996",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "4ebbaa2c538962e3d59dae43837a085fa5292ee6dd210617d9d177e8843c61b7",
+      "used_by": [
+        "references/by-type/sql-injection.md"
+      ]
+    },
+    {
+      "id": "CX-2a656f567958",
+      "title": "如何HOST碰撞挖掘隐蔽资产-先知社区",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/xianzhi/16048-%E5%A6%82%E4%BD%95HOST%E7%A2%B0%E6%92%9E%E6%8C%96%E6%8E%98%E9%9A%90%E8%94%BD%E8%B5%84%E4%BA%A7-%E5%85%88%E7%9F%A5%E7%A4%BE%E5%8C%BA.md",
+      "original_url": "https://xz.aliyun.com/news/16048",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "533b07e58c68319e796fb130fd772b696026cbaaa579601dabc9fb81d284699d",
+      "used_by": [
+        "references/asset-discovery.md",
+        "references/by-type/host-header.md"
+      ]
+    },
+    {
+      "id": "CX-4818f3195cb2",
+      "title": "CORS漏洞学习",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/butian/2901-CORS%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0.md",
+      "original_url": "https://forum.butian.net/share/2901",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "4ebb687e68e9a489fa4525ed2bf58a09d36dc9f5262bca8e77e17ace173bcd21",
+      "used_by": [
+        "references/by-type/cors.md"
+      ]
+    },
+    {
+      "id": "CX-0e9eaa22f62f",
+      "title": "半自动化代码审计实战",
+      "url": "https://github.com/Huu1j/crawl_xz/blob/6496ea94f1e46d3fdfabdaeefebdf5fa03b24334/butian/2763-%E5%8D%8A%E8%87%AA%E5%8A%A8%E5%8C%96%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E5%AE%9E%E6%88%98.md",
+      "original_url": "https://forum.butian.net/share/2763",
+      "publisher": "crawl_xz 社区文章归档；原文页面本轮未逐篇复核",
+      "kind": "community_archive",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "sections_reviewed",
+      "read_scope": [
+        "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+      ],
+      "content_sha256": "6470eccda93e4da28176dffda4164be4f4aa39001b9009b663e5c6a3d0b8a9e8",
+      "used_by": [
+        "references/source-audit.md"
+      ]
+    },
+    {
+      "id": "NEXT-middleware",
+      "title": "Authorization Bypass in Next.js Middleware",
+      "url": "https://github.com/vercel/next.js/security/advisories/GHSA-f82v-jwr5-mffw",
+      "publisher": "Next.js maintainers",
+      "kind": "security_advisory",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "relevant_sections_read",
+      "used_by": [
+        "references/source-audit.md"
+      ]
+    },
+    {
+      "id": "RFC9110-content",
+      "title": "RFC 9110 section 8.4",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-8.4",
+      "publisher": "IETF",
+      "kind": "standard_section",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "relevant_sections_read",
+      "used_by": [
+        "references/by-type/waf-bypass.md"
+      ]
+    },
+    {
+      "id": "WKHTML-options",
+      "title": "wkhtmltopdf usage options",
+      "url": "https://wkhtmltopdf.org/usage/wkhtmltopdf.txt",
+      "publisher": "wkhtmltopdf",
+      "kind": "primary_documentation",
+      "published_or_version": null,
+      "accessed_at": "2026-09-14",
+      "evidence_status": "relevant_sections_read",
+      "used_by": [
+        "references/by-type/document-rendering.md"
+      ]
+    },
+    {
+      "id": "OWASP-threat-modeling",
+      "title": "Threat Modeling Cheat Sheet",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html",
+      "publisher": "OWASP Cheat Sheet Series",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-16",
+      "evidence_status": "sections_read",
+      "read_scope": "Visible Overview and System Modeling text; no linked tools or exercises executed.",
+      "used_by": [
+        "references/expert-reasoning.md"
+      ]
+    },
+    {
+      "id": "PS-state-machine-method",
+      "title": "Smashing the state machine: the true potential of web race conditions",
+      "url": "https://portswigger.net/research/smashing-the-state-machine",
+      "publisher": "PortSwigger Research / James Kettle",
+      "kind": "primary_research",
+      "published_or_version": "2023-08-09; updated 2023-09-18",
+      "accessed_at": "2026-09-16",
+      "evidence_status": "sections_read",
+      "read_scope": "Relevant Background and Methodology text only; images, videos, linked PoCs and live targets not validated. High-volume concurrent probing not adopted.",
+      "used_by": [
+        "references/expert-reasoning.md"
+      ]
+    },
+    {
+      "id": "MiSRC-v11",
+      "title": "小米安全中心安全漏洞奖励规则 V11.0",
+      "url": "https://sec.xiaomi.com/#/notice/detail/244",
+      "publisher": "小米安全中心",
+      "kind": "program_policy",
+      "published_or_version": "V11.0 / 2026-09-11",
+      "accessed_at": "2026-09-17",
+      "evidence_status": "sections_read",
+      "read_scope": "Relevant visible text and tables: version, general/report/reward rules, sections 4.2.4, 4.3, 4.4, 4.5, 4.6; images, videos and attachments not reviewed. Browser-read during planning on 2026-09-17.",
+      "used_by": [
+        "references/policies/xiaomi-misrc.md",
+        "references/by-type/ai-application.md",
+        "references/by-type/iot-security.md",
+        "references/by-type/mobile-android.md",
+        "references/by-type/desktop-client.md",
+        "references/by-type/automotive-security.md"
+      ]
+    },
+    {
+      "id": "MiSRC-iot-activities",
+      "title": "MiSRC IoT守护计划入口",
+      "url": "https://sec.xiaomi.com/#/IoT",
+      "publisher": "小米安全中心",
+      "kind": "program_activity_index",
+      "published_or_version": null,
+      "accessed_at": "2026-09-17",
+      "evidence_status": "sections_read",
+      "read_scope": "Visible introduction, ended activity cards and device application process; linked activity details not reviewed. Historical indefinite wording conflicts with ended Bundle card; no active reward inferred.",
+      "used_by": [
+        "references/policies/xiaomi-misrc.md"
+      ]
+    },
+    {
+      "id": "OWASP-LLM01-2025",
+      "title": "LLM01:2025 Prompt Injection",
+      "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+      "publisher": "OWASP Gen AI Security Project",
+      "kind": "primary_guide",
+      "published_or_version": "2025",
+      "accessed_at": "2026-09-17",
+      "evidence_status": "sections_read",
+      "read_scope": "Direct/indirect injection, multimodal input, impact and privilege-control sections; no example attacks executed.",
+      "used_by": [
+        "references/by-type/ai-application.md"
+      ]
+    },
+    {
+      "id": "Android-native-bridges",
+      "title": "WebView Native bridges",
+      "url": "https://developer.android.com/privacy-and-security/risks/insecure-webview-native-bridges",
+      "publisher": "Android Developers",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-17",
+      "evidence_status": "sections_read",
+      "read_scope": "Overview, bridge origin/frame risks and impact; no APK or device testing.",
+      "used_by": [
+        "references/by-type/mobile-android.md"
+      ]
+    },
+    {
+      "id": "OWASP-MASVS-groups",
+      "title": "OWASP MASVS control groups",
+      "url": "https://mas.owasp.org/MASVS/",
+      "publisher": "OWASP Mobile Application Security",
+      "kind": "primary_guide",
+      "published_or_version": null,
+      "accessed_at": "2026-09-17",
+      "evidence_status": "sections_read",
+      "read_scope": "Control-group overview and platform topic navigation only; not a review or execution of linked MASTG tests.",
+      "used_by": [
+        "references/by-type/mobile-android.md",
+        "references/by-type/mobile-ios.md"
+      ]
+    },
+    {
+      "id": "Apple-runtime-sandbox",
+      "title": "Security of runtime process in iOS, iPadOS and visionOS",
+      "url": "https://support.apple.com/en-au/guide/security/sec15bfe098e/web",
+      "publisher": "Apple Platform Security",
+      "kind": "primary_guide",
+      "published_or_version": "2024-12-19",
+      "accessed_at": "2026-09-17",
+      "evidence_status": "sections_read",
+      "read_scope": "Sandboxing and Use of entitlements sections; no device validation or claim of reading linked API documentation.",
+      "used_by": [
+        "references/by-type/mobile-ios.md"
+      ]
+    },
+    {
+      "id": "OWASP-ISTG-project",
+      "title": "OWASP IoT Security Testing Guide project",
+      "url": "https://owasp.org/projects/iot-security-testing-guide",
+      "publisher": "OWASP",
+      "kind": "primary_project_overview",
+      "published_or_version": null,
+      "accessed_at": "2026-09-17",
+      "evidence_status": "sections_read",
+      "read_scope": "Project introduction and guide links only. Full guide endpoint failed to load; no detailed test procedures adopted or executed.",
+      "used_by": [
+        "references/by-type/iot-security.md"
+      ]
+    },
+    {
+      "id": "JSRC-rules-v8",
+      "title": "京东外部威胁处理规则 V8.0（公告 255 引用的全文附件）",
+      "url": "https://security-jsrc.s3.cn-north-1.jdcloud-oss.com/JSRC-V8.0.pdf",
+      "publisher": "京东安全应急响应中心（JSRC）",
+      "kind": "program_policy",
+      "published_or_version": "V8.0 / 2022-06-29",
+      "accessed_at": "2026-10-09",
+      "evidence_status": "full_text_read",
+      "read_scope": "Full 24-page PDF text extracted locally (scope, process, scoring tables, general principles, rewards, FAQ). Embedded diagrams and any image-only content not reviewed; V8.0 is superseded by later V9.1 notices on points where they differ.",
+      "used_by": [
+        "references/policies/jd-jsrc.md"
+      ]
+    },
+    {
+      "id": "JSRC-notice-287-v91",
+      "title": "【JSRC 外部威胁处理规则 V9.1】（挖洞防迷路指南）上线！",
+      "url": "https://security.jd.com/#/notice/287",
+      "publisher": "京东安全应急响应中心（JSRC）",
+      "kind": "program_policy",
+      "published_or_version": "V9.1 / 2025-07-31",
+      "accessed_at": "2026-10-09",
+      "evidence_status": "sections_read",
+      "read_scope": "Notice text (business tiering summary, downgrade scenarios, non-collected types, SSRF standard, test rules) plus local OCR of its two embedded tables (business tier definitions, SSRF collection matrix). Full V9.1 document text not obtained: the page says it is behind \"read original\" but exposes no outbound link.",
+      "used_by": [
+        "references/policies/jd-jsrc.md",
+        "references/by-type/ssrf.md",
+        "references/rating-standard.md"
+      ]
+    },
+    {
+      "id": "JSRC-notice-274-norms",
+      "title": "【公告】挖洞姿势千万种，合规测试要牢记！",
+      "url": "https://security.jd.com/#/notice/274",
+      "publisher": "京东安全应急响应中心（JSRC）",
+      "kind": "program_policy",
+      "published_or_version": "2025-03-07",
+      "accessed_at": "2026-10-09",
+      "evidence_status": "read",
+      "read_scope": "Full notice text read: 16 test norms (scanner ban, account provenance, SSRF verification target, injection and authorization data limits, XSS/RCE handling, SMS limits, worm isolation, DoS and intranet bans, sensitive data handling, disclosure ban) and violation penalty clauses. No test action performed against JD assets.",
+      "used_by": [
+        "references/policies/jd-jsrc.md",
+        "references/reporting.md"
+      ]
+    },
+    {
+      "id": "JSRC-notice-258-domains",
+      "title": "【公告】关于 JSRC 暂不收取域名及其他信息更新",
+      "url": "https://security.jd.com/#/notice/258",
+      "publisher": "京东安全应急响应中心（JSRC）",
+      "kind": "program_policy",
+      "published_or_version": null,
+      "accessed_at": "2026-10-09",
+      "evidence_status": "read",
+      "read_scope": "Full notice text read: time-bound list of domains temporarily out of scope and a paused bonus activity, both pegged to a September 30 cutoff. Detail page shows no publication date and current validity is unverified; treated as historical notice, not as current authorization or exclusion.",
+      "used_by": [
+        "references/policies/jd-jsrc.md"
+      ]
+    }
+  ]
+}

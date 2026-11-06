@@ -1,0 +1,394 @@
+{
+  "butian/2778-支付类漏洞挖掘技巧总结.md": {
+    "sha256": "fc528578043c17c3c56312df7549579d6fd7199a6473858c2bb8d8145d2194e6",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "支付数据的信任回流；",
+    "used_by": [
+      "references/by-type/business-logic.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K01"
+    ]
+  },
+  "butian/2949-某积分商城任意金额支付漏洞分析利用及思考.md": {
+    "sha256": "f9f41b6032f763b139525065c622304e4fadc836121d28c290a4bb36929854a6",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "支付数据的信任回流；",
+    "used_by": [
+      "references/by-type/business-logic.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K01"
+    ]
+  },
+  "xianzhi/18389-企业SRC支付漏洞&EDUSRC&众测挖掘思路技巧操作分享-先知社区.md": {
+    "sha256": "55ff9d8f4754fe1395ecdbf2a2aa84e98e6f7e40ac4f199e3574f1f89ddcb656",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "优惠券释放与旧订单；",
+    "used_by": [
+      "references/by-type/business-logic.md",
+      "references/by-type/race-conditions.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K02"
+    ]
+  },
+  "xianzhi/18037-实战SRC挖掘｜微信小程序渗透漏洞复盘-先知社区.md": {
+    "sha256": "1fce4f7470d27c33817f12d96bf2034fab9ace87c017c07851d171b3e8d4acf4",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "小程序接口与身份边界；",
+    "used_by": [
+      "references/by-type/idor-access-control.md",
+      "references/by-type/miniapp-security.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K03"
+    ]
+  },
+  "xianzhi/17139-深度解析微信小程序漏洞挖掘-先知社区.md": {
+    "sha256": "891dae12d537e939b2a71ebde9f561720abc33b08bd93779b79b9af001ee4ab4",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "小程序接口与身份边界；",
+    "used_by": [
+      "references/by-type/idor-access-control.md",
+      "references/by-type/miniapp-security.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K03"
+    ]
+  },
+  "xianzhi/18682-签名从哪来？小程序 API 请求签名的逆向与验证-先知社区.md": {
+    "sha256": "0bc7afbb183ba39e0ea0cae9a8862c57885de252839a45d3dee709e19d53579c",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "请求封装成功与身份突破分开；",
+    "used_by": [
+      "references/by-type/authn-session.md",
+      "references/by-type/miniapp-security.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K04"
+    ]
+  },
+  "butian/2940-死磕某小程序.md": {
+    "sha256": "43bf4093a7f9a6cb2347d9ddf1520129c346a2b757729d42f8bc49e1382c49f2",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "请求封装成功与身份突破分开；",
+    "used_by": [
+      "references/by-type/authn-session.md",
+      "references/by-type/miniapp-security.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K04"
+    ]
+  },
+  "butian/2407-基于yii框架的系统审计.md": {
+    "sha256": "86850707745b5d7b197e87e6c90834448764f9435f9b5979bc77da5d5503914b",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "从实际路由追到具体查询 API；",
+    "used_by": [
+      "references/by-type/sql-injection.md",
+      "references/source-audit.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K05"
+    ]
+  },
+  "xianzhi/17344-Jimureport1.7.8越权漏洞代码分析及修复代码分析(CVE-2024-44893)-先知社区.md": {
+    "sha256": "552e13a147d23357400bd63be1b13ed2a68a6d3b1b1ee720b5bf059b79fdbd32",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "共享令牌失败分支；",
+    "used_by": [
+      "references/by-type/idor-access-control.md",
+      "references/source-audit.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K06"
+    ]
+  },
+  "xianzhi/17435-xxl-job子任务越权漏洞代码分析及修复代码分析(CVE-2024-42681)-先知社区.md": {
+    "sha256": "0564bc15bd05a23cdab129b07ec8418ae86aefb3da9b617abd75ec3973fddc39",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "子任务与父对象权限分离；",
+    "used_by": [
+      "references/by-type/idor-access-control.md",
+      "references/source-audit.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K07"
+    ]
+  },
+  "xianzhi/17403-Next.js中间件权限绕过漏洞分析（CVE-2025-29927）-先知社区.md": {
+    "sha256": "ff54ca848b812969591aa7d95882e8f903b713a53bd30a80d31c6b03b9719a8c",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "中间件与部署条件；",
+    "used_by": [
+      "references/by-type/authn-session.md",
+      "references/source-audit.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K08"
+    ]
+  },
+  "butian/2409-记一次从xss到任意文件读取.md": {
+    "sha256": "a4439c4fae26d7c2ac82c22571a2615d529117a27332f83fc145cd7007a27f46",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "浏览器与后台渲染分离；",
+    "used_by": [
+      "references/by-type/document-rendering.md",
+      "references/by-type/ssrf.md",
+      "references/by-type/xss.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K09"
+    ]
+  },
+  "xianzhi/18482-契约锁电子签章系统 pdfverifier 远程代码执行漏洞分析（补丁包逆向分析）-先知社区.md": {
+    "sha256": "887fdbeb1af54a7b9411a4adaa1b68727a2dfe19e0919d68bd591257882f1507",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "容器解包及失败后的文件状态；",
+    "used_by": [
+      "references/by-type/document-rendering.md",
+      "references/by-type/file-upload.md",
+      "references/by-type/lfi-path-traversal.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K10"
+    ]
+  },
+  "xianzhi/16642-利用解压缩报错中断绕过WAF分析-先知社区.md": {
+    "sha256": "91c2f59bd8b3d048a6833ce92aef1e20f08037e12529ea6fb7ee95b6cb7299e5",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "容器解包及失败后的文件状态；",
+    "used_by": [
+      "references/by-type/document-rendering.md",
+      "references/by-type/file-upload.md",
+      "references/by-type/lfi-path-traversal.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K10"
+    ]
+  },
+  "xianzhi/18812-Content-Encoding 协议层面 WAF 绕过思路-先知社区.md": {
+    "sha256": "f8e3a95b31a579ba38fee6364f6178fe981b7f67e1fb716144be006ce0762702",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "请求体编码与真实后端语义；",
+    "used_by": [
+      "references/by-type/waf-bypass.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K11"
+    ]
+  },
+  "xianzhi/18669-探究python中pickle，_pickle和pickletools的解析差异问题-先知社区.md": {
+    "sha256": "4d631869090dc8174ce681ee7571034890ddfbe235e5559adf4f70c96da11607",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "验证器、恢复器与依赖组合；",
+    "used_by": [
+      "references/by-type/deserialization-rce.md",
+      "references/by-type/waf-bypass.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K12"
+    ]
+  },
+  "xianzhi/18906-征服 JDBC WAF：从防护到绕过的代码解析-先知社区.md": {
+    "sha256": "4a0b67cf3fd0494cf6055f5ebe8f8c8e6e6ee96885e942aa8e449c3677f5a61f",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "验证器、恢复器与依赖组合；",
+    "used_by": [
+      "references/by-type/deserialization-rce.md",
+      "references/by-type/waf-bypass.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K12"
+    ]
+  },
+  "xianzhi/16098-JsonPickle调试分析原理及WAF绕过-先知社区.md": {
+    "sha256": "8c4e941acecc58a2bce0611bfb9f30a15650f649770da9dcef03544ea414aaba",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "验证器、恢复器与依赖组合；",
+    "used_by": [
+      "references/by-type/deserialization-rce.md",
+      "references/by-type/waf-bypass.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K12"
+    ]
+  },
+  "xianzhi/16133-从源码看JsonPickle反序列化利用与绕WAF-先知社区.md": {
+    "sha256": "df0473a07a4a35f6bff9b4a41650b602a70bdb09bd6cf11a54ff8f675cd1c193",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "验证器、恢复器与依赖组合；",
+    "used_by": [
+      "references/by-type/deserialization-rce.md",
+      "references/by-type/waf-bypass.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K12"
+    ]
+  },
+  "xianzhi/16117-fastjson之parse和parseobject利用差异-先知社区.md": {
+    "sha256": "7c8609f3e3efb9ffb5f176be0b8e90ac1c30ea04f45c7974b54f813121c1a0c3",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "验证器、恢复器与依赖组合；",
+    "used_by": [
+      "references/by-type/deserialization-rce.md",
+      "references/by-type/waf-bypass.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K12"
+    ]
+  },
+  "butian/2996-【漏洞挖掘】记一次985证书站Oracle注入绕WAF.md": {
+    "sha256": "4ebbaa2c538962e3d59dae43837a085fa5292ee6dd210617d9d177e8843c61b7",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "条件差异的因果证明；",
+    "used_by": [
+      "references/by-type/sql-injection.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K13"
+    ]
+  },
+  "xianzhi/16048-如何HOST碰撞挖掘隐蔽资产-先知社区.md": {
+    "sha256": "533b07e58c68319e796fb130fd772b696026cbaaa579601dabc9fb81d284699d",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "虚拟主机映射与资产授权；",
+    "used_by": [
+      "references/asset-discovery.md",
+      "references/by-type/host-header.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K14"
+    ]
+  },
+  "butian/2901-CORS漏洞学习.md": {
+    "sha256": "4ebb687e68e9a489fa4525ed2bf58a09d36dc9f5262bca8e77e17ace173bcd21",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "CORS 中发送与读取分离；",
+    "used_by": [
+      "references/by-type/cors.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K15"
+    ]
+  },
+  "butian/2763-半自动化代码审计实战.md": {
+    "sha256": "6470eccda93e4da28176dffda4164be4f4aa39001b9009b663e5c6a3d0b8a9e8",
+    "read_status": "sections_reviewed",
+    "disposition": "integrated",
+    "reason": "静态命中后的调用者复核；",
+    "used_by": [
+      "references/source-audit.md"
+    ],
+    "review_sections": [
+      "机制与分析/总结的相关叙述段落；未核读全部代码块、截图、工具附件或所有引用"
+    ],
+    "knowledge_ids": [
+      "K16"
+    ]
+  },
+  "xianzhi/18530-大模型安全落地-模型部署安全-先知社区.md": {
+    "sha256": "4d6f7de9ac09c8aa823647c8a8749c4809bfcd809257bbad7aa759fd10e767b6",
+    "read_status": "sections_reviewed",
+    "disposition": "reference_only",
+    "reason": "已读前言与部署/越狱建议摘段，主要为通用防护说明，未提供可直接迁移的 SRC 最小影响证明；不采纳清除缓存即可消除模型训练记忆等未证实概括。",
+    "used_by": [],
+    "review_sections": [
+      "前言、越狱攻击、部署建议与参考资料摘段；未通读"
+    ],
+    "knowledge_ids": []
+  }
+}

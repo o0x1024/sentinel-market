@@ -1,0 +1,23 @@
+[Unit]
+Description=Sentinel DNS Gateway (专属 DNS 流量转发 / subdomain_brute 加速)
+Documentation=https://github.com/sentinel
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/sentinel-dns-gateway -config /etc/sentinel-dns-gateway/config.json
+Restart=always
+RestartSec=2
+LimitNOFILE=65535
+# 仅监听高位端口，无需额外 capability
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/etc/sentinel-dns-gateway
+# 高频 DNS 转发需要较大的收发缓冲区
+Environment=GOMAXPROCS=2
+
+[Install]
+WantedBy=multi-user.target

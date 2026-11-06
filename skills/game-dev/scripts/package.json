@@ -1,0 +1,9 @@
+{
+  "name": "game-dev-scripts",
+  "private": true,
+  "type": "module",
+  "description": "game-dev skill 的验证脚本依赖。首次使用：npm install && npx playwright install chromium",
+  "dependencies": {
+    "playwright": "^1.50.0"
+  }
+}
