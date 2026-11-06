@@ -205,6 +205,1209 @@
       ]
     },
     {
+      "id": "security-research",
+      "name": "security-research",
+      "description": "指导 AI 助手在明确授权的范围内开展安全研究：对 SRC、众测平台与自有授权资产做资产与接口发现、业务建模，按企业或用户影响与当前收录条件选择假设，执行最小验证、恢复任务并输出可复核报告。用于授权范围内的资产发现、接口测试、已有线索验证、业务深挖与漏洞报告复核。",
+      "version": "1.0.0",
+      "author": "Sentinel",
+      "tags": [
+        "security",
+        "bounty",
+        "src",
+        "vuln-hunting"
+      ],
+      "files": [
+        {
+          "path": "references/agent-execution.md",
+          "size": 6492
+        },
+        {
+          "path": "references/asset-discovery.md",
+          "size": 7383
+        },
+        {
+          "path": "references/business-intent.md",
+          "size": 6200
+        },
+        {
+          "path": "references/business-modeling.md",
+          "size": 3934
+        },
+        {
+          "path": "references/by-type/ai-application.md",
+          "size": 7345
+        },
+        {
+          "path": "references/by-type/api-property-pollution.md",
+          "size": 2663
+        },
+        {
+          "path": "references/by-type/authn-session.md",
+          "size": 4495
+        },
+        {
+          "path": "references/by-type/automotive-security.md",
+          "size": 3437
+        },
+        {
+          "path": "references/by-type/business-logic.md",
+          "size": 5114
+        },
+        {
+          "path": "references/by-type/cache-deception.md",
+          "size": 2083
+        },
+        {
+          "path": "references/by-type/cache-poisoning.md",
+          "size": 2135
+        },
+        {
+          "path": "references/by-type/cicd-supply-chain.md",
+          "size": 2097
+        },
+        {
+          "path": "references/by-type/clickjacking.md",
+          "size": 1827
+        },
+        {
+          "path": "references/by-type/cmd-injection-rce.md",
+          "size": 3972
+        },
+        {
+          "path": "references/by-type/cors.md",
+          "size": 2529
+        },
+        {
+          "path": "references/by-type/crlf-response-splitting.md",
+          "size": 3359
+        },
+        {
+          "path": "references/by-type/csrf.md",
+          "size": 2701
+        },
+        {
+          "path": "references/by-type/deserialization-rce.md",
+          "size": 3680
+        },
+        {
+          "path": "references/by-type/desktop-client.md",
+          "size": 3968
+        },
+        {
+          "path": "references/by-type/document-rendering.md",
+          "size": 3992
+        },
+        {
+          "path": "references/by-type/dom-messaging.md",
+          "size": 2228
+        },
+        {
+          "path": "references/by-type/file-upload.md",
+          "size": 4763
+        },
+        {
+          "path": "references/by-type/graphql.md",
+          "size": 2312
+        },
+        {
+          "path": "references/by-type/host-header.md",
+          "size": 2132
+        },
+        {
+          "path": "references/by-type/idor-access-control.md",
+          "size": 5466
+        },
+        {
+          "path": "references/by-type/info-secrets.md",
+          "size": 3382
+        },
+        {
+          "path": "references/by-type/iot-security.md",
+          "size": 5217
+        },
+        {
+          "path": "references/by-type/jwt.md",
+          "size": 2107
+        },
+        {
+          "path": "references/by-type/ldap-xpath.md",
+          "size": 2287
+        },
+        {
+          "path": "references/by-type/lfi-path-traversal.md",
+          "size": 4019
+        },
+        {
+          "path": "references/by-type/miniapp-security.md",
+          "size": 4577
+        },
+        {
+          "path": "references/by-type/mobile-android.md",
+          "size": 7523
+        },
+        {
+          "path": "references/by-type/mobile-ios.md",
+          "size": 4533
+        },
+        {
+          "path": "references/by-type/nosql-injection.md",
+          "size": 2035
+        },
+        {
+          "path": "references/by-type/oauth-oidc.md",
+          "size": 2421
+        },
+        {
+          "path": "references/by-type/open-redirect.md",
+          "size": 2382
+        },
+        {
+          "path": "references/by-type/prototype-pollution.md",
+          "size": 2029
+        },
+        {
+          "path": "references/by-type/race-conditions.md",
+          "size": 2437
+        },
+        {
+          "path": "references/by-type/request-smuggling.md",
+          "size": 2264
+        },
+        {
+          "path": "references/by-type/saml-sso.md",
+          "size": 2067
+        },
+        {
+          "path": "references/by-type/smart-contract.md",
+          "size": 2951
+        },
+        {
+          "path": "references/by-type/sql-injection.md",
+          "size": 4432
+        },
+        {
+          "path": "references/by-type/ssrf.md",
+          "size": 5312
+        },
+        {
+          "path": "references/by-type/ssti.md",
+          "size": 2062
+        },
+        {
+          "path": "references/by-type/subdomain-takeover.md",
+          "size": 2157
+        },
+        {
+          "path": "references/by-type/waf-bypass.md",
+          "size": 6738
+        },
+        {
+          "path": "references/by-type/websocket.md",
+          "size": 2139
+        },
+        {
+          "path": "references/by-type/xs-leaks.md",
+          "size": 2306
+        },
+        {
+          "path": "references/by-type/xss.md",
+          "size": 5069
+        },
+        {
+          "path": "references/by-type/xssi-jsonp.md",
+          "size": 4358
+        },
+        {
+          "path": "references/by-type/xxe.md",
+          "size": 2120
+        },
+        {
+          "path": "references/checklist.md",
+          "size": 2894
+        },
+        {
+          "path": "references/cloud/cloud-iam.md",
+          "size": 2575
+        },
+        {
+          "path": "references/cloud/cloud-misconfiguration.md",
+          "size": 3154
+        },
+        {
+          "path": "references/cloud/cloud-security.md",
+          "size": 2396
+        },
+        {
+          "path": "references/cloud/container-k8s-security.md",
+          "size": 2746
+        },
+        {
+          "path": "references/discovery/ai-and-devices.md",
+          "size": 2634
+        },
+        {
+          "path": "references/discovery/client-and-cloud.md",
+          "size": 4415
+        },
+        {
+          "path": "references/discovery/passive-and-services.md",
+          "size": 6209
+        },
+        {
+          "path": "references/discovery/records-and-incremental.md",
+          "size": 6897
+        },
+        {
+          "path": "references/discovery/web-and-api.md",
+          "size": 8458
+        },
+        {
+          "path": "references/experiment-design.md",
+          "size": 5045
+        },
+        {
+          "path": "references/expert-reasoning.md",
+          "size": 8890
+        },
+        {
+          "path": "references/hunting-strategy.md",
+          "size": 5454
+        },
+        {
+          "path": "references/impact-and-acceptance.md",
+          "size": 13282
+        },
+        {
+          "path": "references/policies/100tal.md",
+          "size": 1336
+        },
+        {
+          "path": "references/policies/17zuoye.md",
+          "size": 920
+        },
+        {
+          "path": "references/policies/360-zc.md",
+          "size": 2386
+        },
+        {
+          "path": "references/policies/58.md",
+          "size": 2194
+        },
+        {
+          "path": "references/policies/alibaba-asrc.md",
+          "size": 3194
+        },
+        {
+          "path": "references/policies/antgroup.md",
+          "size": 2110
+        },
+        {
+          "path": "references/policies/autohome.md",
+          "size": 953
+        },
+        {
+          "path": "references/policies/avatr.md",
+          "size": 1066
+        },
+        {
+          "path": "references/policies/baidu-bsrc.md",
+          "size": 1769
+        },
+        {
+          "path": "references/policies/beike-bksrc.md",
+          "size": 13620
+        },
+        {
+          "path": "references/policies/bestsign.md",
+          "size": 1432
+        },
+        {
+          "path": "references/policies/bilibili.md",
+          "size": 4509
+        },
+        {
+          "path": "references/policies/butian.md",
+          "size": 2233
+        },
+        {
+          "path": "references/policies/bytedance-v6-fulltext.md",
+          "size": 41170
+        },
+        {
+          "path": "references/policies/bytedance.md",
+          "size": 17794
+        },
+        {
+          "path": "references/policies/cainiao.md",
+          "size": 2241
+        },
+        {
+          "path": "references/policies/ceair.md",
+          "size": 1988
+        },
+        {
+          "path": "references/policies/cnvd-zc.md",
+          "size": 2459
+        },
+        {
+          "path": "references/policies/creditease.md",
+          "size": 1737
+        },
+        {
+          "path": "references/policies/credithc.md",
+          "size": 913
+        },
+        {
+          "path": "references/policies/ctrip.md",
+          "size": 4759
+        },
+        {
+          "path": "references/policies/dbapp.md",
+          "size": 1127
+        },
+        {
+          "path": "references/policies/dewu.md",
+          "size": 2202
+        },
+        {
+          "path": "references/policies/dhgate.md",
+          "size": 1012
+        },
+        {
+          "path": "references/policies/dida.md",
+          "size": 2588
+        },
+        {
+          "path": "references/policies/didi.md",
+          "size": 1716
+        },
+        {
+          "path": "references/policies/dji.md",
+          "size": 4015
+        },
+        {
+          "path": "references/policies/dmall.md",
+          "size": 3542
+        },
+        {
+          "path": "references/policies/douyu.md",
+          "size": 1820
+        },
+        {
+          "path": "references/policies/duxiaoman.md",
+          "size": 2274
+        },
+        {
+          "path": "references/policies/eastmoney.md",
+          "size": 5495
+        },
+        {
+          "path": "references/policies/ezviz.md",
+          "size": 2375
+        },
+        {
+          "path": "references/policies/fadada.md",
+          "size": 1044
+        },
+        {
+          "path": "references/policies/fang.md",
+          "size": 832
+        },
+        {
+          "path": "references/policies/focuschina.md",
+          "size": 5756
+        },
+        {
+          "path": "references/policies/fuiou.md",
+          "size": 878
+        },
+        {
+          "path": "references/policies/guazi.md",
+          "size": 4424
+        },
+        {
+          "path": "references/policies/haier.md",
+          "size": 898
+        },
+        {
+          "path": "references/policies/hellobike.md",
+          "size": 1218
+        },
+        {
+          "path": "references/policies/hikvision.md",
+          "size": 2051
+        },
+        {
+          "path": "references/policies/hisense.md",
+          "size": 874
+        },
+        {
+          "path": "references/policies/honor.md",
+          "size": 2346
+        },
+        {
+          "path": "references/policies/huawei.md",
+          "size": 2957
+        },
+        {
+          "path": "references/policies/huazhu.md",
+          "size": 5087
+        },
+        {
+          "path": "references/policies/huolala.md",
+          "size": 2296
+        },
+        {
+          "path": "references/policies/huoxian.md",
+          "size": 1156
+        },
+        {
+          "path": "references/policies/huya.md",
+          "size": 1542
+        },
+        {
+          "path": "references/policies/hyvpr.md",
+          "size": 971
+        },
+        {
+          "path": "references/policies/iflytek.md",
+          "size": 2436
+        },
+        {
+          "path": "references/policies/immomo.md",
+          "size": 1775
+        },
+        {
+          "path": "references/policies/index.md",
+          "size": 33189
+        },
+        {
+          "path": "references/policies/industry-testing-standard.md",
+          "size": 3295
+        },
+        {
+          "path": "references/policies/intsig.md",
+          "size": 4960
+        },
+        {
+          "path": "references/policies/iqiyi.md",
+          "size": 2118
+        },
+        {
+          "path": "references/policies/jd-jsrc.md",
+          "size": 15958
+        },
+        {
+          "path": "references/policies/jfztkg.md",
+          "size": 981
+        },
+        {
+          "path": "references/policies/jj.md",
+          "size": 1100
+        },
+        {
+          "path": "references/policies/kanyun.md",
+          "size": 1819
+        },
+        {
+          "path": "references/policies/kuaikan.md",
+          "size": 905
+        },
+        {
+          "path": "references/policies/kuaishou.md",
+          "size": 1758
+        },
+        {
+          "path": "references/policies/kugou.md",
+          "size": 3341
+        },
+        {
+          "path": "references/policies/lenovo.md",
+          "size": 2690
+        },
+        {
+          "path": "references/policies/lexin.md",
+          "size": 1655
+        },
+        {
+          "path": "references/policies/liepin.md",
+          "size": 5095
+        },
+        {
+          "path": "references/policies/lixiang.md",
+          "size": 1505
+        },
+        {
+          "path": "references/policies/ly.md",
+          "size": 4316
+        },
+        {
+          "path": "references/policies/mafengwo.md",
+          "size": 4235
+        },
+        {
+          "path": "references/policies/mcd.md",
+          "size": 5442
+        },
+        {
+          "path": "references/policies/meituan.md",
+          "size": 1656
+        },
+        {
+          "path": "references/policies/meizu.md",
+          "size": 1902
+        },
+        {
+          "path": "references/policies/midea.md",
+          "size": 871
+        },
+        {
+          "path": "references/policies/mogu.md",
+          "size": 1450
+        },
+        {
+          "path": "references/policies/msxf.md",
+          "size": 2282
+        },
+        {
+          "path": "references/policies/netease.md",
+          "size": 2488
+        },
+        {
+          "path": "references/policies/nio.md",
+          "size": 2216
+        },
+        {
+          "path": "references/policies/niwodai.md",
+          "size": 1006
+        },
+        {
+          "path": "references/policies/oppo.md",
+          "size": 2420
+        },
+        {
+          "path": "references/policies/oray.md",
+          "size": 1966
+        },
+        {
+          "path": "references/policies/pinduoduo.md",
+          "size": 1539
+        },
+        {
+          "path": "references/policies/pingan.md",
+          "size": 2168
+        },
+        {
+          "path": "references/policies/qianmi.md",
+          "size": 981
+        },
+        {
+          "path": "references/policies/qihoo360.md",
+          "size": 2452
+        },
+        {
+          "path": "references/policies/qunar.md",
+          "size": 3260
+        },
+        {
+          "path": "references/policies/rong360.md",
+          "size": 1491
+        },
+        {
+          "path": "references/policies/saicmobility.md",
+          "size": 1749
+        },
+        {
+          "path": "references/policies/sangfor.md",
+          "size": 1363
+        },
+        {
+          "path": "references/policies/sf.md",
+          "size": 3223
+        },
+        {
+          "path": "references/policies/shuidi.md",
+          "size": 1663
+        },
+        {
+          "path": "references/policies/shumei.md",
+          "size": 868
+        },
+        {
+          "path": "references/policies/sjtu-edu.md",
+          "size": 2349
+        },
+        {
+          "path": "references/policies/soul.md",
+          "size": 6942
+        },
+        {
+          "path": "references/policies/src-policy-examples.md",
+          "size": 6677
+        },
+        {
+          "path": "references/policies/suning.md",
+          "size": 2135
+        },
+        {
+          "path": "references/policies/t3go.md",
+          "size": 1145
+        },
+        {
+          "path": "references/policies/tcjf.md",
+          "size": 997
+        },
+        {
+          "path": "references/policies/tcl.md",
+          "size": 934
+        },
+        {
+          "path": "references/policies/tencent-tsrc.md",
+          "size": 3294
+        },
+        {
+          "path": "references/policies/tencent-zc.md",
+          "size": 1096
+        },
+        {
+          "path": "references/policies/threatbook.md",
+          "size": 1734
+        },
+        {
+          "path": "references/policies/topsec.md",
+          "size": 1359
+        },
+        {
+          "path": "references/policies/tuhu.md",
+          "size": 5263
+        },
+        {
+          "path": "references/policies/tuniu.md",
+          "size": 4165
+        },
+        {
+          "path": "references/policies/ucloud.md",
+          "size": 1576
+        },
+        {
+          "path": "references/policies/ugreen.md",
+          "size": 849
+        },
+        {
+          "path": "references/policies/unionpay.md",
+          "size": 6962
+        },
+        {
+          "path": "references/policies/uniontech.md",
+          "size": 1078
+        },
+        {
+          "path": "references/policies/unitree.md",
+          "size": 4310
+        },
+        {
+          "path": "references/policies/vendor-a.md",
+          "size": 1906
+        },
+        {
+          "path": "references/policies/vip.md",
+          "size": 1701
+        },
+        {
+          "path": "references/policies/vipkid.md",
+          "size": 1099
+        },
+        {
+          "path": "references/policies/vivo.md",
+          "size": 3460
+        },
+        {
+          "path": "references/policies/vulbox.md",
+          "size": 1937
+        },
+        {
+          "path": "references/policies/wanmei.md",
+          "size": 1382
+        },
+        {
+          "path": "references/policies/webank.md",
+          "size": 2973
+        },
+        {
+          "path": "references/policies/weibo.md",
+          "size": 3098
+        },
+        {
+          "path": "references/policies/wifi.md",
+          "size": 976
+        },
+        {
+          "path": "references/policies/xianzhi.md",
+          "size": 2715
+        },
+        {
+          "path": "references/policies/xiaohongshu.md",
+          "size": 2829
+        },
+        {
+          "path": "references/policies/xiaolachuxing.md",
+          "size": 872
+        },
+        {
+          "path": "references/policies/xiaomi-misrc.md",
+          "size": 8652
+        },
+        {
+          "path": "references/policies/xiaopeng.md",
+          "size": 1902
+        },
+        {
+          "path": "references/policies/xiaoying.md",
+          "size": 927
+        },
+        {
+          "path": "references/policies/ximalaya.md",
+          "size": 4756
+        },
+        {
+          "path": "references/policies/xunlei.md",
+          "size": 995
+        },
+        {
+          "path": "references/policies/youzan.md",
+          "size": 4766
+        },
+        {
+          "path": "references/policies/yy.md",
+          "size": 1893
+        },
+        {
+          "path": "references/policies/zhangmen.md",
+          "size": 942
+        },
+        {
+          "path": "references/policies/zhaopin.md",
+          "size": 4154
+        },
+        {
+          "path": "references/policies/zhihu.md",
+          "size": 4320
+        },
+        {
+          "path": "references/policies/zhipin.md",
+          "size": 3440
+        },
+        {
+          "path": "references/policies/zhongan.md",
+          "size": 2294
+        },
+        {
+          "path": "references/policies/zhuanzhuan.md",
+          "size": 1889
+        },
+        {
+          "path": "references/policies/ziroom.md",
+          "size": 855
+        },
+        {
+          "path": "references/policies/zsxq.md",
+          "size": 911
+        },
+        {
+          "path": "references/policies/zte.md",
+          "size": 2496
+        },
+        {
+          "path": "references/policies/zto.md",
+          "size": 2651
+        },
+        {
+          "path": "references/rating-standard.md",
+          "size": 5002
+        },
+        {
+          "path": "references/reporting.md",
+          "size": 8260
+        },
+        {
+          "path": "references/research/corpus-ai-and-infra.md",
+          "size": 22677
+        },
+        {
+          "path": "references/research/corpus-desktop-client.md",
+          "size": 19255
+        },
+        {
+          "path": "references/research/corpus-file-parser.md",
+          "size": 20868
+        },
+        {
+          "path": "references/research/corpus-index.md",
+          "size": 7244
+        },
+        {
+          "path": "references/research/corpus-mobile.md",
+          "size": 18897
+        },
+        {
+          "path": "references/research/corpus-privacy-compliance.md",
+          "size": 22854
+        },
+        {
+          "path": "references/research/corpus-web-infoleak.md",
+          "size": 21791
+        },
+        {
+          "path": "references/research/corpus-web-injection.md",
+          "size": 23629
+        },
+        {
+          "path": "references/research/corpus-web-logic-authz.md",
+          "size": 18900
+        },
+        {
+          "path": "references/research/corpus-web-upload-misc.md",
+          "size": 22348
+        },
+        {
+          "path": "references/research/corpus-web-xss.md",
+          "size": 23043
+        },
+        {
+          "path": "references/research/crawl-xz-curation.json",
+          "size": 14864
+        },
+        {
+          "path": "references/research/crawl-xz-index.json",
+          "size": 2329734
+        },
+        {
+          "path": "references/research/crawl-xz-integration.md",
+          "size": 6192
+        },
+        {
+          "path": "references/research/crawl-xz-patterns.md",
+          "size": 13752
+        },
+        {
+          "path": "references/research/crlf-judgments.md",
+          "size": 39672
+        },
+        {
+          "path": "references/research/smart-contract-judgments.md",
+          "size": 17666
+        },
+        {
+          "path": "references/research/sources.json",
+          "size": 61213
+        },
+        {
+          "path": "references/research/x-ai-1.md",
+          "size": 859
+        },
+        {
+          "path": "references/research/x-api-1.md",
+          "size": 4157
+        },
+        {
+          "path": "references/research/x-auth-1.md",
+          "size": 19305
+        },
+        {
+          "path": "references/research/x-cloud-1.md",
+          "size": 4147
+        },
+        {
+          "path": "references/research/x-corpus.md",
+          "size": 9358
+        },
+        {
+          "path": "references/research/x-csrf_cors-1.md",
+          "size": 4928
+        },
+        {
+          "path": "references/research/x-exp-api.md",
+          "size": 18634
+        },
+        {
+          "path": "references/research/x-exp-auth.md",
+          "size": 40031
+        },
+        {
+          "path": "references/research/x-exp-cache.md",
+          "size": 1636
+        },
+        {
+          "path": "references/research/x-exp-cloud.md",
+          "size": 3240
+        },
+        {
+          "path": "references/research/x-exp-csrf.md",
+          "size": 3723
+        },
+        {
+          "path": "references/research/x-exp-file.md",
+          "size": 2305
+        },
+        {
+          "path": "references/research/x-exp-idor.md",
+          "size": 13239
+        },
+        {
+          "path": "references/research/x-exp-infoleak.md",
+          "size": 2499
+        },
+        {
+          "path": "references/research/x-exp-logic.md",
+          "size": 2012
+        },
+        {
+          "path": "references/research/x-exp-mindset.md",
+          "size": 9616
+        },
+        {
+          "path": "references/research/x-exp-mobile.md",
+          "size": 1024
+        },
+        {
+          "path": "references/research/x-exp-rce.md",
+          "size": 4766
+        },
+        {
+          "path": "references/research/x-exp-recon.md",
+          "size": 17625
+        },
+        {
+          "path": "references/research/x-exp-redirect.md",
+          "size": 1282
+        },
+        {
+          "path": "references/research/x-exp-reporting.md",
+          "size": 11443
+        },
+        {
+          "path": "references/research/x-exp-smuggling.md",
+          "size": 1334
+        },
+        {
+          "path": "references/research/x-exp-sqli.md",
+          "size": 6824
+        },
+        {
+          "path": "references/research/x-exp-ssrf.md",
+          "size": 9242
+        },
+        {
+          "path": "references/research/x-exp-tooling.md",
+          "size": 3474
+        },
+        {
+          "path": "references/research/x-exp-waf.md",
+          "size": 12105
+        },
+        {
+          "path": "references/research/x-exp-xss.md",
+          "size": 17744
+        },
+        {
+          "path": "references/research/x-exp-xxe.md",
+          "size": 1494
+        },
+        {
+          "path": "references/research/x-file-1.md",
+          "size": 11511
+        },
+        {
+          "path": "references/research/x-idor-1.md",
+          "size": 13842
+        },
+        {
+          "path": "references/research/x-infodisc-1.md",
+          "size": 6612
+        },
+        {
+          "path": "references/research/x-logic-1.md",
+          "size": 3098
+        },
+        {
+          "path": "references/research/x-methodology-1.md",
+          "size": 53881
+        },
+        {
+          "path": "references/research/x-methodology-2.md",
+          "size": 47027
+        },
+        {
+          "path": "references/research/x-mobile-1.md",
+          "size": 1461
+        },
+        {
+          "path": "references/research/x-rce-1.md",
+          "size": 12016
+        },
+        {
+          "path": "references/research/x-recon-1.md",
+          "size": 26997
+        },
+        {
+          "path": "references/research/x-recovered-dork.md",
+          "size": 4029
+        },
+        {
+          "path": "references/research/x-recovered-header.md",
+          "size": 2669
+        },
+        {
+          "path": "references/research/x-recovered-recon.md",
+          "size": 12219
+        },
+        {
+          "path": "references/research/x-recovered-testcase.md",
+          "size": 11996
+        },
+        {
+          "path": "references/research/x-recovered-toolchain.md",
+          "size": 2078
+        },
+        {
+          "path": "references/research/x-residual-api.md",
+          "size": 1497
+        },
+        {
+          "path": "references/research/x-residual-auth.md",
+          "size": 1148
+        },
+        {
+          "path": "references/research/x-residual-lfi_traversal.md",
+          "size": 2595
+        },
+        {
+          "path": "references/research/x-residual-misc.md",
+          "size": 3145
+        },
+        {
+          "path": "references/research/x-residual-rce.md",
+          "size": 1402
+        },
+        {
+          "path": "references/research/x-residual-recon.md",
+          "size": 5999
+        },
+        {
+          "path": "references/research/x-residual-sqli.md",
+          "size": 2820
+        },
+        {
+          "path": "references/research/x-residual-ssrf.md",
+          "size": 2011
+        },
+        {
+          "path": "references/research/x-residual-tooling.md",
+          "size": 1132
+        },
+        {
+          "path": "references/research/x-residual-upload.md",
+          "size": 746
+        },
+        {
+          "path": "references/research/x-residual-waf_bypass.md",
+          "size": 1095
+        },
+        {
+          "path": "references/research/x-residual-xss.md",
+          "size": 9755
+        },
+        {
+          "path": "references/research/x-smuggling-1.md",
+          "size": 1982
+        },
+        {
+          "path": "references/research/x-sqli-1.md",
+          "size": 20682
+        },
+        {
+          "path": "references/research/x-ssrf-1.md",
+          "size": 9106
+        },
+        {
+          "path": "references/research/x-ssti-1.md",
+          "size": 3722
+        },
+        {
+          "path": "references/research/x-tooling-1.md",
+          "size": 25838
+        },
+        {
+          "path": "references/research/x-waf-1.md",
+          "size": 16309
+        },
+        {
+          "path": "references/research/x-xss-1.md",
+          "size": 53873
+        },
+        {
+          "path": "references/research/x-xss-2.md",
+          "size": 30862
+        },
+        {
+          "path": "references/research/x-xss-3.md",
+          "size": 27274
+        },
+        {
+          "path": "references/research/x-xxe-1.md",
+          "size": 2214
+        },
+        {
+          "path": "references/scope-and-rules.md",
+          "size": 5613
+        },
+        {
+          "path": "references/source-audit.md",
+          "size": 3075
+        },
+        {
+          "path": "references/state-and-evidence.md",
+          "size": 7664
+        },
+        {
+          "path": "references/targeted-fuzzing.md",
+          "size": 12751
+        },
+        {
+          "path": "references/tool-contracts.md",
+          "size": 10473
+        },
+        {
+          "path": "references/verification.md",
+          "size": 4655
+        },
+        {
+          "path": "references/vuln-detection.md",
+          "size": 1355
+        },
+        {
+          "path": "references/vulnerability-catalog.md",
+          "size": 12160
+        },
+        {
+          "path": "scripts/build_research_index.py",
+          "size": 10015
+        },
+        {
+          "path": "scripts/check_structure.py",
+          "size": 4166
+        },
+        {
+          "path": "scripts/search_research.py",
+          "size": 2909
+        },
+        {
+          "path": "SKILL.md",
+          "size": 12099
+        }
+      ]
+    },
+    {
       "id": "sentinel-slides",
       "name": "sentinel-slides",
       "description": "Create, edit, inspect, and compile presentations in PPTX and PPTD formats. Supports two unified modes: (1) Surgical In-Place Mode (`sentinel-slides prep/edit/verify`) for lossless byte-preserving text updates on existing `.pptx` files, and (2) DSL Mode (`.pptd` + `pages/*.page` + `sentinel-slides convert/check/screenshot/fold`) for creating new decks, redesigning layouts, inserting desktop GUI screenshots captured via `computer_use`, and compiling back to `.pptx`.",
@@ -304,949 +1507,6 @@
         {
           "path": "SKILL.md",
           "size": 8671
-        }
-      ]
-    },
-    {
-      "id": "src-vuln-hunting",
-      "name": "src-vuln-hunting",
-      "description": "指导 AI 助手在明确授权的 SRC/众测项目中进行信息收集和自动化漏洞挖掘：发现资产与接口、建立业务模型，按企业/用户影响与当前收录条件选择假设，执行最小实验、恢复任务并输出可复核报告。用于授权资产发现、测试、已有线索验证、业务深挖和漏洞报告复核。",
-      "version": "1.0.0",
-      "author": "Sentinel",
-      "tags": [
-        "security",
-        "bounty",
-        "src",
-        "vuln-hunting"
-      ],
-      "files": [
-        {
-          "path": "evals/cases-ai-and-devices.json",
-          "size": 39431
-        },
-        {
-          "path": "evals/cases-business-context.json",
-          "size": 14636
-        },
-        {
-          "path": "evals/cases-discovery-and-reasoning.json",
-          "size": 42660
-        },
-        {
-          "path": "evals/cases-targeted-fuzzing.json",
-          "size": 17838
-        },
-        {
-          "path": "evals/cases.json",
-          "size": 57085
-        },
-        {
-          "path": "evals/expected.json",
-          "size": 65909
-        },
-        {
-          "path": "evals/protocol.md",
-          "size": 17622
-        },
-        {
-          "path": "evals/test_research_tools.py",
-          "size": 6325
-        },
-        {
-          "path": "references/agent-execution.md",
-          "size": 6492
-        },
-        {
-          "path": "references/asset-discovery.md",
-          "size": 6537
-        },
-        {
-          "path": "references/business-intent.md",
-          "size": 6200
-        },
-        {
-          "path": "references/business-modeling.md",
-          "size": 200913
-        },
-        {
-          "path": "references/by-type/ai-application.md",
-          "size": 55272
-        },
-        {
-          "path": "references/by-type/api-property-pollution.md",
-          "size": 73835
-        },
-        {
-          "path": "references/by-type/authn-session.md",
-          "size": 1047790
-        },
-        {
-          "path": "references/by-type/automotive-security.md",
-          "size": 3138
-        },
-        {
-          "path": "references/by-type/business-logic.md",
-          "size": 260172
-        },
-        {
-          "path": "references/by-type/cache-deception.md",
-          "size": 59185
-        },
-        {
-          "path": "references/by-type/cache-poisoning.md",
-          "size": 2264
-        },
-        {
-          "path": "references/by-type/cicd-supply-chain.md",
-          "size": 2613
-        },
-        {
-          "path": "references/by-type/clickjacking.md",
-          "size": 15613
-        },
-        {
-          "path": "references/by-type/cmd-injection-rce.md",
-          "size": 244343
-        },
-        {
-          "path": "references/by-type/cors.md",
-          "size": 55727
-        },
-        {
-          "path": "references/by-type/crlf-response-splitting.md",
-          "size": 46681
-        },
-        {
-          "path": "references/by-type/csrf.md",
-          "size": 142119
-        },
-        {
-          "path": "references/by-type/deserialization-rce.md",
-          "size": 36925
-        },
-        {
-          "path": "references/by-type/desktop-client.md",
-          "size": 165140
-        },
-        {
-          "path": "references/by-type/document-rendering.md",
-          "size": 66825
-        },
-        {
-          "path": "references/by-type/dom-messaging.md",
-          "size": 1542
-        },
-        {
-          "path": "references/by-type/file-upload.md",
-          "size": 265537
-        },
-        {
-          "path": "references/by-type/graphql.md",
-          "size": 91212
-        },
-        {
-          "path": "references/by-type/host-header.md",
-          "size": 128687
-        },
-        {
-          "path": "references/by-type/idor-access-control.md",
-          "size": 780438
-        },
-        {
-          "path": "references/by-type/info-secrets.md",
-          "size": 877224
-        },
-        {
-          "path": "references/by-type/iot-security.md",
-          "size": 30569
-        },
-        {
-          "path": "references/by-type/jwt.md",
-          "size": 54776
-        },
-        {
-          "path": "references/by-type/ldap-xpath.md",
-          "size": 12541
-        },
-        {
-          "path": "references/by-type/lfi-path-traversal.md",
-          "size": 260548
-        },
-        {
-          "path": "references/by-type/miniapp-security.md",
-          "size": 3230
-        },
-        {
-          "path": "references/by-type/mobile-android.md",
-          "size": 125997
-        },
-        {
-          "path": "references/by-type/mobile-ios.md",
-          "size": 34087
-        },
-        {
-          "path": "references/by-type/nosql-injection.md",
-          "size": 16443
-        },
-        {
-          "path": "references/by-type/oauth-oidc.md",
-          "size": 128460
-        },
-        {
-          "path": "references/by-type/open-redirect.md",
-          "size": 146693
-        },
-        {
-          "path": "references/by-type/prototype-pollution.md",
-          "size": 14296
-        },
-        {
-          "path": "references/by-type/race-conditions.md",
-          "size": 9253
-        },
-        {
-          "path": "references/by-type/request-smuggling.md",
-          "size": 51931
-        },
-        {
-          "path": "references/by-type/saml-sso.md",
-          "size": 19759
-        },
-        {
-          "path": "references/by-type/smart-contract.md",
-          "size": 21630
-        },
-        {
-          "path": "references/by-type/sql-injection.md",
-          "size": 366244
-        },
-        {
-          "path": "references/by-type/ssrf.md",
-          "size": 274388
-        },
-        {
-          "path": "references/by-type/ssti.md",
-          "size": 63170
-        },
-        {
-          "path": "references/by-type/subdomain-takeover.md",
-          "size": 115937
-        },
-        {
-          "path": "references/by-type/waf-bypass.md",
-          "size": 223192
-        },
-        {
-          "path": "references/by-type/websocket.md",
-          "size": 17105
-        },
-        {
-          "path": "references/by-type/xs-leaks.md",
-          "size": 1714
-        },
-        {
-          "path": "references/by-type/xss.md",
-          "size": 937589
-        },
-        {
-          "path": "references/by-type/xssi-jsonp.md",
-          "size": 3770
-        },
-        {
-          "path": "references/by-type/xxe.md",
-          "size": 70154
-        },
-        {
-          "path": "references/checklist.md",
-          "size": 2797
-        },
-        {
-          "path": "references/cloud/cloud-iam.md",
-          "size": 2575
-        },
-        {
-          "path": "references/cloud/cloud-misconfiguration.md",
-          "size": 169920
-        },
-        {
-          "path": "references/cloud/cloud-security.md",
-          "size": 2396
-        },
-        {
-          "path": "references/cloud/container-k8s-security.md",
-          "size": 66302
-        },
-        {
-          "path": "references/deep-verification-and-severity.md",
-          "size": 2311
-        },
-        {
-          "path": "references/discovery/ai-and-devices.md",
-          "size": 2634
-        },
-        {
-          "path": "references/discovery/client-and-cloud.md",
-          "size": 562211
-        },
-        {
-          "path": "references/discovery/passive-and-services.md",
-          "size": 719277
-        },
-        {
-          "path": "references/discovery/records-and-incremental.md",
-          "size": 1205038
-        },
-        {
-          "path": "references/discovery/web-and-api.md",
-          "size": 1075997
-        },
-        {
-          "path": "references/experiment-design.md",
-          "size": 2010107
-        },
-        {
-          "path": "references/expert-reasoning.md",
-          "size": 22015
-        },
-        {
-          "path": "references/hunting-strategy.md",
-          "size": 165482
-        },
-        {
-          "path": "references/impact-and-acceptance.md",
-          "size": 519422
-        },
-        {
-          "path": "references/policies/beike-bksrc.md",
-          "size": 13622
-        },
-        {
-          "path": "references/policies/client-1click-and-cors.md",
-          "size": 5007
-        },
-        {
-          "path": "references/policies/jd-jsrc.md",
-          "size": 15958
-        },
-        {
-          "path": "references/policies/src-policy-examples.md",
-          "size": 6677
-        },
-        {
-          "path": "references/policies/src/100tal.md",
-          "size": 1336
-        },
-        {
-          "path": "references/policies/src/17zuoye.md",
-          "size": 920
-        },
-        {
-          "path": "references/policies/src/360-zc.md",
-          "size": 2386
-        },
-        {
-          "path": "references/policies/src/58.md",
-          "size": 2194
-        },
-        {
-          "path": "references/policies/src/alibaba-asrc.md",
-          "size": 3194
-        },
-        {
-          "path": "references/policies/src/antgroup.md",
-          "size": 2110
-        },
-        {
-          "path": "references/policies/src/autohome.md",
-          "size": 953
-        },
-        {
-          "path": "references/policies/src/avatr.md",
-          "size": 1066
-        },
-        {
-          "path": "references/policies/src/baidu-bsrc.md",
-          "size": 1769
-        },
-        {
-          "path": "references/policies/src/bestsign.md",
-          "size": 1432
-        },
-        {
-          "path": "references/policies/src/bilibili.md",
-          "size": 4509
-        },
-        {
-          "path": "references/policies/src/butian.md",
-          "size": 2233
-        },
-        {
-          "path": "references/policies/src/bytedance-v6-fulltext.md",
-          "size": 41170
-        },
-        {
-          "path": "references/policies/src/bytedance.md",
-          "size": 17800
-        },
-        {
-          "path": "references/policies/src/cainiao.md",
-          "size": 2241
-        },
-        {
-          "path": "references/policies/src/ceair.md",
-          "size": 1988
-        },
-        {
-          "path": "references/policies/src/cnvd-zc.md",
-          "size": 2459
-        },
-        {
-          "path": "references/policies/src/creditease.md",
-          "size": 1737
-        },
-        {
-          "path": "references/policies/src/credithc.md",
-          "size": 913
-        },
-        {
-          "path": "references/policies/src/ctrip.md",
-          "size": 4759
-        },
-        {
-          "path": "references/policies/src/dbapp.md",
-          "size": 1127
-        },
-        {
-          "path": "references/policies/src/dewu.md",
-          "size": 2202
-        },
-        {
-          "path": "references/policies/src/dhgate.md",
-          "size": 1012
-        },
-        {
-          "path": "references/policies/src/dida.md",
-          "size": 2588
-        },
-        {
-          "path": "references/policies/src/didi.md",
-          "size": 1716
-        },
-        {
-          "path": "references/policies/src/dji.md",
-          "size": 4015
-        },
-        {
-          "path": "references/policies/src/dmall.md",
-          "size": 3542
-        },
-        {
-          "path": "references/policies/src/douyu.md",
-          "size": 1820
-        },
-        {
-          "path": "references/policies/src/duxiaoman.md",
-          "size": 2274
-        },
-        {
-          "path": "references/policies/src/eastmoney.md",
-          "size": 5495
-        },
-        {
-          "path": "references/policies/src/ezviz.md",
-          "size": 2375
-        },
-        {
-          "path": "references/policies/src/fadada.md",
-          "size": 1044
-        },
-        {
-          "path": "references/policies/src/fang.md",
-          "size": 832
-        },
-        {
-          "path": "references/policies/src/focuschina.md",
-          "size": 5756
-        },
-        {
-          "path": "references/policies/src/fuiou.md",
-          "size": 878
-        },
-        {
-          "path": "references/policies/src/guazi.md",
-          "size": 4424
-        },
-        {
-          "path": "references/policies/src/haier.md",
-          "size": 898
-        },
-        {
-          "path": "references/policies/src/hellobike.md",
-          "size": 1218
-        },
-        {
-          "path": "references/policies/src/hikvision.md",
-          "size": 2051
-        },
-        {
-          "path": "references/policies/src/hisense.md",
-          "size": 874
-        },
-        {
-          "path": "references/policies/src/honor.md",
-          "size": 2346
-        },
-        {
-          "path": "references/policies/src/huawei.md",
-          "size": 2957
-        },
-        {
-          "path": "references/policies/src/huazhu.md",
-          "size": 5087
-        },
-        {
-          "path": "references/policies/src/huolala.md",
-          "size": 2296
-        },
-        {
-          "path": "references/policies/src/huoxian.md",
-          "size": 1156
-        },
-        {
-          "path": "references/policies/src/huya.md",
-          "size": 1542
-        },
-        {
-          "path": "references/policies/src/hyvpr.md",
-          "size": 971
-        },
-        {
-          "path": "references/policies/src/iflytek.md",
-          "size": 2436
-        },
-        {
-          "path": "references/policies/src/immomo.md",
-          "size": 1775
-        },
-        {
-          "path": "references/policies/src/industry-testing-standard.md",
-          "size": 3295
-        },
-        {
-          "path": "references/policies/src/intsig.md",
-          "size": 4960
-        },
-        {
-          "path": "references/policies/src/iqiyi.md",
-          "size": 2118
-        },
-        {
-          "path": "references/policies/src/jfztkg.md",
-          "size": 981
-        },
-        {
-          "path": "references/policies/src/jj.md",
-          "size": 1100
-        },
-        {
-          "path": "references/policies/src/kanyun.md",
-          "size": 1810
-        },
-        {
-          "path": "references/policies/src/kuaikan.md",
-          "size": 905
-        },
-        {
-          "path": "references/policies/src/kuaishou.md",
-          "size": 1758
-        },
-        {
-          "path": "references/policies/src/kugou.md",
-          "size": 3341
-        },
-        {
-          "path": "references/policies/src/lenovo.md",
-          "size": 2690
-        },
-        {
-          "path": "references/policies/src/lexin.md",
-          "size": 1655
-        },
-        {
-          "path": "references/policies/src/liepin.md",
-          "size": 5095
-        },
-        {
-          "path": "references/policies/src/lixiang.md",
-          "size": 1505
-        },
-        {
-          "path": "references/policies/src/ly.md",
-          "size": 4316
-        },
-        {
-          "path": "references/policies/src/mafengwo.md",
-          "size": 4235
-        },
-        {
-          "path": "references/policies/src/mcd.md",
-          "size": 5442
-        },
-        {
-          "path": "references/policies/src/meituan.md",
-          "size": 1656
-        },
-        {
-          "path": "references/policies/src/meizu.md",
-          "size": 1902
-        },
-        {
-          "path": "references/policies/src/midea.md",
-          "size": 871
-        },
-        {
-          "path": "references/policies/src/mogu.md",
-          "size": 1450
-        },
-        {
-          "path": "references/policies/src/msxf.md",
-          "size": 2282
-        },
-        {
-          "path": "references/policies/src/netease.md",
-          "size": 2488
-        },
-        {
-          "path": "references/policies/src/nio.md",
-          "size": 2216
-        },
-        {
-          "path": "references/policies/src/niwodai.md",
-          "size": 1006
-        },
-        {
-          "path": "references/policies/src/oppo.md",
-          "size": 2420
-        },
-        {
-          "path": "references/policies/src/oray.md",
-          "size": 1966
-        },
-        {
-          "path": "references/policies/src/pinduoduo.md",
-          "size": 1539
-        },
-        {
-          "path": "references/policies/src/pingan.md",
-          "size": 2168
-        },
-        {
-          "path": "references/policies/src/qianmi.md",
-          "size": 981
-        },
-        {
-          "path": "references/policies/src/qihoo360.md",
-          "size": 2452
-        },
-        {
-          "path": "references/policies/src/qunar.md",
-          "size": 3260
-        },
-        {
-          "path": "references/policies/src/rong360.md",
-          "size": 1491
-        },
-        {
-          "path": "references/policies/src/saicmobility.md",
-          "size": 1749
-        },
-        {
-          "path": "references/policies/src/sangfor.md",
-          "size": 1363
-        },
-        {
-          "path": "references/policies/src/sf.md",
-          "size": 3223
-        },
-        {
-          "path": "references/policies/src/shuidi.md",
-          "size": 1663
-        },
-        {
-          "path": "references/policies/src/shumei.md",
-          "size": 868
-        },
-        {
-          "path": "references/policies/src/sjtu-edu.md",
-          "size": 2349
-        },
-        {
-          "path": "references/policies/src/soul.md",
-          "size": 6942
-        },
-        {
-          "path": "references/policies/src/src-index.md",
-          "size": 32806
-        },
-        {
-          "path": "references/policies/src/suning.md",
-          "size": 2135
-        },
-        {
-          "path": "references/policies/src/t3go.md",
-          "size": 1145
-        },
-        {
-          "path": "references/policies/src/tcjf.md",
-          "size": 997
-        },
-        {
-          "path": "references/policies/src/tcl.md",
-          "size": 934
-        },
-        {
-          "path": "references/policies/src/tencent-tsrc.md",
-          "size": 3294
-        },
-        {
-          "path": "references/policies/src/tencent-zc.md",
-          "size": 1096
-        },
-        {
-          "path": "references/policies/src/threatbook.md",
-          "size": 1734
-        },
-        {
-          "path": "references/policies/src/topsec.md",
-          "size": 1359
-        },
-        {
-          "path": "references/policies/src/tuhu.md",
-          "size": 5263
-        },
-        {
-          "path": "references/policies/src/tuniu.md",
-          "size": 4165
-        },
-        {
-          "path": "references/policies/src/ucloud.md",
-          "size": 1576
-        },
-        {
-          "path": "references/policies/src/ugreen.md",
-          "size": 849
-        },
-        {
-          "path": "references/policies/src/unionpay.md",
-          "size": 6962
-        },
-        {
-          "path": "references/policies/src/uniontech.md",
-          "size": 1078
-        },
-        {
-          "path": "references/policies/src/unitree.md",
-          "size": 4310
-        },
-        {
-          "path": "references/policies/src/vip.md",
-          "size": 1701
-        },
-        {
-          "path": "references/policies/src/vipkid.md",
-          "size": 1099
-        },
-        {
-          "path": "references/policies/src/vivo.md",
-          "size": 3460
-        },
-        {
-          "path": "references/policies/src/vulbox.md",
-          "size": 1937
-        },
-        {
-          "path": "references/policies/src/wanmei.md",
-          "size": 1382
-        },
-        {
-          "path": "references/policies/src/webank.md",
-          "size": 2973
-        },
-        {
-          "path": "references/policies/src/weibo.md",
-          "size": 3098
-        },
-        {
-          "path": "references/policies/src/wifi.md",
-          "size": 976
-        },
-        {
-          "path": "references/policies/src/wps.md",
-          "size": 1838
-        },
-        {
-          "path": "references/policies/src/xianzhi.md",
-          "size": 2715
-        },
-        {
-          "path": "references/policies/src/xiaohongshu.md",
-          "size": 2829
-        },
-        {
-          "path": "references/policies/src/xiaolachuxing.md",
-          "size": 872
-        },
-        {
-          "path": "references/policies/src/xiaopeng.md",
-          "size": 1902
-        },
-        {
-          "path": "references/policies/src/xiaoying.md",
-          "size": 927
-        },
-        {
-          "path": "references/policies/src/ximalaya.md",
-          "size": 4756
-        },
-        {
-          "path": "references/policies/src/xunlei.md",
-          "size": 995
-        },
-        {
-          "path": "references/policies/src/youzan.md",
-          "size": 4766
-        },
-        {
-          "path": "references/policies/src/yy.md",
-          "size": 1893
-        },
-        {
-          "path": "references/policies/src/zhangmen.md",
-          "size": 942
-        },
-        {
-          "path": "references/policies/src/zhaopin.md",
-          "size": 4154
-        },
-        {
-          "path": "references/policies/src/zhihu.md",
-          "size": 4320
-        },
-        {
-          "path": "references/policies/src/zhipin.md",
-          "size": 3440
-        },
-        {
-          "path": "references/policies/src/zhongan.md",
-          "size": 2294
-        },
-        {
-          "path": "references/policies/src/zhuanzhuan.md",
-          "size": 1889
-        },
-        {
-          "path": "references/policies/src/ziroom.md",
-          "size": 855
-        },
-        {
-          "path": "references/policies/src/zsxq.md",
-          "size": 911
-        },
-        {
-          "path": "references/policies/src/zte.md",
-          "size": 2496
-        },
-        {
-          "path": "references/policies/src/zto.md",
-          "size": 2651
-        },
-        {
-          "path": "references/policies/xiaomi-misrc.md",
-          "size": 8652
-        },
-        {
-          "path": "references/rating-standard.md",
-          "size": 5773
-        },
-        {
-          "path": "references/reporting.md",
-          "size": 309348
-        },
-        {
-          "path": "references/research/community-distillation-sources.json",
-          "size": 69578
-        },
-        {
-          "path": "references/research/community-distillation.md",
-          "size": 6215602
-        },
-        {
-          "path": "references/research/community-notes.md",
-          "size": 5290
-        },
-        {
-          "path": "references/research/crawl-xz-curation.json",
-          "size": 14864
-        },
-        {
-          "path": "references/research/crawl-xz-index.json",
-          "size": 2329734
-        },
-        {
-          "path": "references/research/crawl-xz-integration.md",
-          "size": 6041
-        },
-        {
-          "path": "references/research/crawl-xz-patterns.md",
-          "size": 13752
-        },
-        {
-          "path": "references/research/sources.json",
-          "size": 61213
-        },
-        {
-          "path": "references/scope-and-rules.md",
-          "size": 1086917
-        },
-        {
-          "path": "references/source-audit.md",
-          "size": 1910793
-        },
-        {
-          "path": "references/state-and-evidence.md",
-          "size": 7664
-        },
-        {
-          "path": "references/targeted-fuzzing.md",
-          "size": 475311
-        },
-        {
-          "path": "references/tool-contracts.md",
-          "size": 10473
-        },
-        {
-          "path": "references/verification.md",
-          "size": 4655
-        },
-        {
-          "path": "references/vuln-detection.md",
-          "size": 1372
-        },
-        {
-          "path": "references/vulnerability-catalog.md",
-          "size": 9826
-        },
-        {
-          "path": "scripts/build_research_index.py",
-          "size": 10015
-        },
-        {
-          "path": "scripts/search_research.py",
-          "size": 2909
-        },
-        {
-          "path": "SKILL.md",
-          "size": 11344
         }
       ]
     }

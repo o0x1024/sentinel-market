@@ -105,6 +105,7 @@ const DEFAULT_TAGS = {
   'ego-browser': ['browser', 'automation', 'web', 'testing'],
   'game-dev': ['game', 'html5', 'canvas', 'frontend'],
   'sentinel-slides': ['presentation', 'pptx', 'pptd', 'office'],
+  'security-research': ['security', 'bounty', 'src', 'vuln-hunting'],
   'src-vuln-hunting': ['security', 'bounty', 'src', 'vuln-hunting'],
 }
 
