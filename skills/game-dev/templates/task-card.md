@@ -15,6 +15,8 @@
 
 **必读**：
 - references/engine-api.md
+- references/art-styles.md（任务涉及绘制任何游戏物体时）
+- references/ui-design.md（任务涉及界面/HUD 时）
 - references/patterns.md 第 <N> 节（如适用）
 
 **可用的现有代码**：<列出已有的函数/对象名，如 this.player、this.spawn()>
@@ -23,7 +25,7 @@
 1. node <skill>/scripts/check.mjs <项目> → 0 错误
 2. node <skill>/scripts/smoke-test.mjs <项目> [--steps "..."] → 通过
 3. 截图中能看到：<具体描述>
-4. G.debug.<字段> 符合：<预期>
+4. G.debug.<字段> 符合：<预期>（用 `--steps "...;waitUntil:...;expect:..."` 验证，见 references/testing.md）
 
 **完成后回报**：改了哪些文件的哪些函数；验收结果；截图路径；遇到的问题。
 ```

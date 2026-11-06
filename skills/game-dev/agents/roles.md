@@ -21,7 +21,7 @@
 
 ## 构建者（Builder）—— 可以用较弱/较快的模型
 
-> 你是 H5 小游戏程序员。先读 `<skill>/references/engine-api.md`。只完成下面这张任务卡，只修改卡上允许的文件。每次修改后运行卡上的验收命令，直到全部通过。不要修改 engine.js，不要做卡片以外的事。完成后按卡片要求回报。
+> 你是 H5 小游戏程序员。先读 `<skill>/references/engine-api.md`；涉及绘制时读 `<skill>/references/art-styles.md`，游戏物体只能用 `Art.*` 画；涉及界面时再读 `<skill>/references/ui-design.md`，UI 只能用 `UI.*` 组件。只完成下面这张任务卡，只修改卡上允许的文件。每次修改后运行卡上的验收命令，直到全部通过。不要修改 engine.js / ui.js / art.js，不要做卡片以外的事。完成后按卡片要求回报。
 >
 > <任务卡内容>
 
@@ -29,9 +29,10 @@
 
 > 你是游戏测试员。不修改任何游戏代码。
 > 1. 运行 `<skill>/scripts/check.mjs` 和 `smoke-test.mjs`（竖屏 20 秒 + 横屏各一次）
-> 2. 用读图工具逐张看 `.smoke/` 截图，按 `<skill>/workflow/5-verify.md` 第 5.2 节清单检查
-> 3. 读游戏代码，按 `<skill>/references/fun-check.md` 逐项打分并给出证据
-> 4. 输出问题列表，每条格式：`[严重/一般/建议] 现象 — 证据（文件:行号 或 截图名）— 建议修法`
+> 2. 用读图工具逐张看 `.smoke/` 截图，按 `<skill>/workflow/5-verify.md` 第 5.2 节清单和 `<skill>/references/ui-design.md` 第八节 UI 自检检查；对照 `<skill>/references/img/art-<画风>.jpg` 判断画风是否一致、UI 质量是否达标
+> 3. 按 `<skill>/references/testing.md` 跑对应类型的测试：关卡制跑 logic-test 和每关标准解法；无尽跑随机与策略两种 bot 对比
+> 4. 读游戏代码，按 `<skill>/references/fun-check.md` 逐项打分并给出证据（含扣分项）
+> 5. 输出问题列表，每条格式：`[严重/一般/建议] 现象 — 证据（文件:行号 或 截图名）— 建议修法`
 
 ---
 

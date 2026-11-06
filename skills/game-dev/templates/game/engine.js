@@ -31,6 +31,28 @@
       arr.length = j;
       return arr;
     },
+    // 折线工具（pts = [{x,y}, ...]）：绳子、路径、轨迹类游戏
+    distToSegment: (px, py, x1, y1, x2, y2) => {
+      const dx = x2 - x1, dy = y2 - y1, l2 = dx * dx + dy * dy;
+      const t = l2 ? Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / l2)) : 0;
+      return Math.hypot(px - (x1 + dx * t), py - (y1 + dy * t));
+    },
+    polyLength: (pts) => { let L = 0; for (let i = 1; i < pts.length; i++) L += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y); return L; },
+    // 沿折线走 d 像素处的点：{x, y, angle, i}（i = 所在线段起点下标）
+    pointAlong: (pts, d) => {
+      if (pts.length < 2) return pts[0] ? { x: pts[0].x, y: pts[0].y, angle: 0, i: 0 } : null;
+      for (let i = 1; i < pts.length; i++) {
+        const a = pts[i - 1], b = pts[i], seg = Math.hypot(b.x - a.x, b.y - a.y);
+        if (d <= seg || i === pts.length - 1) { const t = seg ? Math.max(0, Math.min(1, d / seg)) : 0; return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t, angle: Math.atan2(b.y - a.y, b.x - a.x), i: i - 1 }; }
+        d -= seg;
+      }
+    },
+    // 点到折线的最近距离：{dist, i}（i = 最近线段起点下标）
+    distToPoly: (pts, px, py) => {
+      let best = Infinity, bi = -1;
+      for (let i = 1; i < pts.length; i++) { const d = U.distToSegment(px, py, pts[i - 1].x, pts[i - 1].y, pts[i].x, pts[i].y); if (d < best) { best = d; bi = i - 1; } }
+      return { dist: best, i: bi };
+    },
     shuffle: (arr) => {
       for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -72,6 +94,18 @@
       ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); ctx.fill();
     },
     line(ctx, x1, y1, x2, y2, color, width = 2) { ctx.strokeStyle = color; ctx.lineWidth = width; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); },
+    // 折线：D.polyline(ctx, pts, color, width, { close, dash:[12,8], fill })
+    polyline(ctx, pts, color, width = 2, o = {}) {
+      if (!pts || pts.length < 2) return;
+      ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = width; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      if (o.dash) ctx.setLineDash(o.dash);
+      ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+      if (o.close) ctx.closePath();
+      if (o.fill) { ctx.fillStyle = o.fill; ctx.fill(); }
+      ctx.stroke(); ctx.restore();
+    },
+    // 半透明绘制：D.alpha(ctx, 0.4, () => { D.circle(...); D.line(...); })
+    alpha(ctx, a, fn) { ctx.save(); ctx.globalAlpha *= a; fn(); ctx.restore(); },
     // 正多边形：sides=3 三角形, 6 六边形；rot 弧度
     poly(ctx, x, y, r, sides, rot, color) {
       ctx.fillStyle = color; ctx.beginPath();
@@ -94,7 +128,7 @@
     withTransform(ctx, x, y, t, fn) {
       ctx.save(); ctx.translate(x, y);
       if (t.rot) ctx.rotate(t.rot);
-      if (t.scale !== undefined) ctx.scale(t.scaleX ?? t.scale, t.scaleY ?? t.scale);
+      if (t.scale !== undefined || t.scaleX !== undefined || t.scaleY !== undefined) ctx.scale(t.scaleX ?? t.scale ?? 1, t.scaleY ?? t.scale ?? 1);
       if (t.alpha !== undefined) ctx.globalAlpha *= t.alpha;
       fn(); ctx.restore();
     },
@@ -218,11 +252,14 @@
 
   // ---------------- Engine ----------------
   function create(opts = {}) {
-    const W = opts.width || 720, H = opts.height || 1280;
+    // 屏幕适配：fit 'expand'（默认）= 竖屏游戏宽度固定、高度随屏幕变长（最多 ×1.25，720×1280 → 最高 1600），
+    // 横屏游戏高度固定、宽度变宽。长屏手机不再有上下黑边。fit 'fixed' = 固定分辨率，多出来的部分留边。
+    const W0 = opts.width || 720, H0 = opts.height || 1280, fit = opts.fit || 'expand', MAXK = 1.25;
+    let W = W0, H = H0;
     const bg = opts.background || '#111';
     const parent = opts.parent || document.body;
 
-    document.documentElement.style.cssText += ';height:100%;background:' + (opts.pageBackground || '#000');
+    document.documentElement.style.cssText += ';height:100%;background:' + (opts.pageBackground || bg);
     document.body.style.cssText += ';margin:0;height:100%;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent';
     const canvas = document.createElement('canvas');
     canvas.style.cssText = 'display:block;position:fixed;inset:0;width:100%;height:100%;touch-action:none';
@@ -234,6 +271,10 @@
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       const cw = window.innerWidth, ch = window.innerHeight;
       canvas.width = Math.round(cw * dpr); canvas.height = Math.round(ch * dpr);
+      if (fit === 'expand') {
+        if (W0 <= H0) { W = W0; H = Math.round(Math.min(H0 * MAXK, Math.max(H0, (W0 * ch) / cw))); }
+        else { H = H0; W = Math.round(Math.min(W0 * MAXK, Math.max(W0, (H0 * cw) / ch))); }
+      }
       scale = Math.min(cw / W, ch / H);
       offX = (cw - W * scale) / 2; offY = (ch - H * scale) / 2;
     }
@@ -250,12 +291,14 @@
     const errors = [];
 
     const G = {
-      W, H, canvas, ctx,
+      // 逻辑宽高。竖屏游戏的 G.H 在 1280~1600 之间随手机变化：布局用 G.H / UI.ACTION_Y / CY 等相对值，不要假设 H = 1280
+      get W() { return W; }, get H() { return H; }, canvas, ctx,
+      _btns: [],   // 本帧画出的按钮（UI.drawButton 登记，测试脚本用 button:文字 点击）
       input: null,
       audio: createAudio(),
       get time() { return time; },
       get frame() { return frame; },
-      get scene() { return currentName; },
+      get sceneName() { return currentName; },   // 当前场景名（G.scene 是注册场景的方法）
       // 游戏自定义的调试状态（smoke-test 会读取），例如 G.debug.score = 10
       debug: {},
 
@@ -353,8 +396,9 @@
 
     function render() {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.fillStyle = opts.pageBackground || '#000';
+      ctx.fillStyle = opts.pageBackground || bg;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+      G._btns = [];
       let sx = 0, sy = 0;
       if (shakeT > 0) { const m = shakeMag * (shakeT / shakeDur); sx = U.rand(-m, m); sy = U.rand(-m, m); }
       ctx.setTransform(dpr * scale, 0, 0, dpr * scale, dpr * (offX + sx * scale), dpr * (offY + sy * scale));
@@ -387,7 +431,8 @@
       step(dt);
       render();
       G.input._endFrame();
-      window.__GAME__ = { W, H, scene: currentName, frame, time, paused, errors, debug: G.debug, particles: particles.length };
+      window.__GAME__ = { W, H, scene: currentName, fading: fadeT > 0, frame, time, paused, errors, debug: G.debug, particles: particles.length,
+        buttons: G._btns.map((b) => ({ label: b.label || '', icon: b.icon || '', x: Math.round(b.x), y: Math.round(b.y), enabled: b.enabled !== false })) };
       requestAnimationFrame(loop);
     }
 

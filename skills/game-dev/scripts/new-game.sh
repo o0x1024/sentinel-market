@@ -12,7 +12,7 @@ if [ -e "$DEST" ] && [ -n "$(ls -A "$DEST" 2>/dev/null)" ]; then
   exit 1
 fi
 mkdir -p "$DEST"
-cp "$TPL"/engine.js "$TPL"/config.js "$TPL"/game.js "$TPL"/index.html "$DEST"/
+cp "$TPL"/*.js "$DEST"/
 # 替换标题（兼容 macOS/Linux sed）
 sed "s/GAME_TITLE/${TITLE//\//\\/}/" "$TPL/index.html" > "$DEST/index.html"
 cp "$DIR/../templates/gdd.md" "$DEST/GDD.md"

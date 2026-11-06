@@ -1,46 +1,51 @@
 /* =====================================================================
  * 示例游戏《绕圈》：玩家绕中心旋转，点击/空格反转方向，躲红色、吃绿色。
- * 这是模板：结构（title → play → over 三个场景）保留，玩法替换成你的。
+ * 这是模板：结构（title → play → over 三个场景）和 UI 写法保留，玩法替换成你的。
+ * 游戏世界一律用 art.js 的画风接口（Art.hero / Art.spiky / Art.pickup ...），见 references/art-styles.md
+ * UI 一律用 ui.js 的组件（UI.button / UI.panel / UI.score ...），外观自动跟随画风，见 references/ui-design.md
  * ===================================================================== */
 const G = Engine.create({ width: CFG.width, height: CFG.height, background: CFG.color.bg, id: 'orbit' });
 const C = CFG.color;
 const CX = G.W / 2, CY = G.H / 2;
+G.audio.muted = G.load('muted', false);
 
-// 背景：缓慢漂移的星点，给画面纵深（所有场景共用）
-const BG_STARS = Array.from({ length: 60 }, () => ({ x: U.rand(0, G.W), y: U.rand(0, G.H), r: U.rand(1, 3), sp: U.rand(10, 40) }));
-function updateBackground(dt) {
-  for (const s of BG_STARS) { s.y += s.sp * dt; if (s.y > G.H) { s.y = 0; s.x = U.rand(0, G.W); } }
-}
-function drawBackground(ctx) {
-  for (const s of BG_STARS) {
-    ctx.globalAlpha = 0.25 + s.r * 0.1;
-    D.circle(ctx, s.x, s.y, s.r, C.dim);
-  }
-  ctx.globalAlpha = 1;
-}
+// 背景：由画风绘制（自带动画），所有场景共用
+function updateBackground(dt) {}
+function drawBackground(ctx) { Art.bg(ctx); }
+
+// 声音开关按钮（标题和暂停界面共用）
+function makeSoundButton() { return UI.button({ kind: 'icon', icon: G.audio.muted ? 'mute' : 'sound', x: G.W - UI.M - 48, y: UI.HUD_Y }); }
+function toggleSound(btn) { G.audio.muted = !G.audio.muted; G.save('muted', G.audio.muted); btn.icon = G.audio.muted ? 'mute' : 'sound'; }
 
 // ---------------- 标题 ----------------
 G.scene('title', {
   enter() {
     this.t = 0;
     this.best = G.load('best', 0);
+    this.btnPlay = UI.button({ x: CX, y: UI.ACTION_Y, label: '开始游戏', icon: 'play', key: 'action' });
+    this.btnSound = makeSoundButton();
   },
   update(dt) {
     this.t += dt;
     updateBackground(dt);
-    if (G.input.anyPressed()) { G.sfx('click'); G.go('play'); }
+    if (UI.clicked(this.btnSound)) toggleSound(this.btnSound);
+    if (UI.clicked(this.btnPlay)) G.go('play');
   },
   draw(ctx) {
     drawBackground(ctx);
-    const a = this.t * CFG.orbitSpeed;
-    D.ring(ctx, CX, CY, CFG.orbitRadius, C.bg2, 4);
-    D.circle(ctx, CX + Math.cos(a) * CFG.orbitRadius, CY + Math.sin(a) * CFG.orbitRadius, CFG.playerRadius, C.player);
-    D.text(ctx, '绕 圈', CX, 220, { size: 96, color: C.player, shadow: '#0006' });
-    D.text(ctx, '点击 / 空格 反转方向', CX, 320, { size: 32, color: C.dim });
-    D.text(ctx, '躲开红色 · 收集绿色', CX, 370, { size: 32, color: C.dim });
-    const pulse = 1 + Math.sin(this.t * 5) * 0.06;
-    D.withTransform(ctx, CX, 1000, { scale: pulse }, () => D.text(ctx, '点击开始', 0, 0, { size: 48 }));
-    if (this.best > 0) D.text(ctx, '最高分 ' + this.best, CX, 1100, { size: 32, color: C.dim });
+    // 中部：玩法演示动画（标题页展示玩法，比文字说明更直观）
+    const a = this.t * CFG.orbitSpeed, demoY = G.H * 0.5;
+    Art.ring(ctx, CX, demoY, CFG.orbitRadius, 'pickup', 0.6);
+    Art.hero(ctx, CX + Math.cos(a) * CFG.orbitRadius, demoY + Math.sin(a) * CFG.orbitRadius, CFG.playerRadius, { angle: a + Math.PI / 2, speed: 1 });
+    // 上部：标题 + 一句话说明
+    UI.title(ctx, '绕圈', CX, 320, { t: this.t });
+    UI.text(ctx, '点击反转方向 · 躲红收绿', CX, 450, { role: 'body', color: C.dim });
+    // 顶部 HUD：最高分胶囊 + 声音
+    if (this.best > 0) UI.pill(ctx, UI.M, UI.HUD_Y, { icon: 'trophy', text: this.best, align: 'left' });
+    UI.drawButton(ctx, this.btnSound);
+    // 底部：主按钮
+    UI.drawButton(ctx, this.btnPlay);
+    Art.post(ctx);   // 画风后期效果（扫描线、暗角等），每帧最后画
   },
 });
 
@@ -52,11 +57,17 @@ G.scene('play', {
     this.player = { x: 0, y: 0, r: CFG.playerRadius, scale: 1 };
     this.things = [];          // 敌人和星星
     this.score = 0;
+    G.debug.result = null;
     this.scorePop = { s: 1 };  // 分数弹跳动画
     this.elapsed = 0;
     this.spawnT = 0.8;
     this.dead = false;
+    this.paused = false;
     this.trail = [];
+    this.btnPause = UI.button({ kind: 'icon', icon: 'pause', x: G.W - UI.M - 48, y: UI.HUD_Y, key: 'cancel' });
+    this.btnResume = UI.button({ x: CX, y: 640, label: '继续', icon: 'play' });
+    this.btnRetry = UI.button({ x: CX, y: 790, label: '重新开始', icon: 'restart', kind: 'secondary' });
+    this.btnHome = UI.button({ x: CX, y: 940, label: '主页', icon: 'home', kind: 'secondary' });
     this.updatePlayerPos();
   },
 
@@ -73,17 +84,26 @@ G.scene('play', {
     this.things.push({
       x: CX + Math.cos(a) * d, y: CY + Math.sin(a) * d,
       vx: -Math.cos(a) * speed, vy: -Math.sin(a) * speed,
-      r: isStar ? 18 : 20, star: isStar, rot: 0, dead: false,
+      r: isStar ? 24 : 26, star: isStar, rot: 0, seed: U.randInt(1, 999), dead: false,   // seed：让画风里的随机细节对每个物体固定
     });
   },
 
   update(dt) {
     updateBackground(dt);
+    // 暂停菜单：只处理菜单按钮
+    if (this.paused) {
+      if (UI.clicked(this.btnResume)) this.paused = false;
+      if (UI.clicked(this.btnRetry)) G.go('play');
+      if (UI.clicked(this.btnHome)) G.go('title');
+      return;
+    }
+    if (UI.clicked(this.btnPause)) { this.paused = true; return; }
     if (this.dead) return;
     this.elapsed += dt;
 
-    // 输入：反转方向（带一点挤压反馈）
-    if (G.input.tapped || G.input.pressed('action')) {
+    // 输入：反转方向。HUD 区（顶部）的点击不算游戏操作，避免和暂停按钮冲突
+    const tapGame = G.input.tapped && G.input.pointer.y > UI.HUD_BOTTOM;
+    if (tapGame || G.input.pressed('action')) {
       this.dir *= -1;
       G.sfx('blip', { pitch: U.rand(0.9, 1.1) });
       this.player.scale = 1.4;
@@ -121,40 +141,49 @@ G.scene('play', {
     this.score += 1;
     G.sfx('coin', { pitch: 1 + Math.min(this.score, 20) * 0.02 });
     G.burst(t.x, t.y, { count: 14, color: [C.pickup, '#fff'], speed: 350, life: 0.5 });
-    this.scorePop.s = 1.6;
+    Art.shockwave(t.x, t.y, 90, 'pickup');
+    this.scorePop.s = 1.5;
     G.tween(this.scorePop, { s: 1 }, 0.25, 'outBack');
   },
 
   die() {
     this.dead = true;
+    G.debug.result = 'lose';   // 给测试看：waitUntil:d.result=='lose'
     G.sfx('hit');
     G.hitstop(0.08);
     G.shake(24, 0.4);
     G.flash(C.enemy, 0.2);
     G.burst(this.player.x, this.player.y, { count: 40, color: [C.player, C.enemy, '#fff'], speed: 600, life: 0.9, size: 10 });
+    Art.shockwave(this.player.x, this.player.y, 220, 'enemy');
     G.after(0.9, () => G.go('over', { score: this.score }));
   },
 
   draw(ctx) {
     drawBackground(ctx);
-    D.ring(ctx, CX, CY, CFG.orbitRadius, C.bg2, 4);
-    D.circle(ctx, CX, CY, 10, C.bg2);
-
+    // 1. 游戏世界
+    Art.ring(ctx, CX, CY, CFG.orbitRadius, 'pickup', 0.6);
     for (const t of this.things) {
-      if (t.star) D.poly(ctx, t.x, t.y, t.r, 4, t.rot, C.pickup);
-      else D.poly(ctx, t.x, t.y, t.r, 3, t.rot, C.enemy);
+      if (t.star) Art.pickup(ctx, t.x, t.y, t.r, t.seed);
+      else Art.spiky(ctx, t.x, t.y, t.r, t.rot, t.seed);
     }
-
     if (!this.dead) {
-      this.trail.forEach((p, i) => {
-        ctx.globalAlpha = (i / this.trail.length) * 0.4;
-        D.circle(ctx, p.x, p.y, CFG.playerRadius * (i / this.trail.length), C.player);
-      });
-      ctx.globalAlpha = 1;
-      D.withTransform(ctx, this.player.x, this.player.y, { scale: this.player.scale }, () => D.circle(ctx, 0, 0, this.player.r, C.player));
+      Art.trail(ctx, this.trail, CFG.playerRadius * 0.6);
+      ctx.save(); ctx.translate(this.player.x, this.player.y); ctx.scale(this.player.scale, this.player.scale);
+      Art.hero(ctx, 0, 0, this.player.r, { angle: this.angle + this.dir * Math.PI / 2, speed: 1 });
+      ctx.restore();
     }
-
-    D.withTransform(ctx, CX, 140, { scale: this.scorePop.s }, () => D.text(ctx, String(this.score), 0, 0, { size: 96, shadow: '#0006' }));
+    // 2. HUD（最后画，永远在最上层）
+    UI.score(ctx, this.score, CX, UI.HUD_Y + 10, { scale: this.scorePop.s });
+    UI.drawButton(ctx, this.btnPause);
+    // 3. 暂停菜单
+    if (this.paused) {
+      UI.overlay(ctx);
+      UI.panel(ctx, CX, 760, 560, 560, { title: '暂停' });
+      UI.drawButton(ctx, this.btnResume);
+      UI.drawButton(ctx, this.btnRetry);
+      UI.drawButton(ctx, this.btnHome);
+    }
+    Art.post(ctx);
   },
 });
 
@@ -166,23 +195,30 @@ G.scene('over', {
     this.isNew = this.score > this.best;
     if (this.isNew) { G.save('best', this.score); this.best = this.score; G.sfx('win'); }
     else G.sfx('lose');
-    this.panel = { y: G.H + 200 };
-    G.tween(this.panel, { y: G.H / 2 }, 0.5, 'outBack');
-    this.canRestart = false;
-    G.after(0.5, () => (this.canRestart = true)); // 防止误触立刻重开
+    this.rating = CFG.starScores.filter((s) => this.score >= s).length;   // 0~3 星
+    this.panel = { y: G.H + 400 };
+    G.tween(this.panel, { y: 520 }, 0.5, 'outBack');
+    this.btnRetry = UI.button({ x: CX, y: UI.ACTION_Y - 150, label: '再来一局', icon: 'restart', key: 'action', enabled: false });
+    this.btnHome = UI.button({ x: CX, y: UI.ACTION_Y, label: '主页', icon: 'home', kind: 'secondary', enabled: false });
+    G.after(0.5, () => { this.btnRetry.enabled = true; this.btnHome.enabled = true; }); // 防误触
+    if (this.isNew) G.after(0.6, () => G.burst(CX, 300, { count: 40, color: [C.player, C.pickup, '#fff'], speed: 700, life: 1, gravity: 900, shape: 'square' }));
   },
   update(dt) {
     updateBackground(dt);
-    if (this.canRestart && G.input.anyPressed()) { G.sfx('click'); G.go('play'); }
+    if (UI.clicked(this.btnRetry)) G.go('play');
+    if (UI.clicked(this.btnHome)) G.go('title');
   },
   draw(ctx) {
     drawBackground(ctx);
     const y = this.panel.y;
-    D.roundRect(ctx, 110, y - 260, 500, 520, 32, C.bg2);
-    D.text(ctx, '游戏结束', CX, y - 170, { size: 56, color: C.enemy });
-    D.text(ctx, String(this.score), CX, y - 40, { size: 120 });
-    D.text(ctx, this.isNew ? '新纪录！' : '最高分 ' + this.best, CX, y + 70, { size: 36, color: this.isNew ? C.player : C.dim });
-    if (this.canRestart) D.text(ctx, '点击再来一局', CX, y + 180, { size: 36 });
+    UI.panel(ctx, CX, y, 560, 500, { title: '游戏结束', titleColor: C.enemy });
+    UI.stars(ctx, CX, y - 130, this.rating, 3, 76);
+    UI.score(ctx, this.score, CX, y + 10, { scale: 1.4 });
+    if (this.isNew) UI.text(ctx, '新纪录！', CX, y + 150, { role: 'h2', color: C.player });
+    else UI.pill(ctx, CX, y + 150, { icon: 'trophy', text: '最高 ' + this.best, align: 'center' });
+    UI.drawButton(ctx, this.btnRetry);
+    UI.drawButton(ctx, this.btnHome);
+    Art.post(ctx);
   },
 });
 

@@ -2,6 +2,8 @@
 
 所有片段都基于 engine.js，写在场景对象中。`this` 指场景。
 
+**片段里用 `D.circle` / `D.poly` 等画的物体只是示意**，放进游戏时换成对应的 `Art.*`（主角 `Art.hero`、敌人 `Art.enemy/spiky`、道具 `Art.pickup`、方块 `Art.block/tile`、其它 `Art.shape/circle/poly`），颜色参数换成 role（`'player'` / `'enemy'` / `'pickup'` …）。见 `references/art-styles.md`。
+
 ---
 
 ## 1. 定时生成 + 难度递增
@@ -21,25 +23,17 @@ for (const e of this.enemies) { e.y += e.vy * dt; if (e.y > G.H + 50) e.dead = t
 U.removeDead(this.enemies);
 ```
 
-## 2. 按钮（画 + 点击）
+## 2. 按钮（必须用 UI 组件）
 
 ```js
-// 定义（enter 里）
-this.btn = { x: G.W / 2 - 150, y: 900, w: 300, h: 100, label: '开始', scale: 1 };
-// update 里
-const p = G.input.pointer;
-if (G.input.tapped && U.pointInRect(p.x, p.y, this.btn)) {
-  G.sfx('click');
-  this.btn.scale = 0.9; G.tween(this.btn, { scale: 1 }, 0.2, 'outBack');
-  // 执行动作
-}
-// draw 里
-const b = this.btn;
-D.withTransform(ctx, b.x + b.w / 2, b.y + b.h / 2, { scale: b.scale }, () => {
-  D.roundRect(ctx, -b.w / 2, -b.h / 2, b.w, b.h, 24, CFG.color.player);
-  D.text(ctx, b.label, 0, 0, { size: 40, color: CFG.color.bg });
-});
+// enter
+this.btn = UI.button({ x: G.W / 2, y: UI.ACTION_Y, label: '开始', icon: 'play', key: 'action' });
+// update
+if (UI.clicked(this.btn)) G.go('play');
+// draw
+UI.drawButton(ctx, this.btn);
 ```
+更多组件（面板、HUD、关卡选择、暂停菜单）见 `references/ui-design.md`。
 
 ## 3. 拖拽跟随（手机上替代摇杆）
 
@@ -139,7 +133,7 @@ popText(x, y, str, color = '#fff') {
 },
 // update: U.removeDead(this.floaters);
 // draw:
-for (const f of this.floaters) D.withTransform(ctx, f.x, f.y, { scale: f.scale, alpha: f.alpha }, () => D.text(ctx, f.str, 0, 0, { size: 40, color: f.color }));
+for (const f of this.floaters) D.withTransform(ctx, f.x, f.y, { scale: f.scale, alpha: f.alpha }, () => UI.text(ctx, f.str, 0, 0, { role: 'h2', color: f.color }));
 ```
 
 ## 9. 连击（Combo）
@@ -181,7 +175,7 @@ this.cam.y = U.damp(this.cam.y, this.player.y - G.H * 0.6, 8, dt);
 ctx.save(); ctx.translate(-this.cam.x, -this.cam.y);
 /* ...画世界... */
 ctx.restore();
-D.text(ctx, String(this.score), G.W / 2, 100, { size: 64 });   // UI 固定在屏幕上
+UI.score(ctx, this.score, G.W / 2, UI.HUD_Y);   // UI 固定在屏幕上
 ```
 
 ## 12. 屏幕环绕
@@ -220,7 +214,7 @@ this.hint = { alpha: G.load('played', false) ? 0 : 1 };
 // 玩家第一次完成核心操作时
 if (this.hint.alpha > 0) { G.tween(this.hint, { alpha: 0 }, 0.4); G.save('played', true); }
 // draw
-if (this.hint.alpha > 0) D.text(ctx, '按住 蓄力，松开 发射', G.W / 2, G.H - 200, { size: 36, alpha: this.hint.alpha * (0.6 + 0.4 * Math.sin(G.time * 4)) });
+if (this.hint.alpha > 0) UI.text(ctx, '按住 蓄力，松开 发射', G.W / 2, G.H - 160, { role: 'body', alpha: this.hint.alpha * (0.6 + 0.4 * Math.sin(G.time * 4)) });
 ```
 
 ## 17. 简单对象状态机（敌人行为）
@@ -234,3 +228,102 @@ else if (e.state === 'attack' && e.t > 0.3) { e.state = 'idle'; e.t = 0; }
 // draw：预警状态闪烁
 const visible = e.state !== 'warn' || Math.floor(e.t * 10) % 2 === 0;
 ```
+
+## 18. 延迟轨迹回放（影子、残影、"过去的自己"）
+
+```js
+// enter
+this.trail = [];                 // 按时间记录玩家走过的点
+// update：每帧记一个点，丢掉太旧的
+this.elapsed += dt;
+this.trail.push({ x: this.player.x, y: this.player.y, t: this.elapsed });
+while (this.trail.length && this.trail[0].t < this.elapsed - CFG.shadowDelay - 1) this.trail.shift();
+// 影子 = 玩家 shadowDelay 秒前的位置（在相邻两点之间插值，移动才平滑）
+const tt = this.elapsed - CFG.shadowDelay;
+if (tt > 0) {
+  let i = this.trail.findIndex((p) => p.t >= tt);
+  if (i > 0) { const a = this.trail[i - 1], b = this.trail[i], k = (tt - a.t) / (b.t - a.t || 1);
+    this.shadow = { x: U.lerp(a.x, b.x, k), y: U.lerp(a.y, b.y, k), r: this.player.r }; }
+}
+if (this.shadow && U.circleHit(this.shadow, this.player) && this.elapsed > CFG.shadowDelay + 0.5) this.die('shadow');
+// draw：已经"变成危险"的那段轨迹用危险色，还没到时间的用淡色预告
+// D.polyline(ctx, this.trail.filter((p) => p.t <= tt), C.enemy, 6)
+```
+
+## 19. 相对拖动（手指不挡住角色）
+
+```js
+// 按下时记住"手指和角色的偏移"，之后角色跟着手指平移，而不是瞬移到手指下面
+const P = G.input.pointer;
+if (P.pressed) { this.offX = this.player.x - P.x; this.offY = this.player.y - P.y; }
+if (P.down) {
+  this.player.x = U.clamp(P.x + this.offX, this.player.r, G.W - this.player.r);
+  this.player.y = U.clamp(P.y + this.offY, UI.HUD_BOTTOM + this.player.r, G.H - this.player.r);
+}
+```
+
+## 20. 松手触发（按住瞄准/蓄力，松手执行）
+
+```js
+const P = G.input.pointer;
+if (P.pressed && P.y > UI.HUD_BOTTOM) { this.charging = true; this.charge = 0; }
+if (this.charging && P.down) this.charge = Math.min(1, this.charge + dt / CFG.chargeTime);
+if (this.charging && P.released) { this.charging = false; this.release(this.charge); }  // 松手那一帧执行
+// draw：蓄力时画 UI.ring(ctx, this.player.x, this.player.y, 70, this.charge)
+// 测试：--steps "press:360,900,800;waitUntil:d.releases==1"
+```
+
+## 21. 回合制逐步移动 + 撤销 + 结果面板（解谜类骨架）
+
+规则放 `logic.js`（纯函数，可被 logic-test 验证），场景只负责输入、动画和面板。
+
+```js
+// logic.js —— 不碰 G / ctx
+function initState(level) { return { p: level.start, steps: 0, result: null /* 'win' | 'lose' */ }; }
+function applyMove(state, level, dir) { /* 返回新的 state 对象，不修改旧的 */ }
+
+// game.js —— play 场景
+enter(data) {
+  this.levelIndex = data.index || 0;
+  this.level = LEVELS[this.levelIndex];
+  this.s = initState(this.level);
+  this.history = [];                  // 撤销栈：存旧 state
+  this.phase = 'play';                // 'play' | 'anim' | 'panel'
+  this.btnUndo = UI.button({ x: G.W / 2 - 170, y: UI.ACTION_Y, w: 300, label: '撤销', icon: 'undo', kind: 'secondary' });
+  this.btnNext = UI.button({ x: G.W / 2, y: 900, label: '下一关', icon: 'play', key: 'action' });
+  this.btnRetry = UI.button({ x: G.W / 2, y: 900, label: '再试一次', icon: 'restart', key: 'action' });
+  G.debug.result = null; G.debug.steps = 0;
+},
+update(dt) {
+  if (this.phase === 'play') {
+    const dir = G.input.pointer.swipe || (G.input.pressed('left') && 'left') || (G.input.pressed('right') && 'right')
+             || (G.input.pressed('up') && 'up') || (G.input.pressed('down') && 'down');
+    if (dir) {
+      const next = applyMove(this.s, this.level, dir);
+      if (next !== this.s) {
+        this.history.push(this.s); this.s = next;
+        this.phase = 'anim'; G.sfx('blip');
+        G.after(CFG.moveTime, () => {           // 动画结束后再接受下一次输入、再判定结果
+          G.debug.steps = this.s.steps;
+          if (this.s.result) { G.debug.result = this.s.result; this.phase = 'panel'; G.sfx(this.s.result === 'win' ? 'win' : 'hit'); }
+          else this.phase = 'play';
+        });
+      }
+    }
+    if (UI.clicked(this.btnUndo) && this.history.length) { this.s = this.history.pop(); G.debug.steps = this.s.steps; }
+  } else if (this.phase === 'panel') {
+    if (this.s.result === 'win' && UI.clicked(this.btnNext)) G.go('play', { index: this.levelIndex + 1 });
+    if (this.s.result === 'lose' && UI.clicked(this.btnRetry)) G.go('play', { index: this.levelIndex });
+  }
+},
+draw(ctx) {
+  // ...画棋盘
+  if (this.phase !== 'panel') UI.drawButton(ctx, this.btnUndo);
+  else {
+    UI.overlay(ctx); UI.panel(ctx, G.W / 2, 700, 560, 520, { title: this.s.result === 'win' ? '过关!' : '失败' });
+    UI.drawButton(ctx, this.s.result === 'win' ? this.btnNext : this.btnRetry);   // 同位置的两个按钮只画一个 → 只有它响应
+  }
+},
+```
+
+要点：`phase` 决定接受哪些输入；同一位置的按钮只画当前那个；撤销栈存整个旧 state（state 小，直接存最简单）。
