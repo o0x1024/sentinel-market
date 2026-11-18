@@ -190,28 +190,29 @@ if(allRules.length===0){return{success:false,error:"No Risk Scanner Rules loaded
 equests and matchers."}}const rules=allRules.filter(rule=>{const metadata=parseMetadata(rule.metadata);if(metadata.enabled===false)return false;if(safeMode&&metadata.
 safe_mode===false)return false;return ruleMatchesFingerprintScope(rule,observedFingerprints)});const taskCount=targets.length*rules.length;const totalProgressUnits=taskCount+
 2;await reportMonitorProgress(monitorExecution,{current:0,total:totalProgressUnits,phase:"prepare",message:"Preparing risk verification"});const findings=[];const evidence=[];
-const vulnerabilityFindings=[];let stopRequested=false;let executedRuleCount=0;let completedRuleCount=0;let lastProgressAt=Date.now();const failedTargets=new Map;
+const matchedEvidence=[];const vulnerabilityFindings=[];let stopRequested=false;let executedRuleCount=0;let completedRuleCount=0;let lastProgressAt=Date.now();const failedTargets=new Map;
 await runTaskPool(taskCount,concurrency,async index=>{stream.assertHealthy();const target=targets[Math.floor(index/rules.length)];const rule=rules[index%rules.length];
 executedRuleCount+=1;const ruleKey=`rule:${rule.word}`;const result=await executeRule(target,rule,normalizedInput,async(step,index2)=>{await writeTarget(target,
 `${ruleKey}:step:${index2}`,{success:true,data:{results:[{target,rule_id:rule.word,step}]}},{complete:false})});const metadata=parseMetadata(rule.metadata);const finding=result.
 matched&&result.finding?result.finding:void 0;const surfaceFinding=finding?{title:finding.title,severity:finding.severity,target:finding.url,vulnerability_type:metadata.
-finding_type||rule.category||"risk_verification",description:finding.description,source:"risk_scanner"}:void 0;const surfaceEvidence=result.evidence?{asset_type:"\
-web",asset_key:target,evidence_type:"risk_verification",title:`Risk verification: ${metadata.name||rule.word}`,content_json:result.evidence,source:"risk_scanner"}:
-void 0;const error=result.evidence?.error;const failureCategory=result.evidence?.failure_category;if(error)failedTargets.set(target,failureCategory||"network_ot\
-her");await writeTarget(target,ruleKey,{success:true,data:{results:[{target,rule_id:rule.word,matched:result.matched,error,failure_category:failureCategory}],findings:finding?
-[confirmedMonitorFinding(finding,metadata.finding_type||rule.category||"risk_verification",result.evidence)]:[],surface_artifacts:{evidences:surfaceEvidence?[surfaceEvidence]:
-[]},summary:{executedRules:1,matchedRules:finding?1:0}}},{complete:false,status:error?"failed":"ok",error,failure_category:failureCategory});if(!stream.enabled){
-if(result.evidence)evidence.push(result.evidence);if(finding)findings.push(finding);if(surfaceFinding)vulnerabilityFindings.push(surfaceFinding)}if(finding&&stopOnFirstHit)
-stopRequested=true;completedRuleCount+=1;const now=Date.now();if(completedRuleCount===taskCount||now-lastProgressAt>=PROGRESS_INTERVAL_MS){lastProgressAt=now;await reportMonitorProgress(
-monitorExecution,{current:completedRuleCount,total:totalProgressUnits,currentTarget:target,phase:"probe",message:`Executing verification rules for ${target}`})}},
-()=>stopRequested);for(const target of targets)await writeTarget(target,"target-complete",{success:true,data:{}},{complete:true,status:failedTargets.has(target)?
-"failed":stopRequested?"skipped":"ok",failure_category:failedTargets.get(target)});await reportMonitorProgress(monitorExecution,{current:totalProgressUnits-1,total:totalProgressUnits,
-phase:"compare",message:"Summarizing risk verification results"});await reportMonitorProgress(monitorExecution,{current:totalProgressUnits,total:totalProgressUnits,
-phase:"build",message:"Building risk scan results"});return await stream.finish({success:true,data:{findings,evidence,summary:{totalTargets:targets.length,executedRules:executedRuleCount,
-matchedRules:findings.length,diagnostics:{loaded_rules:allRules.length,applicable_rules:rules.length,planned_rule_tasks:taskCount,completed_rule_tasks:completedRuleCount}},
-surface_artifacts:{findings:vulnerabilityFindings,evidences:evidence.map(item=>({asset_type:"web",asset_key:item.target,evidence_type:"risk_verification",title:`\
-Risk verification: ${item.rule_id}`,content_json:item,source:"risk_scanner"}))}}})}catch(error){return{success:false,error:error instanceof Error?error.message:
-String(error)}}}pluginGlobals.analyze=analyze;export{analyze,get_input_schema,get_output_schema};
+finding_type||rule.category||"risk_verification",description:finding.description,source:"risk_scanner"}:void 0;const surfaceEvidence=result.matched&&result.evidence?
+{asset_type:"web",asset_key:target,evidence_type:"risk_verification",title:`Risk verification: ${metadata.name||rule.word}`,content_json:result.evidence,source:"\
+risk_scanner"}:void 0;const error=result.evidence?.error;const failureCategory=result.evidence?.failure_category;if(error)failedTargets.set(target,failureCategory||
+"network_other");await writeTarget(target,ruleKey,{success:true,data:{results:[{target,rule_id:rule.word,matched:result.matched,error,failure_category:failureCategory,
+...error&&result.evidence?.request_diagnostics?{request_diagnostics:result.evidence.request_diagnostics}:{}}],findings:finding?[confirmedMonitorFinding(finding,
+metadata.finding_type||rule.category||"risk_verification",result.evidence)]:[],surface_artifacts:{evidences:surfaceEvidence?[surfaceEvidence]:[]},summary:{executedRules:1,
+matchedRules:finding?1:0}}},{complete:false,status:error?"failed":"ok",error,failure_category:failureCategory});if(!stream.enabled){if(result.evidence)evidence.
+push(result.evidence);if(result.matched&&result.evidence)matchedEvidence.push(result.evidence);if(finding)findings.push(finding);if(surfaceFinding)vulnerabilityFindings.
+push(surfaceFinding)}if(finding&&stopOnFirstHit)stopRequested=true;completedRuleCount+=1;const now=Date.now();if(completedRuleCount===taskCount||now-lastProgressAt>=
+PROGRESS_INTERVAL_MS){lastProgressAt=now;await reportMonitorProgress(monitorExecution,{current:completedRuleCount,total:totalProgressUnits,currentTarget:target,
+phase:"probe",message:`Executing verification rules for ${target}`})}},()=>stopRequested);for(const target of targets)await writeTarget(target,"target-complete",
+{success:true,data:{}},{complete:true,status:failedTargets.has(target)?"failed":stopRequested?"skipped":"ok",failure_category:failedTargets.get(target)});await reportMonitorProgress(
+monitorExecution,{current:totalProgressUnits-1,total:totalProgressUnits,phase:"compare",message:"Summarizing risk verification results"});await reportMonitorProgress(
+monitorExecution,{current:totalProgressUnits,total:totalProgressUnits,phase:"build",message:"Building risk scan results"});return await stream.finish({success:true,
+data:{findings,evidence,summary:{totalTargets:targets.length,executedRules:executedRuleCount,matchedRules:findings.length,diagnostics:{loaded_rules:allRules.length,
+applicable_rules:rules.length,planned_rule_tasks:taskCount,completed_rule_tasks:completedRuleCount}},surface_artifacts:{findings:vulnerabilityFindings,evidences:matchedEvidence.
+map(item=>({asset_type:"web",asset_key:item.target,evidence_type:"risk_verification",title:`Risk verification: ${item.rule_id}`,content_json:item,source:"risk_s\
+canner"}))}}})}catch(error){return{success:false,error:error instanceof Error?error.message:String(error)}}}pluginGlobals.analyze=analyze;export{analyze,get_input_schema,get_output_schema};
 
 globalThis.get_input_schema = get_input_schema;
 globalThis.get_output_schema = get_output_schema;

@@ -959,6 +959,7 @@ export async function analyze(input: ToolInput): Promise<ToolOutput> {
 
     const findings: Finding[] = [];
     const evidence: any[] = [];
+    const matchedEvidence: any[] = [];
     const vulnerabilityFindings: any[] = [];
 
     let stopRequested = false;
@@ -987,7 +988,8 @@ export async function analyze(input: ToolInput): Promise<ToolOutput> {
           vulnerability_type: metadata.finding_type || rule.category || "risk_verification",
           description: finding.description, source: "risk_scanner",
         } : undefined;
-        const surfaceEvidence = result.evidence ? {
+        // Persist only confirmed matches to durable surface_evidence; negative/error checks stay in stream results/summary.
+        const surfaceEvidence = result.matched && result.evidence ? {
           asset_type: "web", asset_key: target, evidence_type: "risk_verification",
           title: `Risk verification: ${metadata.name || rule.word}`,
           content_json: result.evidence, source: "risk_scanner",
@@ -996,7 +998,16 @@ export async function analyze(input: ToolInput): Promise<ToolOutput> {
         const failureCategory = result.evidence?.failure_category as string | undefined;
         if (error) failedTargets.set(target, failureCategory || "network_other");
         await writeTarget(target, ruleKey, { success: true, data: {
-          results: [{ target, rule_id: rule.word, matched: result.matched, error, failure_category: failureCategory }],
+          results: [{
+            target,
+            rule_id: rule.word,
+            matched: result.matched,
+            error,
+            failure_category: failureCategory,
+            ...(error && result.evidence?.request_diagnostics
+              ? { request_diagnostics: result.evidence.request_diagnostics }
+              : {}),
+          }],
           findings: finding ? [confirmedMonitorFinding(finding,
             metadata.finding_type || rule.category || "risk_verification", result.evidence)] : [],
           surface_artifacts: { evidences: surfaceEvidence ? [surfaceEvidence] : [] },
@@ -1004,6 +1015,7 @@ export async function analyze(input: ToolInput): Promise<ToolOutput> {
         } }, { complete: false, status: error ? "failed" : "ok", error, failure_category: failureCategory });
         if (!stream.enabled) {
           if (result.evidence) evidence.push(result.evidence);
+          if (result.matched && result.evidence) matchedEvidence.push(result.evidence);
           if (finding) findings.push(finding);
           if (surfaceFinding) vulnerabilityFindings.push(surfaceFinding);
         }
@@ -1057,7 +1069,7 @@ export async function analyze(input: ToolInput): Promise<ToolOutput> {
         },
         surface_artifacts: {
           findings: vulnerabilityFindings,
-          evidences: evidence.map(item => ({ asset_type: "web", asset_key: item.target,
+          evidences: matchedEvidence.map(item => ({ asset_type: "web", asset_key: item.target,
             evidence_type: "risk_verification", title: `Risk verification: ${item.rule_id}`,
             content_json: item, source: "risk_scanner" })) ,
         },

@@ -179,7 +179,7 @@ test('risk stopOnFirstHit is shared across targets and rules while all targets r
   complete(f, targets);
 });
 
-test('risk failed work and durable evidence retain transport category and bounded native causes', async () => {
+test('risk failed work retains transport category and bounded native causes without writing negative surface evidence', async () => {
   const targets = ['https://dns.owned.test/', 'https://body.owned.test/', 'https://ok.owned.test/'];
   const f = fixture(targets);
   f.fetch(async url => {
@@ -200,11 +200,13 @@ test('risk failed work and durable evidence retain transport category and bounde
   assert.equal(failed.length, 4);
   assert.ok(failed.every(item => ['dns', 'response_body'].includes(item.failure_category)));
   const evidence = data(f).flatMap(delta => delta.surface_artifacts?.evidences || []);
-  assert.equal(evidence.length, 3);
-  for (const item of evidence.filter(item => item.content_json.error)) {
-    assert.ok(['dns', 'response_body'].includes(item.content_json.failure_category));
-    assert.equal(item.content_json.request_diagnostics.error_details.causes.length, 2);
-    assert.equal(item.content_json.request_diagnostics.proxy.enabled, false);
+  assert.equal(evidence.length, 0);
+  const failedResults = data(f).flatMap(delta => delta.results || []).filter(item => item.error);
+  assert.equal(failedResults.length, 2);
+  for (const item of failedResults) {
+    assert.ok(['dns', 'response_body'].includes(item.failure_category));
+    assert.equal(item.request_diagnostics.error_details.causes.length, 2);
+    assert.equal(item.request_diagnostics.proxy.enabled, false);
   }
 });
 
