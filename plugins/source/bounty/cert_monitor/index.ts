@@ -481,6 +481,14 @@ function buildServiceTargetMap(input: ToolInput): Map<string, TargetObjectItem> 
 }
 
 function certificateTargetSupported(target: string, serviceTargets: Map<string, TargetObjectItem>): boolean {
+    const trimmed = target.trim();
+    const schemeMatch = trimmed.match(/^([a-zA-Z][a-zA-Z0-9+.-]*):\/\//);
+    if (schemeMatch) {
+        const scheme = schemeMatch[1].toLowerCase();
+        if (scheme !== "https" && scheme !== "wss" && scheme !== "tls" && scheme !== "ssl") {
+            return false;
+        }
+    }
     const typed = serviceTargets.get(target);
     if (!typed) return true;
     if ((typed.transport_protocol || typed.protocol || '').toLowerCase() === 'udp') return false;
