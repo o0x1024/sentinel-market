@@ -337,7 +337,7 @@ failedChecks++;await stream.record(target,"complete",{success:true,data:{results
 [],surface_artifacts:{changes:result.success?webMonitorChanges(targetChanges,"api_monitor"):[]},snapshots:result.success&&result.snapshot?{[baseUrl]:result.snapshot}:
 {},summary:{totalTargets:1,failedTargets:result.success?0:1}}},{status:result.success?"ok":"failed",complete:true,snapshot_complete:result.success});if(!stream.
 enabled)results.push(result);completedTargets+=1;await reportMonitorProgress(monitorExecution,{current:completedTargets,total:totalProgressUnits,currentTarget:baseUrl,
-phase:"discover",message:`Completed API discovery for ${baseUrl}`})}});await runWithConcurrency(targetTasks,Math.min(50,validTargets.length||1));await reportMonitorProgress(
+phase:"discover",message:`Completed API discovery for ${baseUrl}`})}});await runWithConcurrency(targetTasks,Math.min(12,validTargets.length||1));await reportMonitorProgress(
 monitorExecution,{current:validTargets.length+1,total:totalProgressUnits,phase:"compare",message:"Comparing API snapshots"});await reportMonitorProgress(monitorExecution,
 {current:totalProgressUnits,total:totalProgressUnits,phase:"build",message:"Building API results"});return await stream.finish({success:true,data:{results,changeEvents,
 snapshots:newSnapshots,summary:{totalTargets:validTargets.length,successfulChecks,failedChecks,totalHtmlRoutes,totalApiEndpoints,totalJsFiles,addedHtmlRoutes:addedHtmlRoutesCount,

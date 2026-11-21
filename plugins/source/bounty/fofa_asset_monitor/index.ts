@@ -722,7 +722,10 @@ async function fetchJson(url: string): Promise<FofaApiResponse> {
     let response: Response;
     try {
         response = await fetch(url, { method: "GET", headers: { accept: "application/json" }, timeout: 30000 } as RequestInit);
-    } catch { throw new Error("FOFA HTTP request failed"); }
+    } catch (error: any) {
+        const detail = error instanceof Error ? error.message : String(error || "unknown error");
+        throw new Error(`FOFA HTTP request failed: ${detail}`);
+    }
     const text = await response.text();
     let payload: any;
     try {

@@ -695,7 +695,7 @@ export async function analyze(input: ToolInput): Promise<ToolOutput> {
             }
         });
 
-        await runWithConcurrency(targetTasks, Math.min(50, validTargets.length || 1));
+        await runWithConcurrency(targetTasks, Math.min(12, validTargets.length || 1));
 
         await reportMonitorProgress(monitorExecution, {
             current: validTargets.length + 1,

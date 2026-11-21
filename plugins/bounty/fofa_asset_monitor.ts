@@ -145,83 +145,84 @@ brandKeywords)}for(const orgName of orgNames){addBrandAnchoredFieldQueries(plans
 plans,"asn","asn",asn,brandKeywords)}for(const cnameKeyword of cnameKeywords){addBrandAnchoredFieldQueries(plans,"cname","cname",cnameKeyword,brandKeywords)}for(const titleKeyword of titleKeywords){
 addFieldQueryPlan(plans,"title","title",titleKeyword)}for(const bodyKeyword of bodyKeywords){addFieldQueryPlan(plans,"body","body",bodyKeyword)}for(const headerKeyword of headerKeywords){
 addFieldQueryPlan(plans,"header","header",headerKeyword)}return Array.from(plans.values())}async function fetchJson(url){let response;try{response=await fetch(url,
-{method:"GET",headers:{accept:"application/json"},timeout:3e4})}catch{throw new Error("FOFA HTTP request failed")}const text=await response.text();let payload;try{
-payload=JSON.parse(text)}catch{throw new Error(`FOFA returned non-JSON response with HTTP ${response.status}`)}if(!response.ok){throw new Error(payload?.errmsg||
-`FOFA HTTP ${response.status}`)}return payload}async function searchFofa(plan,fofaKey,baseUrl,fields,pageSize,maxPages,full,onPage){const assets=new Map;let totalReported=0;
-let pagesFetched=0;let complete=false;for(let page=1;page<=maxPages;page++){const params=new URLSearchParams;params.set("key",fofaKey);params.set("qbase64",encodeBase64Utf8(
-plan.query));params.set("fields",fields.join(","));params.set("page",String(page));params.set("size",String(pageSize));params.set("full",full?"true":"false");params.
-set("r_type","json");const payload=await fetchJson(`${baseUrl}/api/v1/search/all?${params.toString()}`);if(payload.error){throw new Error(payload.errmsg||"FOFA \
-API returned error=true")}const rows=Array.isArray(payload.results)?payload.results:[];totalReported=Number(payload.size||totalReported||rows.length);pagesFetched=
-page;const pageAssets=[];for(const row of rows){const asset=parseFofaRow(row,fields);if(asset.assetKey){assets.set(asset.assetKey,onPage?{assetKey:asset.assetKey}:
-asset);pageAssets.push(asset)}}if(onPage)await onPage(page,pageAssets);if(rows.length<pageSize||page*pageSize>=totalReported){complete=true;break}}return{id:plan.
-id,query:plan.query,source:plan.source,target:plan.target,success:true,totalReported,pagesFetched,complete,assets:Array.from(assets.values())}}function readRowValue(row,field,index){
-if(Array.isArray(row)){const value=row[index];return value===void 0||value===null?"":String(value)}const record=row;const direct=record[field];if(direct!==void 0&&
-direct!==null){return String(direct)}const aliases={host:["url","link"],domain:["hostname"],protocol:["base_protocol","scheme"]};for(const alias of aliases[field]||
-[]){const aliased=record[alias];if(aliased!==void 0&&aliased!==null){return String(aliased)}}return""}function parseFofaRow(row,fields){const raw={};fields.forEach(
-(field,index)=>{raw[field]=readRowValue(row,field,index)});const record=Array.isArray(row)?null:row;const host=raw.host||raw.link||(record?.url?String(record.url):
-"");const ip=raw.ip||(record?.ip?String(record.ip):"");const portValue=Number(raw.port||0);const objectPort=record?.port===void 0||record?.port===null?0:Number(
-record.port);const port=Number.isInteger(portValue)&&portValue>0?portValue:Number.isInteger(objectPort)&&objectPort>0?objectPort:extractPort(host);const protocol=(raw.
-protocol||raw.base_protocol||"").toLowerCase();const domain=raw.domain||(record?.domain?String(record.domain):"");const hostname=extractHost(host||domain||ip);const canonicalHost=host||
-domain||hostname||ip;const url=buildWebUrl(canonicalHost,protocol,port);const assetKey=buildAssetKey(canonicalHost,ip,port,protocol);return{assetKey,host:canonicalHost,
-ip,port,protocol,title:raw.title||"",domain,lastUpdateTime:raw.lastupdatetime||"",url,hostname,raw}}function buildAssetKey(host,ip,port,protocol){const hostPart=host.
-trim().toLowerCase()||ip.trim().toLowerCase();const portPart=port?`:${port}`:"";const protocolPart=protocol?`/${protocol}`:"";return`${hostPart}${portPart}${protocolPart}`}
-function buildWebUrl(host,protocol,port){const trimmed=host.trim();if(!trimmed)return null;if(/^https?:\/\//i.test(trimmed))return trimmed;const webProtocol=protocol===
-"https"||port===443?"https":protocol==="http"||port===80?"http":"";if(!webProtocol)return null;const resolvedHost=extractHost(trimmed)||trimmed;const resolvedPort=port&&
-port>0?port:extractPort(trimmed);const needsPort=resolvedPort!==null&&!(webProtocol==="http"&&resolvedPort===80||webProtocol==="https"&&resolvedPort===443);const hostForUrl=isIpLiteral(
-resolvedHost)&&resolvedHost.includes(":")?`[${resolvedHost}]`:resolvedHost;return`${webProtocol}://${hostForUrl}${needsPort?`:${resolvedPort}`:""}`}function createChangeEvent(plan,eventType,assetKeys,timestamp){
-const discovered=eventType==="asset_discovered";return{id:generateId(),assetId:plan.target||plan.id,eventType,severity:discovered?"medium":"low",title:discovered?
-`FOFA discovered ${assetKeys.length} new asset(s) for ${plan.target}`:`FOFA no longer returns ${assetKeys.length} asset(s) for ${plan.target}`,description:discovered?
-`FOFA query ${plan.query} returned new assets: ${assetKeys.slice(0,10).join(", ")}`:`FOFA query ${plan.query} stopped returning assets: ${assetKeys.slice(0,10).
-join(", ")}`,newValue:discovered?assetKeys.join("\n"):void 0,oldValue:discovered?void 0:assetKeys.join("\n"),detectionMethod:PLUGIN_ID,tags:["fofa","asset-monit\
-or",eventType],autoTriggerEnabled:discovered,riskScore:discovered?45:15,metadata:{queryId:plan.id,query:plan.query,source:plan.source,target:plan.target,count:assetKeys.
-length,detectedAt:timestamp}}}function buildArtifacts(allAssets){const domains=new Map;const webs=new Map;for(const asset of allAssets){const fqdn=asset.hostname&&
-!isIpLiteral(asset.hostname)?asset.hostname:asset.domain&&!isIpLiteral(asset.domain)?asset.domain:"";if(fqdn){const rootDomain=guessRootDomain(fqdn);domains.set(
-fqdn,{fqdn,main_domain:rootDomain,root_domain:rootDomain,subdomain_level:computeSubdomainLevel(fqdn)})}if(asset.url){const parsed=new URL(asset.url);webs.set(asset.
-url,{canonical_url:asset.url,url:asset.url,scheme:parsed.protocol.replace(":",""),host:asset.host||parsed.host,hostname:parsed.hostname||asset.hostname||null,ip_address:asset.
-ip||null,port:asset.port,site_title:asset.title||null,title:asset.title||null,http_status_code:0,response_headers:{},content_summary:asset.title||parsed.hostname||
-asset.hostname||asset.host||asset.ip,last_accessed_at:asset.lastUpdateTime||null,lastUpdateTime:asset.lastUpdateTime||null})}}return{domains:Array.from(domains.
-values()),webs:Array.from(webs.values()),changes:[],evidences:[],relations:[]}}function projectFofaOutput(plans,results,previousSnapshots,includeRemovedAssets,timestamp){
-const changeEvents=[];const snapshots={};const allAssetsMap=new Map;for(const result of results){if(!result.success)continue;const plan=plans.find(item=>item.id===
-result.id);if(!plan)continue;for(const asset of result.assets){allAssetsMap.set(asset.assetKey,asset)}if(result.complete===false)continue;const currentKeys=result.
-assets.map(asset=>asset.assetKey).sort();snapshots[result.id]={id:result.id,query:result.query,assetKeys:currentKeys,totalReported:result.totalReported,lastChecked:timestamp};
-const previous=previousSnapshots[result.id];if(!previous){if(currentKeys.length>0){changeEvents.push(createChangeEvent(plan,"asset_discovered",currentKeys,timestamp))}
-continue}const previousKeys=new Set(previous.assetKeys||[]);const currentKeySet=new Set(currentKeys);const added=currentKeys.filter(key=>!previousKeys.has(key));
-const removed=(previous.assetKeys||[]).filter(key=>!currentKeySet.has(key));if(added.length>0){changeEvents.push(createChangeEvent(plan,"asset_discovered",added,
-timestamp))}if(includeRemovedAssets&&removed.length>0){changeEvents.push(createChangeEvent(plan,"asset_removed",removed,timestamp))}}const allAssets=Array.from(
-allAssetsMap.values());const subdomains=Array.from(new Set(allAssets.map(asset=>asset.hostname||asset.domain).filter(host=>host&&!isIpLiteral(host)))).sort();const urls=Array.
-from(new Set(allAssets.map(asset=>asset.url).filter(url=>Boolean(url)))).sort();const ips=Array.from(new Set(allAssets.map(asset=>asset.ip).filter(Boolean))).sort();
-const surfaceArtifacts=buildArtifacts(allAssets);surfaceArtifacts.changes=changeEvents.map(event=>({asset_key:event.assetId,asset_type:"domain",change_type:event.
-eventType,severity:event.severity,title:event.title,description:event.description,old_value:event.oldValue,new_value:event.newValue,risk_score:event.riskScore,source:PLUGIN_ID,
-metadata:event.metadata}));const successfulQueries=results.filter(result=>result.success).length;const failures=results.filter(result=>!result.success);return{success:failures.
-length===0,...failures.length?{error:`FOFA queries failed (${failures.length}/${plans.length}): ${failures.map(result=>`${result.target}: ${result.error}`).join(
-"; ")}`}:{},data:{queries:plans,results,subdomains,urls,ips,assets:allAssets,changeEvents,snapshots,summary:{totalQueries:plans.length,incompleteQueries:results.
-filter(result=>result.complete===false).length,successfulQueries,failedQueries:plans.length-successfulQueries,totalReported:results.reduce((sum,result)=>sum+result.
-totalReported,0),totalAssets:allAssets.length,uniqueHosts:subdomains.length,uniqueIps:ips.length,uniqueUrls:urls.length,assetChanges:changeEvents.length},surface_artifacts:surfaceArtifacts}}}
-async function analyze(input){try{const stream=createMonitorResultStream(input);if(stream.enabled&&normalizeStringList(input.queries).length)throw new Error("Ex\
-plicit FOFA queries are not bound monitor seeds");const fofaKey=String(input.fofaKey||"").trim();if(!fofaKey){throw new Error("fofaKey is required")}const plans=buildQueryPlans(
-input);if(plans.length===0){throw new Error("At least one domain, target, target_object, explicit FOFA query, or enterprise website fingerprint input is require\
-d")}const fields=normalizeFields(input.fields);const pageSize=clampInteger(input.pageSize,DEFAULT_PAGE_SIZE,1,MAX_PAGE_SIZE);const maxPages=clampInteger(input.maxPages,
-DEFAULT_MAX_PAGES,1,100);const baseUrl=normalizeBaseUrl(input.fofaBaseUrl);const full=input.full===true;const includeRemovedAssets=input.includeRemovedAssets!==
-false;const previousSnapshots=input.previousSnapshots||{};const timestamp=new Date().toISOString();await reportMonitorProgress(input.__monitorExecution,{current:0,
-total:plans.length,phase:"query",message:`Querying FOFA for ${plans.length} target set(s)`});const remaining=new Map;for(const plan of plans)for(const parent of plan.
-parents)remaining.set(parent,(remaining.get(parent)||0)+1);let completedPlans=0;const results=await runWithConcurrency(plans.map(plan=>async()=>{await reportMonitorProgress(
-input.__monitorExecution,{current:completedPlans,total:plans.length,currentTarget:plan.target,phase:"query",message:`Querying FOFA: ${plan.target}`});stream.assertHealthy();
-let result;try{result=await searchFofa(plan,fofaKey,baseUrl,fields,pageSize,maxPages,full,stream.enabled?async(page,assets)=>{stream.assertHealthy();for(let index=0;index<
-plan.parents.length;index++){await stream.record(plan.parents[index],`query:${plan.id}:page:${page}`,{success:true,data:index===0?{results:[{id:plan.id,query:plan.
-query,target:plan.target,page,success:true,assets}],surface_artifacts:buildArtifacts(assets)}:{}},{complete:false})}}:void 0)}catch(error){stream.assertHealthy();
-result={id:plan.id,query:plan.query,source:plan.source,target:plan.target,success:false,totalReported:0,pagesFetched:0,assets:[],error:(error instanceof Error?error.
-message:String(error)).replaceAll(fofaKey,"[REDACTED]").replaceAll(encodeURIComponent(fofaKey),"[REDACTED]")}}const projected=projectFofaOutput([plan],[result],
-previousSnapshots,includeRemovedAssets,timestamp);for(let index=0;index<plan.parents.length;index++){const parent=plan.parents[index];remaining.set(parent,remaining.
-get(parent)-1);await stream.record(parent,`query:${plan.id}:complete`,{success:true,data:index===0?result.success?{results:[{id:result.id,target:result.target,success:true,
-complete:result.complete,totalReported:result.totalReported,pagesFetched:result.pagesFetched}],snapshots:projected.data.snapshots,changeEvents:projected.data.changeEvents,
-summary:{totalQueries:1,successfulQueries:1,failedQueries:0,incompleteQueries:result.complete===false?1:0,totalReported:result.totalReported,totalAssets:result.
-assets.length,assetChanges:projected.data.changeEvents.length},surface_artifacts:{changes:projected.data.surface_artifacts.changes}}:{results:[{id:result.id,target:result.
-target,success:false,error:result.error}]}:{}},{complete:remaining.get(parent)===0,snapshot_complete:result.success&&result.complete!==false,status:result.success&&
-result.complete!==false?"ok":"failed",error:result.complete===false?"FOFA page limit reached; complete baseline retained":result.error})}completedPlans+=1;return stream.
-enabled?{...result,assets:[]}:result}));await reportMonitorProgress(input.__monitorExecution,{current:plans.length,total:plans.length,phase:"build",message:"Bui\
-lding FOFA asset artifacts"});return await stream.finish(stream.enabled?{success:results.every(result=>result.success),...results.some(result=>!result.success)?
-{error:`FOFA queries failed: ${results.filter(result=>!result.success).map(result=>result.error).join("; ")}`}:{}}:projectFofaOutput(plans,results,previousSnapshots,
-includeRemovedAssets,timestamp))}catch(error){return{success:false,error:error instanceof Error?error.message:String(error)}}}pluginGlobals.analyze=analyze;export{analyze,get_input_schema,get_output_schema};
+{method:"GET",headers:{accept:"application/json"},timeout:3e4})}catch(error){const detail=error instanceof Error?error.message:String(error||"unknown error");throw new Error(
+`FOFA HTTP request failed: ${detail}`)}const text=await response.text();let payload;try{payload=JSON.parse(text)}catch{throw new Error(`FOFA returned non-JSON r\
+esponse with HTTP ${response.status}`)}if(!response.ok){throw new Error(payload?.errmsg||`FOFA HTTP ${response.status}`)}return payload}async function searchFofa(plan,fofaKey,baseUrl,fields,pageSize,maxPages,full,onPage){
+const assets=new Map;let totalReported=0;let pagesFetched=0;let complete=false;for(let page=1;page<=maxPages;page++){const params=new URLSearchParams;params.set(
+"key",fofaKey);params.set("qbase64",encodeBase64Utf8(plan.query));params.set("fields",fields.join(","));params.set("page",String(page));params.set("size",String(
+pageSize));params.set("full",full?"true":"false");params.set("r_type","json");const payload=await fetchJson(`${baseUrl}/api/v1/search/all?${params.toString()}`);
+if(payload.error){throw new Error(payload.errmsg||"FOFA API returned error=true")}const rows=Array.isArray(payload.results)?payload.results:[];totalReported=Number(
+payload.size||totalReported||rows.length);pagesFetched=page;const pageAssets=[];for(const row of rows){const asset=parseFofaRow(row,fields);if(asset.assetKey){assets.
+set(asset.assetKey,onPage?{assetKey:asset.assetKey}:asset);pageAssets.push(asset)}}if(onPage)await onPage(page,pageAssets);if(rows.length<pageSize||page*pageSize>=
+totalReported){complete=true;break}}return{id:plan.id,query:plan.query,source:plan.source,target:plan.target,success:true,totalReported,pagesFetched,complete,assets:Array.
+from(assets.values())}}function readRowValue(row,field,index){if(Array.isArray(row)){const value=row[index];return value===void 0||value===null?"":String(value)}
+const record=row;const direct=record[field];if(direct!==void 0&&direct!==null){return String(direct)}const aliases={host:["url","link"],domain:["hostname"],protocol:[
+"base_protocol","scheme"]};for(const alias of aliases[field]||[]){const aliased=record[alias];if(aliased!==void 0&&aliased!==null){return String(aliased)}}return""}
+function parseFofaRow(row,fields){const raw={};fields.forEach((field,index)=>{raw[field]=readRowValue(row,field,index)});const record=Array.isArray(row)?null:row;
+const host=raw.host||raw.link||(record?.url?String(record.url):"");const ip=raw.ip||(record?.ip?String(record.ip):"");const portValue=Number(raw.port||0);const objectPort=record?.
+port===void 0||record?.port===null?0:Number(record.port);const port=Number.isInteger(portValue)&&portValue>0?portValue:Number.isInteger(objectPort)&&objectPort>
+0?objectPort:extractPort(host);const protocol=(raw.protocol||raw.base_protocol||"").toLowerCase();const domain=raw.domain||(record?.domain?String(record.domain):
+"");const hostname=extractHost(host||domain||ip);const canonicalHost=host||domain||hostname||ip;const url=buildWebUrl(canonicalHost,protocol,port);const assetKey=buildAssetKey(
+canonicalHost,ip,port,protocol);return{assetKey,host:canonicalHost,ip,port,protocol,title:raw.title||"",domain,lastUpdateTime:raw.lastupdatetime||"",url,hostname,
+raw}}function buildAssetKey(host,ip,port,protocol){const hostPart=host.trim().toLowerCase()||ip.trim().toLowerCase();const portPart=port?`:${port}`:"";const protocolPart=protocol?
+`/${protocol}`:"";return`${hostPart}${portPart}${protocolPart}`}function buildWebUrl(host,protocol,port){const trimmed=host.trim();if(!trimmed)return null;if(/^https?:\/\//i.
+test(trimmed))return trimmed;const webProtocol=protocol==="https"||port===443?"https":protocol==="http"||port===80?"http":"";if(!webProtocol)return null;const resolvedHost=extractHost(
+trimmed)||trimmed;const resolvedPort=port&&port>0?port:extractPort(trimmed);const needsPort=resolvedPort!==null&&!(webProtocol==="http"&&resolvedPort===80||webProtocol===
+"https"&&resolvedPort===443);const hostForUrl=isIpLiteral(resolvedHost)&&resolvedHost.includes(":")?`[${resolvedHost}]`:resolvedHost;return`${webProtocol}://${hostForUrl}${needsPort?
+`:${resolvedPort}`:""}`}function createChangeEvent(plan,eventType,assetKeys,timestamp){const discovered=eventType==="asset_discovered";return{id:generateId(),assetId:plan.
+target||plan.id,eventType,severity:discovered?"medium":"low",title:discovered?`FOFA discovered ${assetKeys.length} new asset(s) for ${plan.target}`:`FOFA no lon\
+ger returns ${assetKeys.length} asset(s) for ${plan.target}`,description:discovered?`FOFA query ${plan.query} returned new assets: ${assetKeys.slice(0,10).join(
+", ")}`:`FOFA query ${plan.query} stopped returning assets: ${assetKeys.slice(0,10).join(", ")}`,newValue:discovered?assetKeys.join("\n"):void 0,oldValue:discovered?
+void 0:assetKeys.join("\n"),detectionMethod:PLUGIN_ID,tags:["fofa","asset-monitor",eventType],autoTriggerEnabled:discovered,riskScore:discovered?45:15,metadata:{
+queryId:plan.id,query:plan.query,source:plan.source,target:plan.target,count:assetKeys.length,detectedAt:timestamp}}}function buildArtifacts(allAssets){const domains=new Map;
+const webs=new Map;for(const asset of allAssets){const fqdn=asset.hostname&&!isIpLiteral(asset.hostname)?asset.hostname:asset.domain&&!isIpLiteral(asset.domain)?
+asset.domain:"";if(fqdn){const rootDomain=guessRootDomain(fqdn);domains.set(fqdn,{fqdn,main_domain:rootDomain,root_domain:rootDomain,subdomain_level:computeSubdomainLevel(
+fqdn)})}if(asset.url){const parsed=new URL(asset.url);webs.set(asset.url,{canonical_url:asset.url,url:asset.url,scheme:parsed.protocol.replace(":",""),host:asset.
+host||parsed.host,hostname:parsed.hostname||asset.hostname||null,ip_address:asset.ip||null,port:asset.port,site_title:asset.title||null,title:asset.title||null,
+http_status_code:0,response_headers:{},content_summary:asset.title||parsed.hostname||asset.hostname||asset.host||asset.ip,last_accessed_at:asset.lastUpdateTime||
+null,lastUpdateTime:asset.lastUpdateTime||null})}}return{domains:Array.from(domains.values()),webs:Array.from(webs.values()),changes:[],evidences:[],relations:[]}}
+function projectFofaOutput(plans,results,previousSnapshots,includeRemovedAssets,timestamp){const changeEvents=[];const snapshots={};const allAssetsMap=new Map;for(const result of results){
+if(!result.success)continue;const plan=plans.find(item=>item.id===result.id);if(!plan)continue;for(const asset of result.assets){allAssetsMap.set(asset.assetKey,
+asset)}if(result.complete===false)continue;const currentKeys=result.assets.map(asset=>asset.assetKey).sort();snapshots[result.id]={id:result.id,query:result.query,
+assetKeys:currentKeys,totalReported:result.totalReported,lastChecked:timestamp};const previous=previousSnapshots[result.id];if(!previous){if(currentKeys.length>
+0){changeEvents.push(createChangeEvent(plan,"asset_discovered",currentKeys,timestamp))}continue}const previousKeys=new Set(previous.assetKeys||[]);const currentKeySet=new Set(
+currentKeys);const added=currentKeys.filter(key=>!previousKeys.has(key));const removed=(previous.assetKeys||[]).filter(key=>!currentKeySet.has(key));if(added.length>
+0){changeEvents.push(createChangeEvent(plan,"asset_discovered",added,timestamp))}if(includeRemovedAssets&&removed.length>0){changeEvents.push(createChangeEvent(
+plan,"asset_removed",removed,timestamp))}}const allAssets=Array.from(allAssetsMap.values());const subdomains=Array.from(new Set(allAssets.map(asset=>asset.hostname||
+asset.domain).filter(host=>host&&!isIpLiteral(host)))).sort();const urls=Array.from(new Set(allAssets.map(asset=>asset.url).filter(url=>Boolean(url)))).sort();const ips=Array.
+from(new Set(allAssets.map(asset=>asset.ip).filter(Boolean))).sort();const surfaceArtifacts=buildArtifacts(allAssets);surfaceArtifacts.changes=changeEvents.map(
+event=>({asset_key:event.assetId,asset_type:"domain",change_type:event.eventType,severity:event.severity,title:event.title,description:event.description,old_value:event.
+oldValue,new_value:event.newValue,risk_score:event.riskScore,source:PLUGIN_ID,metadata:event.metadata}));const successfulQueries=results.filter(result=>result.success).
+length;const failures=results.filter(result=>!result.success);return{success:failures.length===0,...failures.length?{error:`FOFA queries failed (${failures.length}\
+/${plans.length}): ${failures.map(result=>`${result.target}: ${result.error}`).join("; ")}`}:{},data:{queries:plans,results,subdomains,urls,ips,assets:allAssets,
+changeEvents,snapshots,summary:{totalQueries:plans.length,incompleteQueries:results.filter(result=>result.complete===false).length,successfulQueries,failedQueries:plans.
+length-successfulQueries,totalReported:results.reduce((sum,result)=>sum+result.totalReported,0),totalAssets:allAssets.length,uniqueHosts:subdomains.length,uniqueIps:ips.
+length,uniqueUrls:urls.length,assetChanges:changeEvents.length},surface_artifacts:surfaceArtifacts}}}async function analyze(input){try{const stream=createMonitorResultStream(
+input);if(stream.enabled&&normalizeStringList(input.queries).length)throw new Error("Explicit FOFA queries are not bound monitor seeds");const fofaKey=String(input.
+fofaKey||"").trim();if(!fofaKey){throw new Error("fofaKey is required")}const plans=buildQueryPlans(input);if(plans.length===0){throw new Error("At least one do\
+main, target, target_object, explicit FOFA query, or enterprise website fingerprint input is required")}const fields=normalizeFields(input.fields);const pageSize=clampInteger(
+input.pageSize,DEFAULT_PAGE_SIZE,1,MAX_PAGE_SIZE);const maxPages=clampInteger(input.maxPages,DEFAULT_MAX_PAGES,1,100);const baseUrl=normalizeBaseUrl(input.fofaBaseUrl);
+const full=input.full===true;const includeRemovedAssets=input.includeRemovedAssets!==false;const previousSnapshots=input.previousSnapshots||{};const timestamp=new Date().
+toISOString();await reportMonitorProgress(input.__monitorExecution,{current:0,total:plans.length,phase:"query",message:`Querying FOFA for ${plans.length} target\
+ set(s)`});const remaining=new Map;for(const plan of plans)for(const parent of plan.parents)remaining.set(parent,(remaining.get(parent)||0)+1);let completedPlans=0;
+const results=await runWithConcurrency(plans.map(plan=>async()=>{await reportMonitorProgress(input.__monitorExecution,{current:completedPlans,total:plans.length,
+currentTarget:plan.target,phase:"query",message:`Querying FOFA: ${plan.target}`});stream.assertHealthy();let result;try{result=await searchFofa(plan,fofaKey,baseUrl,
+fields,pageSize,maxPages,full,stream.enabled?async(page,assets)=>{stream.assertHealthy();for(let index=0;index<plan.parents.length;index++){await stream.record(
+plan.parents[index],`query:${plan.id}:page:${page}`,{success:true,data:index===0?{results:[{id:plan.id,query:plan.query,target:plan.target,page,success:true,assets}],
+surface_artifacts:buildArtifacts(assets)}:{}},{complete:false})}}:void 0)}catch(error){stream.assertHealthy();result={id:plan.id,query:plan.query,source:plan.source,
+target:plan.target,success:false,totalReported:0,pagesFetched:0,assets:[],error:(error instanceof Error?error.message:String(error)).replaceAll(fofaKey,"[REDACT\
+ED]").replaceAll(encodeURIComponent(fofaKey),"[REDACTED]")}}const projected=projectFofaOutput([plan],[result],previousSnapshots,includeRemovedAssets,timestamp);
+for(let index=0;index<plan.parents.length;index++){const parent=plan.parents[index];remaining.set(parent,remaining.get(parent)-1);await stream.record(parent,`qu\
+ery:${plan.id}:complete`,{success:true,data:index===0?result.success?{results:[{id:result.id,target:result.target,success:true,complete:result.complete,totalReported:result.
+totalReported,pagesFetched:result.pagesFetched}],snapshots:projected.data.snapshots,changeEvents:projected.data.changeEvents,summary:{totalQueries:1,successfulQueries:1,
+failedQueries:0,incompleteQueries:result.complete===false?1:0,totalReported:result.totalReported,totalAssets:result.assets.length,assetChanges:projected.data.changeEvents.
+length},surface_artifacts:{changes:projected.data.surface_artifacts.changes}}:{results:[{id:result.id,target:result.target,success:false,error:result.error}]}:{}},
+{complete:remaining.get(parent)===0,snapshot_complete:result.success&&result.complete!==false,status:result.success&&result.complete!==false?"ok":"failed",error:result.
+complete===false?"FOFA page limit reached; complete baseline retained":result.error})}completedPlans+=1;return stream.enabled?{...result,assets:[]}:result}));await reportMonitorProgress(
+input.__monitorExecution,{current:plans.length,total:plans.length,phase:"build",message:"Building FOFA asset artifacts"});return await stream.finish(stream.enabled?
+{success:results.every(result=>result.success),...results.some(result=>!result.success)?{error:`FOFA queries failed: ${results.filter(result=>!result.success).map(
+result=>result.error).join("; ")}`}:{}}:projectFofaOutput(plans,results,previousSnapshots,includeRemovedAssets,timestamp))}catch(error){return{success:false,error:error instanceof
+Error?error.message:String(error)}}}pluginGlobals.analyze=analyze;export{analyze,get_input_schema,get_output_schema};
 
 globalThis.get_input_schema = get_input_schema;
 globalThis.get_output_schema = get_output_schema;
