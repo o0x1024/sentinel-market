@@ -718,25 +718,58 @@ function buildQueryPlans(input: ToolInput): FofaQueryPlan[] {
     return Array.from(plans.values());
 }
 
+const FOFA_MIN_REQUEST_INTERVAL_MS = 1100;
+const FOFA_RATE_LIMIT_MAX_RETRIES = 3;
+let lastFofaRequestStartedAt = 0;
+
+function sleepMs(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isFofaRateLimitMessage(message: string): boolean {
+    return /45012|请求速度过快|rate\s*limit|too many requests|429/i.test(message);
+}
+
+async function waitForFofaSlot(): Promise<void> {
+    const now = Date.now();
+    const waitMs = lastFofaRequestStartedAt + FOFA_MIN_REQUEST_INTERVAL_MS - now;
+    if (waitMs > 0) {
+        await sleepMs(waitMs);
+    }
+    lastFofaRequestStartedAt = Date.now();
+}
+
 async function fetchJson(url: string): Promise<FofaApiResponse> {
-    let response: Response;
-    try {
-        response = await fetch(url, { method: "GET", headers: { accept: "application/json" }, timeout: 30000 } as RequestInit);
-    } catch (error: any) {
-        const detail = error instanceof Error ? error.message : String(error || "unknown error");
-        throw new Error(`FOFA HTTP request failed: ${detail}`);
+    for (let attempt = 0; attempt <= FOFA_RATE_LIMIT_MAX_RETRIES; attempt++) {
+        await waitForFofaSlot();
+        let response: Response;
+        try {
+            response = await fetch(url, { method: "GET", headers: { accept: "application/json" }, timeout: 30000 } as RequestInit);
+        } catch (error: any) {
+            const detail = error instanceof Error ? error.message : String(error || "unknown error");
+            throw new Error(`FOFA HTTP request failed: ${detail}`);
+        }
+        const text = await response.text();
+        let payload: any;
+        try {
+            payload = JSON.parse(text);
+        } catch {
+            throw new Error(`FOFA returned non-JSON response with HTTP ${response.status}`);
+        }
+        const errorMessage = !response.ok
+            ? (payload?.errmsg || `FOFA HTTP ${response.status}`)
+            : (payload?.error ? (payload?.errmsg || "FOFA API returned error=true") : null);
+        if (errorMessage) {
+            if ((response.status === 429 || isFofaRateLimitMessage(errorMessage)) && attempt < FOFA_RATE_LIMIT_MAX_RETRIES) {
+                const backoffMs = 2000 * (2 ** attempt);
+                await sleepMs(backoffMs);
+                continue;
+            }
+            throw new Error(errorMessage);
+        }
+        return payload as FofaApiResponse;
     }
-    const text = await response.text();
-    let payload: any;
-    try {
-        payload = JSON.parse(text);
-    } catch {
-        throw new Error(`FOFA returned non-JSON response with HTTP ${response.status}`);
-    }
-    if (!response.ok) {
-        throw new Error(payload?.errmsg || `FOFA HTTP ${response.status}`);
-    }
-    return payload as FofaApiResponse;
+    throw new Error("FOFA rate limit retry budget exhausted");
 }
 
 async function searchFofa(
@@ -1154,7 +1187,7 @@ export async function analyze(input: ToolInput): Promise<ToolOutput> {
             }
             completedPlans += 1;
             return stream.enabled ? { ...result, assets: [] } : result;
-        }));
+        }), 1);
 
         await reportMonitorProgress(input.__monitorExecution, {
             current: plans.length,
