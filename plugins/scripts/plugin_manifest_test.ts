@@ -29,10 +29,10 @@ for (const plugin of manifest.plugins) {
 
 const asset: MonitorPluginMetadata = {
     id: "test", main_category: "bounty", monitor_type: "ip",
-    input_mode: "asset", target_asset_types: ["domain"],
+    input_mode: "asset", target_asset_types: ["domain"], target_sources: ["surface_asset"],
 };
 const seed: MonitorPluginMetadata = {
-    ...asset, input_mode: "seed", target_asset_types: [],
+    ...asset, input_mode: "seed", target_asset_types: [], target_sources: [],
     seed_bindings: [{ seed_type: "domain", input_key: "domains" }],
 };
 
@@ -43,6 +43,8 @@ Deno.test("reject incomplete, invalid, and contradictory monitor declarations", 
         { ...asset, target_asset_types: [] },
         { ...asset, target_asset_types: ["url"] },
         { ...asset, target_asset_types: ["domain", "domain"] },
+        { ...asset, target_sources: [] },
+        { ...asset, target_sources: ["bounty_asset"] },
         { ...asset, main_category: "traffic" },
         { ...asset, monitor_type: "unknown" },
         { ...asset, monitor_type: undefined },
