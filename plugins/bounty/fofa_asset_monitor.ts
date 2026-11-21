@@ -177,27 +177,28 @@ void 0:assetKeys.join("\n"),detectionMethod:PLUGIN_ID,tags:["fofa","asset-monito
 queryId:plan.id,query:plan.query,source:plan.source,target:plan.target,count:assetKeys.length,detectedAt:timestamp}}}function buildArtifacts(allAssets){const domains=new Map;
 const webs=new Map;for(const asset of allAssets){const fqdn=asset.hostname&&!isIpLiteral(asset.hostname)?asset.hostname:asset.domain&&!isIpLiteral(asset.domain)?
 asset.domain:"";if(fqdn){const rootDomain=guessRootDomain(fqdn);domains.set(fqdn,{fqdn,main_domain:rootDomain,root_domain:rootDomain,subdomain_level:computeSubdomainLevel(
-fqdn)})}if(asset.url){const parsed=new URL(asset.url);webs.set(asset.url,{canonical_url:asset.url,url:asset.url,scheme:parsed.protocol.replace(":",""),host:asset.
-host||parsed.host,hostname:parsed.hostname||asset.hostname||null,ip_address:asset.ip||null,port:asset.port,site_title:asset.title||null,title:asset.title||null,
-http_status_code:0,response_headers:{},content_summary:asset.title||parsed.hostname||asset.hostname||asset.host||asset.ip,last_accessed_at:asset.lastUpdateTime||
-null,lastUpdateTime:asset.lastUpdateTime||null})}}return{domains:Array.from(domains.values()),webs:Array.from(webs.values()),changes:[],evidences:[],relations:[]}}
-function projectFofaOutput(plans,results,previousSnapshots,includeRemovedAssets,timestamp){const changeEvents=[];const snapshots={};const allAssetsMap=new Map;for(const result of results){
-if(!result.success)continue;const plan=plans.find(item=>item.id===result.id);if(!plan)continue;for(const asset of result.assets){allAssetsMap.set(asset.assetKey,
-asset)}if(result.complete===false)continue;const currentKeys=result.assets.map(asset=>asset.assetKey).sort();snapshots[result.id]={id:result.id,query:result.query,
-assetKeys:currentKeys,totalReported:result.totalReported,lastChecked:timestamp};const previous=previousSnapshots[result.id];if(!previous){if(currentKeys.length>
-0){changeEvents.push(createChangeEvent(plan,"asset_discovered",currentKeys,timestamp))}continue}const previousKeys=new Set(previous.assetKeys||[]);const currentKeySet=new Set(
-currentKeys);const added=currentKeys.filter(key=>!previousKeys.has(key));const removed=(previous.assetKeys||[]).filter(key=>!currentKeySet.has(key));if(added.length>
-0){changeEvents.push(createChangeEvent(plan,"asset_discovered",added,timestamp))}if(includeRemovedAssets&&removed.length>0){changeEvents.push(createChangeEvent(
-plan,"asset_removed",removed,timestamp))}}const allAssets=Array.from(allAssetsMap.values());const subdomains=Array.from(new Set(allAssets.map(asset=>asset.hostname||
-asset.domain).filter(host=>host&&!isIpLiteral(host)))).sort();const urls=Array.from(new Set(allAssets.map(asset=>asset.url).filter(url=>Boolean(url)))).sort();const ips=Array.
-from(new Set(allAssets.map(asset=>asset.ip).filter(Boolean))).sort();const surfaceArtifacts=buildArtifacts(allAssets);surfaceArtifacts.changes=changeEvents.map(
-event=>({asset_key:event.assetId,asset_type:"domain",change_type:event.eventType,severity:event.severity,title:event.title,description:event.description,old_value:event.
-oldValue,new_value:event.newValue,risk_score:event.riskScore,source:PLUGIN_ID,metadata:event.metadata}));const successfulQueries=results.filter(result=>result.success).
-length;const failures=results.filter(result=>!result.success);return{success:failures.length===0,...failures.length?{error:`FOFA queries failed (${failures.length}\
-/${plans.length}): ${failures.map(result=>`${result.target}: ${result.error}`).join("; ")}`}:{},data:{queries:plans,results,subdomains,urls,ips,assets:allAssets,
-changeEvents,snapshots,summary:{totalQueries:plans.length,incompleteQueries:results.filter(result=>result.complete===false).length,successfulQueries,failedQueries:plans.
-length-successfulQueries,totalReported:results.reduce((sum,result)=>sum+result.totalReported,0),totalAssets:allAssets.length,uniqueHosts:subdomains.length,uniqueIps:ips.
-length,uniqueUrls:urls.length,assetChanges:changeEvents.length},surface_artifacts:surfaceArtifacts}}}async function analyze(input){try{const stream=createMonitorResultStream(
+fqdn)})}if(asset.url){const parsed=new URL(asset.url);const hostname=String(parsed.hostname||asset.hostname||"").trim();const ipAddress=String(asset.ip||"").trim();
+const title=String(asset.title||"").trim();const contentSummary=String(title||parsed.hostname||asset.hostname||asset.host||asset.ip||"").trim();const lastUpdateTime=String(
+asset.lastUpdateTime||"").trim();webs.set(asset.url,{canonical_url:asset.url,url:asset.url,scheme:parsed.protocol.replace(":",""),host:asset.host||parsed.host,...hostname?
+{hostname}:{},...ipAddress?{ip_address:ipAddress}:{},port:asset.port,...title?{site_title:title,title}:{},http_status_code:0,response_headers:{},...contentSummary?
+{content_summary:contentSummary}:{},...lastUpdateTime?{last_accessed_at:lastUpdateTime,lastUpdateTime}:{}})}}return{domains:Array.from(domains.values()),webs:Array.
+from(webs.values()),changes:[],evidences:[],relations:[]}}function projectFofaOutput(plans,results,previousSnapshots,includeRemovedAssets,timestamp){const changeEvents=[];
+const snapshots={};const allAssetsMap=new Map;for(const result of results){if(!result.success)continue;const plan=plans.find(item=>item.id===result.id);if(!plan)
+continue;for(const asset of result.assets){allAssetsMap.set(asset.assetKey,asset)}if(result.complete===false)continue;const currentKeys=result.assets.map(asset=>asset.
+assetKey).sort();snapshots[result.id]={id:result.id,query:result.query,assetKeys:currentKeys,totalReported:result.totalReported,lastChecked:timestamp};const previous=previousSnapshots[result.
+id];if(!previous){if(currentKeys.length>0){changeEvents.push(createChangeEvent(plan,"asset_discovered",currentKeys,timestamp))}continue}const previousKeys=new Set(
+previous.assetKeys||[]);const currentKeySet=new Set(currentKeys);const added=currentKeys.filter(key=>!previousKeys.has(key));const removed=(previous.assetKeys||
+[]).filter(key=>!currentKeySet.has(key));if(added.length>0){changeEvents.push(createChangeEvent(plan,"asset_discovered",added,timestamp))}if(includeRemovedAssets&&
+removed.length>0){changeEvents.push(createChangeEvent(plan,"asset_removed",removed,timestamp))}}const allAssets=Array.from(allAssetsMap.values());const subdomains=Array.
+from(new Set(allAssets.map(asset=>asset.hostname||asset.domain).filter(host=>host&&!isIpLiteral(host)))).sort();const urls=Array.from(new Set(allAssets.map(asset=>asset.
+url).filter(url=>Boolean(url)))).sort();const ips=Array.from(new Set(allAssets.map(asset=>asset.ip).filter(Boolean))).sort();const surfaceArtifacts=buildArtifacts(
+allAssets);surfaceArtifacts.changes=changeEvents.map(event=>({asset_key:event.assetId,asset_type:"domain",change_type:event.eventType,severity:event.severity,title:event.
+title,description:event.description,old_value:event.oldValue,new_value:event.newValue,risk_score:event.riskScore,source:PLUGIN_ID,metadata:event.metadata}));const successfulQueries=results.
+filter(result=>result.success).length;const failures=results.filter(result=>!result.success);return{success:failures.length===0,...failures.length?{error:`FOFA \
+queries failed (${failures.length}/${plans.length}): ${failures.map(result=>`${result.target}: ${result.error}`).join("; ")}`}:{},data:{queries:plans,results,subdomains,
+urls,ips,assets:allAssets,changeEvents,snapshots,summary:{totalQueries:plans.length,incompleteQueries:results.filter(result=>result.complete===false).length,successfulQueries,
+failedQueries:plans.length-successfulQueries,totalReported:results.reduce((sum,result)=>sum+result.totalReported,0),totalAssets:allAssets.length,uniqueHosts:subdomains.
+length,uniqueIps:ips.length,uniqueUrls:urls.length,assetChanges:changeEvents.length},surface_artifacts:surfaceArtifacts}}}async function analyze(input){try{const stream=createMonitorResultStream(
 input);if(stream.enabled&&normalizeStringList(input.queries).length)throw new Error("Explicit FOFA queries are not bound monitor seeds");const fofaKey=String(input.
 fofaKey||"").trim();if(!fofaKey){throw new Error("fofaKey is required")}const plans=buildQueryPlans(input);if(plans.length===0){throw new Error("At least one do\
 main, target, target_object, explicit FOFA query, or enterprise website fingerprint input is required")}const fields=normalizeFields(input.fields);const pageSize=clampInteger(

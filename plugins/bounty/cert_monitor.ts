@@ -129,37 +129,39 @@ evidence_type:"certificate_snapshot",title:`Certificate Snapshot: ${cert.hostnam
 hostname:cert.hostname,domain:cert.domain,subject:cert.subject,issuer:cert.issuer,fingerprint:cert.fingerprint,valid_from:cert.valid_from,valid_to:cert.valid_to,
 san:cert.san,tls_version:cert.tls_version},source:"cert_monitor"})),relations:certificates.flatMap(cert=>Array.from(new Set([cert.domain,...cert.san])).filter(certificateDomain).
 map(domain=>({from_type:"domain",from_key:domain,to_type:"certificate",to_key:certificateKey(cert.fingerprint),relation_type:"covered_by_certificate",source:"ce\
-rt_monitor",confidence:.9})))}}}}function certificateTargetSupported(target,input){const typed=input.target_objects?.find(item=>item.value===target&&item.type===
-"service");if(!typed)return true;if((typed.transport_protocol||typed.protocol||"").toLowerCase()==="udp")return false;return typed.encrypted_transport===true||/(?:https|ssl|tls|wss)/i.
-test(`${typed.protocol||""} ${typed.service_name||""}`)||[443,8443,9443].includes(Number(typed.port))}async function analyze(input){try{const stream=createMonitorResultStream(
-input);const writeTarget=createMonitorTargetWriter(input,stream,target=>certificateTargetSupported(target,input)?tlsTarget(target).key:null);if(!input.targets||
-!Array.isArray(input.targets)){return{success:false,error:"Invalid input: targets array is required"}}const validTargets=input.targets.filter(t=>typeof t==="str\
-ing"&&t.trim().length>0);if(validTargets.length===0){return{success:false,error:"Invalid input: targets array must contain at least one non-empty string"}}const checkExpiry=input.
-checkExpiry!==false;const expiryWarningDays=input.expiryWarningDays||30;const previousSnapshots=input.previousSnapshots||{};const monitorExecution=input.__monitorExecution;
-const candidates=[];for(const target of validTargets){const tlsApplicable=certificateTargetSupported(target,input);if(tlsApplicable)candidates.push(target);else
-await stream.record(target,"not-tls-service",{success:true,data:{results:[]}},{status:"skipped",complete:true})}const normalizedDomains=Array.from(new Set(candidates.
-map(target=>tlsTarget(target).key).filter(domain=>domain.length>0)));const totalProgressUnits=normalizedDomains.length;let completedProgressUnits=0;const advanceProgress=async(update,current=completedProgressUnits)=>{
-completedProgressUnits=Math.min(totalProgressUnits,Math.max(0,current));await reportMonitorProgress(monitorExecution,{total:totalProgressUnits,current:completedProgressUnits,
-...update})};await advanceProgress({phase:"prepare",message:"Preparing certificate checks",phaseLabel:"Preparing certificate checks",indeterminate:true});const results=[];
-const changeEvents=[];const newSnapshots={};let successfulChecks=0;let failedChecks=0;let certificateChanges=0;let expiringCertificates=0;let expiredCertificates=0;
-let completedDomains=0;async function processDomain(endpoint,domainIndex){const domain=tlsTarget(endpoint).hostname;stream.assertHealthy();const targetChangeEvents=[];
-const result={domain,success:false};const targetLabel=formatTargetLabel(domain,domainIndex+1,normalizedDomains.length);try{await advanceProgress({currentTarget:targetLabel,
-phase:"probe",phaseLabel:"Connecting",message:`Connecting to ${domain}`});const certInfo=await getCertificateInfo(endpoint);await advanceProgress({currentTarget:targetLabel,
-phase:"probe",phaseLabel:"Reading certificate",message:certInfo?`Retrieved certificate for ${domain}`:`Unable to retrieve certificate for ${domain}`});if(certInfo){
-result.success=true;result.certInfo=certInfo;successfulChecks++;const snapshot={domain,fingerprint:certInfo.fingerprint,validTo:certInfo.validTo,issuer:certInfo.
-issuer,lastChecked:new Date().toISOString()};result.snapshot=snapshot;if(!stream.enabled)newSnapshots[endpoint]=snapshot;const prevSnapshot=previousSnapshots[endpoint];
-if(prevSnapshot){if(prevSnapshot.fingerprint!==certInfo.fingerprint){certificateChanges++;const event={id:generateId(),assetId:domain,eventType:"certificate_cha\
-nge",severity:"medium",title:`SSL Certificate Changed: ${domain}`,description:`The SSL/TLS certificate for ${domain} has been replaced with a new certificate.`,
-oldValue:prevSnapshot.fingerprint,newValue:certInfo.fingerprint,detectionMethod:"cert_monitor",tags:["certificate","ssl","tls","change"],autoTriggerEnabled:true,
-riskScore:0,metadata:{previousIssuer:prevSnapshot.issuer,newIssuer:certInfo.issuer,previousValidTo:prevSnapshot.validTo,newValidTo:certInfo.validTo}};event.riskScore=
-calculateRiskScore(event.severity,event.eventType);targetChangeEvents.push(event)}if(prevSnapshot.issuer!==certInfo.issuer&&prevSnapshot.issuer!=="Unknown"){const event={
-id:generateId(),assetId:domain,eventType:"issuer_change",severity:"high",title:`Certificate Issuer Changed: ${domain}`,description:`The certificate issuer for ${domain}\
- has changed, which could indicate a certificate replacement or potential security issue.`,oldValue:prevSnapshot.issuer,newValue:certInfo.issuer,detectionMethod:"\
-cert_monitor",tags:["certificate","issuer","change","security"],autoTriggerEnabled:true,riskScore:0,metadata:{domain,fingerprint:certInfo.fingerprint}};event.riskScore=
-calculateRiskScore(event.severity,event.eventType);targetChangeEvents.push(event)}}if(checkExpiry){const validTo=new Date(certInfo.validTo);const now=new Date;const daysUntilExpiry=Math.
-floor((validTo.getTime()-now.getTime())/(1e3*60*60*24));result.daysUntilExpiry=daysUntilExpiry;if(daysUntilExpiry<=0){expiredCertificates++;const event={id:generateId(),
-assetId:domain,eventType:"certificate_expired",severity:"critical",title:`Certificate Expired: ${domain}`,description:`The SSL/TLS certificate for ${domain} has\
- expired ${Math.abs(daysUntilExpiry)} days ago.`,newValue:certInfo.validTo,detectionMethod:"cert_monitor",tags:["certificate","expired","critical","security"],autoTriggerEnabled:true,
+rt_monitor",confidence:.9})))}}}}function buildServiceTargetMap(input){const map=new Map;if(!Array.isArray(input.target_objects))return map;for(const item of input.
+target_objects){if(item&&item.type==="service"&&typeof item.value==="string"&&!map.has(item.value)){map.set(item.value,item)}}return map}function certificateTargetSupported(target,serviceTargets){
+const typed=serviceTargets.get(target);if(!typed)return true;if((typed.transport_protocol||typed.protocol||"").toLowerCase()==="udp")return false;return typed.encrypted_transport===
+true||/(?:https|ssl|tls|wss)/i.test(`${typed.protocol||""} ${typed.service_name||""}`)||[443,8443,9443].includes(Number(typed.port))}async function analyze(input){
+try{const stream=createMonitorResultStream(input);const serviceTargets=buildServiceTargetMap(input);const writeTarget=createMonitorTargetWriter(input,stream,target=>certificateTargetSupported(
+target,serviceTargets)?tlsTarget(target).key:null);if(!input.targets||!Array.isArray(input.targets)){return{success:false,error:"Invalid input: targets array is\
+ required"}}const validTargets=input.targets.filter(t=>typeof t==="string"&&t.trim().length>0);if(validTargets.length===0){return{success:false,error:"Invalid i\
+nput: targets array must contain at least one non-empty string"}}const checkExpiry=input.checkExpiry!==false;const expiryWarningDays=input.expiryWarningDays||30;
+const previousSnapshots=input.previousSnapshots||{};const monitorExecution=input.__monitorExecution;const candidates=[];for(const target of validTargets){const tlsApplicable=certificateTargetSupported(
+target,serviceTargets);if(tlsApplicable)candidates.push(target);else await stream.record(target,"not-tls-service",{success:true,data:{results:[]}},{status:"skip\
+ped",complete:true})}const normalizedDomains=Array.from(new Set(candidates.map(target=>tlsTarget(target).key).filter(domain=>domain.length>0)));const totalProgressUnits=normalizedDomains.
+length;let completedProgressUnits=0;const advanceProgress=async(update,current=completedProgressUnits)=>{completedProgressUnits=Math.min(totalProgressUnits,Math.
+max(0,current));await reportMonitorProgress(monitorExecution,{total:totalProgressUnits,current:completedProgressUnits,...update})};await advanceProgress({phase:"\
+prepare",message:"Preparing certificate checks",phaseLabel:"Preparing certificate checks",indeterminate:true});const results=[];const changeEvents=[];const newSnapshots={};
+let successfulChecks=0;let failedChecks=0;let certificateChanges=0;let expiringCertificates=0;let expiredCertificates=0;let completedDomains=0;async function processDomain(endpoint,domainIndex){
+const domain=tlsTarget(endpoint).hostname;stream.assertHealthy();const targetChangeEvents=[];const result={domain,success:false};const targetLabel=formatTargetLabel(
+domain,domainIndex+1,normalizedDomains.length);try{await advanceProgress({currentTarget:targetLabel,phase:"probe",phaseLabel:"Connecting",message:`Connecting to\
+ ${domain}`});const certInfo=await getCertificateInfo(endpoint);await advanceProgress({currentTarget:targetLabel,phase:"probe",phaseLabel:"Reading certificate",
+message:certInfo?`Retrieved certificate for ${domain}`:`Unable to retrieve certificate for ${domain}`});if(certInfo){result.success=true;result.certInfo=certInfo;
+successfulChecks++;const snapshot={domain,fingerprint:certInfo.fingerprint,validTo:certInfo.validTo,issuer:certInfo.issuer,lastChecked:new Date().toISOString()};
+result.snapshot=snapshot;if(!stream.enabled)newSnapshots[endpoint]=snapshot;const prevSnapshot=previousSnapshots[endpoint];if(prevSnapshot){if(prevSnapshot.fingerprint!==
+certInfo.fingerprint){certificateChanges++;const event={id:generateId(),assetId:domain,eventType:"certificate_change",severity:"medium",title:`SSL Certificate C\
+hanged: ${domain}`,description:`The SSL/TLS certificate for ${domain} has been replaced with a new certificate.`,oldValue:prevSnapshot.fingerprint,newValue:certInfo.
+fingerprint,detectionMethod:"cert_monitor",tags:["certificate","ssl","tls","change"],autoTriggerEnabled:true,riskScore:0,metadata:{previousIssuer:prevSnapshot.issuer,
+newIssuer:certInfo.issuer,previousValidTo:prevSnapshot.validTo,newValidTo:certInfo.validTo}};event.riskScore=calculateRiskScore(event.severity,event.eventType);
+targetChangeEvents.push(event)}if(prevSnapshot.issuer!==certInfo.issuer&&prevSnapshot.issuer!=="Unknown"){const event={id:generateId(),assetId:domain,eventType:"\
+issuer_change",severity:"high",title:`Certificate Issuer Changed: ${domain}`,description:`The certificate issuer for ${domain} has changed, which could indicate\
+ a certificate replacement or potential security issue.`,oldValue:prevSnapshot.issuer,newValue:certInfo.issuer,detectionMethod:"cert_monitor",tags:["certificate",
+"issuer","change","security"],autoTriggerEnabled:true,riskScore:0,metadata:{domain,fingerprint:certInfo.fingerprint}};event.riskScore=calculateRiskScore(event.severity,
+event.eventType);targetChangeEvents.push(event)}}if(checkExpiry){const validTo=new Date(certInfo.validTo);const now=new Date;const daysUntilExpiry=Math.floor((validTo.
+getTime()-now.getTime())/(1e3*60*60*24));result.daysUntilExpiry=daysUntilExpiry;if(daysUntilExpiry<=0){expiredCertificates++;const event={id:generateId(),assetId:domain,
+eventType:"certificate_expired",severity:"critical",title:`Certificate Expired: ${domain}`,description:`The SSL/TLS certificate for ${domain} has expired ${Math.
+abs(daysUntilExpiry)} days ago.`,newValue:certInfo.validTo,detectionMethod:"cert_monitor",tags:["certificate","expired","critical","security"],autoTriggerEnabled:true,
 riskScore:0,metadata:{daysExpired:Math.abs(daysUntilExpiry),fingerprint:certInfo.fingerprint,issuer:certInfo.issuer}};event.riskScore=calculateRiskScore(event.severity,
 event.eventType);targetChangeEvents.push(event)}else if(daysUntilExpiry<=expiryWarningDays){expiringCertificates++;const severity=daysUntilExpiry<=7?"high":"med\
 ium";const event={id:generateId(),assetId:domain,eventType:"certificate_expiring",severity,title:`Certificate Expiring Soon: ${domain}`,description:`The SSL/TLS\

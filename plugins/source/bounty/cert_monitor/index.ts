@@ -467,8 +467,21 @@ function projectCertificateOutput(results: CertResult[], changeEvents: ChangeEve
 
 }
 
-function certificateTargetSupported(target: string, input: ToolInput): boolean {
-    const typed = input.target_objects?.find(item => item.value === target && item.type === "service");
+type TargetObjectItem = NonNullable<ToolInput["target_objects"]>[number];
+
+function buildServiceTargetMap(input: ToolInput): Map<string, TargetObjectItem> {
+    const map = new Map<string, TargetObjectItem>();
+    if (!Array.isArray(input.target_objects)) return map;
+    for (const item of input.target_objects) {
+        if (item && item.type === "service" && typeof item.value === "string" && !map.has(item.value)) {
+            map.set(item.value, item);
+        }
+    }
+    return map;
+}
+
+function certificateTargetSupported(target: string, serviceTargets: Map<string, TargetObjectItem>): boolean {
+    const typed = serviceTargets.get(target);
     if (!typed) return true;
     if ((typed.transport_protocol || typed.protocol || '').toLowerCase() === 'udp') return false;
     return typed.encrypted_transport === true
@@ -479,7 +492,8 @@ function certificateTargetSupported(target: string, input: ToolInput): boolean {
 export async function analyze(input: ToolInput): Promise<ToolOutput> {
     try {
         const stream = createMonitorResultStream(input);
-        const writeTarget = createMonitorTargetWriter(input, stream, target => certificateTargetSupported(target, input) ? tlsTarget(target).key : null);
+        const serviceTargets = buildServiceTargetMap(input);
+        const writeTarget = createMonitorTargetWriter(input, stream, target => certificateTargetSupported(target, serviceTargets) ? tlsTarget(target).key : null);
         if (!input.targets || !Array.isArray(input.targets)) {
             return {
                 success: false,
@@ -503,7 +517,7 @@ export async function analyze(input: ToolInput): Promise<ToolOutput> {
 
         const candidates: string[] = [];
         for (const target of validTargets) {
-            const tlsApplicable = certificateTargetSupported(target, input);
+            const tlsApplicable = certificateTargetSupported(target, serviceTargets);
             if (tlsApplicable) candidates.push(target);
             else await stream.record(target,"not-tls-service",{success:true,data:{results:[]}},{status:"skipped",complete:true});
         }

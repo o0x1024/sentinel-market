@@ -954,21 +954,26 @@ function buildArtifacts(allAssets: FofaAsset[]) {
 
         if (asset.url) {
             const parsed = new URL(asset.url);
+            const hostname = String(parsed.hostname || asset.hostname || "").trim();
+            const ipAddress = String(asset.ip || "").trim();
+            const title = String(asset.title || "").trim();
+            const contentSummary = String(
+                title || parsed.hostname || asset.hostname || asset.host || asset.ip || "",
+            ).trim();
+            const lastUpdateTime = String(asset.lastUpdateTime || "").trim();
             webs.set(asset.url, {
                 canonical_url: asset.url,
                 url: asset.url,
                 scheme: parsed.protocol.replace(":", ""),
                 host: asset.host || parsed.host,
-                hostname: parsed.hostname || asset.hostname || null,
-                ip_address: asset.ip || null,
+                ...(hostname ? { hostname } : {}),
+                ...(ipAddress ? { ip_address: ipAddress } : {}),
                 port: asset.port,
-                site_title: asset.title || null,
-                title: asset.title || null,
+                ...(title ? { site_title: title, title } : {}),
                 http_status_code: 0,
                 response_headers: {},
-                content_summary: asset.title || parsed.hostname || asset.hostname || asset.host || asset.ip,
-                last_accessed_at: asset.lastUpdateTime || null,
-                lastUpdateTime: asset.lastUpdateTime || null,
+                ...(contentSummary ? { content_summary: contentSummary } : {}),
+                ...(lastUpdateTime ? { last_accessed_at: lastUpdateTime, lastUpdateTime } : {}),
             });
         }
     }
