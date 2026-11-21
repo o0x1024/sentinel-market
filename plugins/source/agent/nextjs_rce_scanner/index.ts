@@ -13,7 +13,7 @@
  * @default_severity critical
  * @tags nextjs, rce, prototype-pollution, cve, exploit, capability:fetch, capability:monitor-events, monitor:results-stream-v2
  * @description Detect and exploit Next.js prototype pollution RCE vulnerability
- * @target_sources ["surface_asset","bounty_asset","scope"]
+ * @target_sources ["surface_asset","scope"]
  * @seed_bindings []
  */
 import {

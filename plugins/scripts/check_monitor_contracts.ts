@@ -69,7 +69,7 @@ for (const contract of catalog.plugins as Contract[]) {
     }
     assert(["asset", "seed", "hybrid"].includes(contract.input_mode), `${contract.id}: explicit input_mode required`);
     assert(Array.isArray(contract.target_sources), `${contract.id}: explicit target_sources required`);
-    assert(new Set(contract.target_sources).size === contract.target_sources.length && contract.target_sources.every(value => ["surface_asset","bounty_asset","scope"].includes(value)), `${contract.id}: invalid target_sources`);
+    assert(new Set(contract.target_sources).size === contract.target_sources.length && contract.target_sources.every(value => ["surface_asset","scope"].includes(value)), `${contract.id}: invalid target_sources`);
     assert(contract.input_mode === "seed" ? contract.target_sources.length === 0 : contract.target_sources.length > 0, `${contract.id}: target source/mode conflict`);
     const hasAssets = contract.target_asset_types.length > 0;
     const hasSeeds = contract.seed_bindings.length > 0;

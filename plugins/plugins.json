@@ -118,7 +118,6 @@
       "download_url": "https://raw.githubusercontent.com/o0x1024/sentinel-market/main/plugins/agent/nextjs_rce_scanner.ts",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ],
       "seed_bindings": []
@@ -230,7 +229,6 @@
       "seed_bindings": [],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -262,7 +260,6 @@
       "seed_bindings": [],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -300,7 +297,6 @@
       "seed_bindings": [],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -365,7 +361,6 @@
       "seed_bindings": [],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -398,7 +393,6 @@
       "seed_bindings": [],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -434,7 +428,6 @@
       "seed_bindings": [],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -469,7 +462,6 @@
       "seed_bindings": [],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -575,7 +567,6 @@
       "seed_bindings": [],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -608,7 +599,6 @@
       "seed_bindings": [],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -642,7 +632,6 @@
       "seed_bindings": [],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -675,7 +664,6 @@
       "seed_bindings": [],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -705,7 +693,6 @@
       "download_url": "https://raw.githubusercontent.com/o0x1024/sentinel-market/main/plugins/agent/ssrf_detector.ts",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ],
       "seed_bindings": []
@@ -738,7 +725,6 @@
       "seed_bindings": [],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -769,7 +755,6 @@
       "download_url": "https://raw.githubusercontent.com/o0x1024/sentinel-market/main/plugins/agent/cors_misconfiguration.ts",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ],
       "seed_bindings": []
@@ -801,7 +786,6 @@
       "download_url": "https://raw.githubusercontent.com/o0x1024/sentinel-market/main/plugins/agent/open_redirect_detector.ts",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ],
       "seed_bindings": []
@@ -834,7 +818,6 @@
       "download_url": "https://raw.githubusercontent.com/o0x1024/sentinel-market/main/plugins/agent/xss_scanner.ts",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ],
       "seed_bindings": []
@@ -868,7 +851,6 @@
       "download_url": "https://raw.githubusercontent.com/o0x1024/sentinel-market/main/plugins/agent/sql_injection_scanner.ts",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ],
       "seed_bindings": []
@@ -903,7 +885,6 @@
       "seed_bindings": [],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -935,7 +916,6 @@
       "seed_bindings": [],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -969,7 +949,6 @@
       "seed_bindings": [],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -1006,7 +985,6 @@
       "seed_bindings": [],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -1040,7 +1018,6 @@
       "seed_bindings": [],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     }

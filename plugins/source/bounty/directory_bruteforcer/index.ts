@@ -10,7 +10,7 @@
  * @input_mode asset
  * @target_asset_types ["web"]
  * @category discovery
- * @target_sources ["surface_asset","bounty_asset","scope"]
+ * @target_sources ["surface_asset","scope"]
  * @seed_bindings []
  * @default_severity info
  * @tags directory, bruteforce, discovery, fuzzing, web, capability:fetch, capability:dictionary, capability:monitor-events, monitor:results-stream-v2

@@ -10,7 +10,7 @@
  * @input_mode asset
  * @target_asset_types ["domain","ip","service","web"]
  * @category recon
- * @target_sources ["surface_asset","bounty_asset","scope"]
+ * @target_sources ["surface_asset","scope"]
  * @seed_bindings []
  * @default_severity info
  * @tags http, probe, alive, discovery, web, service, headers, evidence, capability:fetch, capability:monitor-events, monitor:results-stream-v2

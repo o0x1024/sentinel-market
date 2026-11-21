@@ -9,7 +9,7 @@
  * @monitor_type risk
  * @input_mode asset
  * @target_asset_types ["domain"]
- * @target_sources ["surface_asset","bounty_asset","scope"]
+ * @target_sources ["surface_asset","scope"]
  * @seed_bindings []
  * @category vuln
  * @default_severity high

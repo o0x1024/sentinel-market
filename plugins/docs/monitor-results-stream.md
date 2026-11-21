@@ -165,7 +165,7 @@ plugin or restart the desktop application.
 
 ## Explicit capabilities and state ownership
 
-Declare target_sources from surface_asset, bounty_asset and scope for asset/hybrid modes.
+Declare target_sources from surface_asset and scope for asset/hybrid modes.
 Seed mode uses declared seed_bindings and has no asset source. The host collects and scopes
 inputs from these declarations. Plugin IDs identify producers and state namespaces; they
 never select business behavior. HTTP/TLS applicability is decided by the producer from typed

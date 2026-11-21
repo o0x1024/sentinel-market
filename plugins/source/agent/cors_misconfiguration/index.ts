@@ -13,7 +13,7 @@
  * @default_severity medium
  * @tags cors, vulnerability, security, web, headers, capability:fetch, capability:monitor-events, monitor:results-stream-v2
  * @description Detect CORS (Cross-Origin Resource Sharing) misconfigurations that could allow unauthorized cross-origin access
- * @target_sources ["surface_asset","bounty_asset","scope"]
+ * @target_sources ["surface_asset","scope"]
  * @seed_bindings []
  */
 import {

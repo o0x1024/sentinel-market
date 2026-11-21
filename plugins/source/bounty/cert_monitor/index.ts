@@ -10,7 +10,7 @@
  * @input_mode asset
  * @target_asset_types ["domain","web"]
  * @category monitor
- * @target_sources ["surface_asset","bounty_asset","scope"]
+ * @target_sources ["surface_asset","scope"]
  * @seed_bindings []
  * @default_severity medium
  * @tags certificate, ssl, tls, monitor, change-detection, expiry, capability:tls-inspect, capability:monitor-events, monitor:results-stream-v2

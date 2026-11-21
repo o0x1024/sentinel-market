@@ -10,7 +10,7 @@
  * @monitor_type api
  * @input_mode asset
  * @target_asset_types ["web"]
- * @target_sources ["surface_asset","bounty_asset","scope"]
+ * @target_sources ["surface_asset","scope"]
  * @seed_bindings []
  * @default_severity high
  * @tags api, endpoint, monitor, change-detection, rest, javascript, spa, capability:fetch, capability:monitor-events, monitor:results-stream-v2

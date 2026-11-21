@@ -10,7 +10,7 @@
  * @input_mode asset
  * @target_asset_types ["domain","web"]
  * @category recon
- * @target_sources ["surface_asset","bounty_asset","scope"]
+ * @target_sources ["surface_asset","scope"]
  * @seed_bindings []
  * @default_severity info
  * @tags dns, resolver, mapping, domain, asm, surface, capability:network-scan, capability:monitor-events, monitor:results-stream-v2

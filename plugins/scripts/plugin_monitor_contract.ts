@@ -35,7 +35,7 @@ export function validateMonitorMetadata(plugin: MonitorPluginMetadata): void {
     if (targets.some((type) => !assetTypes.has(type)) || new Set(targets).size !== targets.length) {
         fail("target_asset_types contains an invalid or duplicate type");
     }
-    if (new Set(sources).size !== sources.length || sources.some(value => !["surface_asset","bounty_asset","scope"].includes(value))) fail("invalid or duplicate target_sources");
+    if (new Set(sources).size !== sources.length || sources.some(value => !["surface_asset","scope"].includes(value))) fail("invalid or duplicate target_sources");
     if (plugin.input_mode === "seed" ? sources.length > 0 : sources.length === 0) fail("target_sources must explicitly match input_mode");
     const seen = new Set<string>();
     for (const { seed_type: type, input_key: key } of bindings) {

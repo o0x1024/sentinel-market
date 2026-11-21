@@ -18,7 +18,6 @@
       "stream_tag": "monitor:results-stream-v2",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -38,7 +37,6 @@
       "stream_tag": "monitor:results-stream-v2",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -59,7 +57,6 @@
       "stream_tag": "monitor:results-stream-v2",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -79,7 +76,6 @@
       "stream_tag": "monitor:results-stream-v2",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -99,7 +95,6 @@
       "stream_tag": "monitor:results-stream-v2",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -120,7 +115,6 @@
       "stream_tag": "monitor:results-stream-v2",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -141,7 +135,6 @@
       "stream_tag": "monitor:results-stream-v2",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -163,7 +156,6 @@
       "stream_tag": "monitor:results-stream-v2",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -241,7 +233,6 @@
       "stream_tag": "monitor:results-stream-v2",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -262,7 +253,6 @@
       "stream_tag": "monitor:results-stream-v2",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -283,7 +273,6 @@
       "stream_tag": "monitor:results-stream-v2",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -304,7 +293,6 @@
       "stream_tag": "monitor:results-stream-v2",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -325,7 +313,6 @@
       "stream_tag": "monitor:results-stream-v2",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -346,7 +333,6 @@
       "stream_tag": "monitor:results-stream-v2",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -367,7 +353,6 @@
       "stream_tag": "monitor:results-stream-v2",
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -433,7 +418,6 @@
       ],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ]
     },
@@ -471,7 +455,6 @@
       ],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ],
       "version": "1.0.9",
@@ -486,7 +469,6 @@
       ],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ],
       "seed_bindings": [],
@@ -506,7 +488,6 @@
       ],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ],
       "seed_bindings": [],
@@ -526,7 +507,6 @@
       ],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ],
       "seed_bindings": [],
@@ -546,7 +526,6 @@
       ],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ],
       "seed_bindings": [],
@@ -566,7 +545,6 @@
       ],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ],
       "seed_bindings": [],
@@ -586,7 +564,6 @@
       ],
       "target_sources": [
         "surface_asset",
-        "bounty_asset",
         "scope"
       ],
       "seed_bindings": [],

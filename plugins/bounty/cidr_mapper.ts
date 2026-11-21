@@ -10,7 +10,7 @@
  * @input_mode asset
  * @target_asset_types ["ip","ip_range"]
  * @category recon
- * @target_sources ["surface_asset","bounty_asset","scope"]
+ * @target_sources ["surface_asset","scope"]
  * @seed_bindings []
  * @default_severity info
  * @tags cidr, ip, network, asm, surface, capability:monitor-events, monitor:results-stream-v2

@@ -10,7 +10,7 @@
  * @input_mode asset
  * @target_asset_types ["ip","service"]
  * @category monitor
- * @target_sources ["surface_asset","bounty_asset","scope"]
+ * @target_sources ["surface_asset","scope"]
  * @seed_bindings []
  * @default_severity medium
  * @tags port, monitor, network, asm, surface, ip, host, change-detection, native, capability:network-scan, capability:monitor-events, monitor:results-stream-v2

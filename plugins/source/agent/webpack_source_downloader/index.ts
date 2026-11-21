@@ -14,7 +14,7 @@
  * @default_severity info
  * @tags webpack, sourcemap, source, frontend, download, capability:fetch, capability:filesystem-write, capability:monitor-events, monitor:results-stream-v2
  * @description Download original frontend source files exposed through webpack:// and webpack-internal:// source maps with optional workspace directory saving and content-free result manifests.
- * @target_sources ["surface_asset","bounty_asset","scope"]
+ * @target_sources ["surface_asset","scope"]
  */
 import {
   observedFetch as fetch,

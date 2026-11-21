@@ -13,7 +13,7 @@
  * @default_severity medium
  * @tags redirect, vulnerability, security, web, phishing, capability:fetch, capability:monitor-events, monitor:results-stream-v2
  * @description Detect open redirect vulnerabilities by testing URL parameters with various redirect payloads
- * @target_sources ["surface_asset","bounty_asset","scope"]
+ * @target_sources ["surface_asset","scope"]
  * @seed_bindings []
  */
 import {

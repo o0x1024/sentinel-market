@@ -10,7 +10,7 @@
  * @input_mode asset
  * @target_asset_types ["service"]
  * @category monitor
- * @target_sources ["surface_asset","bounty_asset","scope"]
+ * @target_sources ["surface_asset","scope"]
  * @seed_bindings []
  * @default_severity medium
  * @tags service, monitor, change-detection, banner, version, asm, network, capability:network-scan, capability:dictionary, capability:monitor-events, monitor:results-stream-v2
