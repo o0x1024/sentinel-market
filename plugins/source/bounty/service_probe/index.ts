@@ -632,23 +632,37 @@ function projectServiceProbeOutput(results: ProbeResult[], rules: RuleEntry[], t
             if (result.success) snapshots[result.target] = buildServiceSnapshot(result, timestamp);
         }
 
+        const nonEmptyString = (value: unknown): string | undefined => {
+            if (typeof value !== "string") return undefined;
+            const trimmed = value.trim();
+            return trimmed.length > 0 ? trimmed : undefined;
+        };
+
         const successfulResults = results.filter((result) => result.available);
-        const services = successfulResults.map((result) => ({
-            host_key: result.host,
-            ip_or_host: result.host,
-            port: result.port,
-            transport_protocol: "tcp",
-            protocol_name: result.protocol,
-            application_service_name: result.serviceName,
-            product_name: result.productName,
-            vendor: result.vendor,
-            version: result.version,
-            banner: result.banner || result.serverHeader,
-            source: "service_probe",
-            confidence: 0.92,
-            experimental: probeEngine.experimental,
-            probe_engine: probeEngine.used,
-        }));
+        const services = successfulResults.map((result) => {
+            const protocolName = nonEmptyString(result.protocol);
+            const applicationServiceName = nonEmptyString(result.serviceName);
+            const productName = nonEmptyString(result.productName);
+            const vendor = nonEmptyString(result.vendor);
+            const version = nonEmptyString(result.version);
+            const banner = nonEmptyString(result.banner || result.serverHeader);
+            return {
+                host_key: result.host,
+                ip_or_host: result.host,
+                port: result.port,
+                transport_protocol: "tcp",
+                ...(protocolName ? { protocol_name: protocolName } : {}),
+                ...(applicationServiceName ? { application_service_name: applicationServiceName } : {}),
+                ...(productName ? { product_name: productName } : {}),
+                ...(vendor ? { vendor } : {}),
+                ...(version ? { version } : {}),
+                ...(banner ? { banner } : {}),
+                source: "service_probe",
+                confidence: 0.92,
+                experimental: probeEngine.experimental,
+                probe_engine: probeEngine.used,
+            };
+        });
 
         const fingerprints = successfulResults.flatMap((result) => {
             const key = serviceArtifactKey(result.host, result.port);
@@ -658,81 +672,68 @@ function projectServiceProbeOutput(results: ProbeResult[], rules: RuleEntry[], t
             }
 
             const ruleMetadata = parseMetadata(matchedRule.metadata);
-            const normalizedProduct = ruleMetadata.product || result.productName;
-            const normalizedCategory = ruleMetadata.asset_category;
+            const normalizedProduct = nonEmptyString(ruleMetadata.product || result.productName);
+            const normalizedCategory = nonEmptyString(ruleMetadata.asset_category);
             if (!normalizedProduct || !normalizedCategory) {
                 return [];
             }
 
-            const normalizedVendor = ruleMetadata.vendor || result.vendor;
-            const normalizedFamily = ruleMetadata.asset_family || undefined;
+            const normalizedVendor = nonEmptyString(ruleMetadata.vendor || result.vendor);
+            const normalizedFamily = nonEmptyString(ruleMetadata.asset_family);
+            const version = nonEmptyString(result.version);
+            const banner = nonEmptyString(result.banner);
+            const productName = nonEmptyString(result.productName);
+            const serviceName = nonEmptyString(result.serviceName) || "unknown";
             const ruleBase = (matchedRule.word || normalizedProduct)
                 .toLowerCase()
                 .replace(/[^a-z0-9]+/g, "_")
                 .replace(/^_+|_+$/g, "") || "unknown";
-            const ruleId = ruleMetadata.rule_id || matchedRule.id || `service_rule:${ruleBase}`;
-            const ruleWord = matchedRule.word || ruleBase;
-            const ruleName = ruleMetadata.name || matchedRule.word || normalizedProduct;
+            const ruleId = nonEmptyString(ruleMetadata.rule_id || matchedRule.id) || `service_rule:${ruleBase}`;
+            const ruleWord = nonEmptyString(matchedRule.word) || ruleBase;
+            const ruleName = nonEmptyString(ruleMetadata.name || matchedRule.word) || normalizedProduct;
+            const sharedFields = {
+                asset_type: "service",
+                asset_key: key,
+                rule_id: ruleId,
+                rule_word: ruleWord,
+                rule_name: ruleName,
+                normalized_product: normalizedProduct,
+                ...(normalizedVendor ? { normalized_vendor: normalizedVendor } : {}),
+                normalized_category: normalizedCategory,
+                ...(normalizedFamily ? { normalized_family: normalizedFamily } : {}),
+                ...(version ? { version } : {}),
+                source: "service_probe",
+            };
             const fingerprintItems: any[] = [];
 
-            if (result.banner) {
+            if (banner) {
                 fingerprintItems.push({
-                    asset_type: "service",
-                    asset_key: key,
+                    ...sharedFields,
                     fingerprint_type: "banner",
                     fingerprint_key: "banner",
-                    fingerprint_value: result.banner,
-                    rule_id: ruleId,
-                    rule_word: ruleWord,
-                    rule_name: ruleName,
-                    normalized_product: normalizedProduct,
-                    normalized_vendor: normalizedVendor,
-                    normalized_category: normalizedCategory,
-                    normalized_family: normalizedFamily,
-                    version: result.version,
+                    fingerprint_value: banner,
                     confidence: 0.88,
-                    evidence: result.banner,
-                    source: "service_probe",
+                    evidence: banner,
                 });
             }
 
-            if (result.productName) {
+            if (productName) {
                 fingerprintItems.push({
-                    asset_type: "service",
-                    asset_key: key,
+                    ...sharedFields,
                     fingerprint_type: "product",
                     fingerprint_key: "product_name",
-                    fingerprint_value: `${result.productName}${result.version ? ` ${result.version}` : ""}`,
-                    rule_id: ruleId,
-                    rule_word: ruleWord,
-                    rule_name: ruleName,
-                    normalized_product: normalizedProduct,
-                    normalized_vendor: normalizedVendor,
-                    normalized_category: normalizedCategory,
-                    normalized_family: normalizedFamily,
-                    version: result.version,
+                    fingerprint_value: `${productName}${version ? ` ${version}` : ""}`,
                     confidence: 0.9,
-                    source: "service_probe",
                 });
             }
 
             if (fingerprintItems.length === 0) {
                 fingerprintItems.push({
-                    asset_type: "service",
-                    asset_key: key,
+                    ...sharedFields,
                     fingerprint_type: "service",
                     fingerprint_key: "service_name",
-                    fingerprint_value: result.serviceName || "unknown",
-                    rule_id: ruleId,
-                    rule_word: ruleWord,
-                    rule_name: ruleName,
-                    normalized_product: normalizedProduct,
-                    normalized_vendor: normalizedVendor,
-                    normalized_category: normalizedCategory,
-                    normalized_family: normalizedFamily,
-                    version: result.version,
+                    fingerprint_value: serviceName,
                     confidence: 0.86,
-                    source: "service_probe",
                 });
             }
 

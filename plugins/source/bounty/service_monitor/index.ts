@@ -755,21 +755,35 @@ function projectServiceMonitorOutput(results: MonitorResult[], rules: RuleEntry[
             }
         }
 
+        const nonEmptyString = (value: unknown): string | undefined => {
+            if (typeof value !== "string") return undefined;
+            const trimmed = value.trim();
+            return trimmed.length > 0 ? trimmed : undefined;
+        };
+
         const successfulResults = results.filter((result) => result.available);
-        const services = successfulResults.map((result) => ({
-            host_key: result.host,
-            ip_or_host: result.host,
-            port: result.port,
-            transport_protocol: "tcp",
-            protocol_name: result.protocol,
-            application_service_name: result.serviceName,
-            product_name: result.productName,
-            vendor: result.vendor,
-            version: result.version,
-            banner: result.banner || result.serverHeader,
-            source: "service_monitor",
-            confidence: 0.94,
-        }));
+        const services = successfulResults.map((result) => {
+            const protocolName = nonEmptyString(result.protocol);
+            const applicationServiceName = nonEmptyString(result.serviceName);
+            const productName = nonEmptyString(result.productName);
+            const vendor = nonEmptyString(result.vendor);
+            const version = nonEmptyString(result.version);
+            const banner = nonEmptyString(result.banner || result.serverHeader);
+            return {
+                host_key: result.host,
+                ip_or_host: result.host,
+                port: result.port,
+                transport_protocol: "tcp",
+                ...(protocolName ? { protocol_name: protocolName } : {}),
+                ...(applicationServiceName ? { application_service_name: applicationServiceName } : {}),
+                ...(productName ? { product_name: productName } : {}),
+                ...(vendor ? { vendor } : {}),
+                ...(version ? { version } : {}),
+                ...(banner ? { banner } : {}),
+                source: "service_monitor",
+                confidence: 0.94,
+            };
+        });
 
         const evidences = results.map((result) => ({
             asset_type: "service",

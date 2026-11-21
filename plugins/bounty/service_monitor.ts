@@ -149,9 +149,12 @@ successfulChecks+=1;reachableServices+=1}else{failedChecks+=1;unreachableService
 snapshots[result.target]=snapshot;const previous=findPreviousSnapshot(previousSnapshots,result);if(!previous){continue}if(previous.available!==snapshot.available){
 changeEvents.push(createAvailabilityEvent(result.target,previous,snapshot,timestamp));availabilityChanges+=1;if(!snapshot.available){continue}}if(!previous.available||
 !snapshot.available){continue}const diffs=calculateDiffs(previous,snapshot);if(diffs.length>0){changeEvents.push(createServiceChangeEvent(result.target,diffs,previous,
-snapshot,timestamp));serviceChanges+=1}}const successfulResults=results.filter(result=>result.available);const services=successfulResults.map(result=>({host_key:result.
-host,ip_or_host:result.host,port:result.port,transport_protocol:"tcp",protocol_name:result.protocol,application_service_name:result.serviceName,product_name:result.
-productName,vendor:result.vendor,version:result.version,banner:result.banner||result.serverHeader,source:"service_monitor",confidence:.94}));const evidences=results.
+snapshot,timestamp));serviceChanges+=1}}const nonEmptyString=value=>{if(typeof value!=="string")return void 0;const trimmed=value.trim();return trimmed.length>0?
+trimmed:void 0};const successfulResults=results.filter(result=>result.available);const services=successfulResults.map(result=>{const protocolName=nonEmptyString(
+result.protocol);const applicationServiceName=nonEmptyString(result.serviceName);const productName=nonEmptyString(result.productName);const vendor=nonEmptyString(
+result.vendor);const version=nonEmptyString(result.version);const banner=nonEmptyString(result.banner||result.serverHeader);return{host_key:result.host,ip_or_host:result.
+host,port:result.port,transport_protocol:"tcp",...protocolName?{protocol_name:protocolName}:{},...applicationServiceName?{application_service_name:applicationServiceName}:
+{},...productName?{product_name:productName}:{},...vendor?{vendor}:{},...version?{version}:{},...banner?{banner}:{},source:"service_monitor",confidence:.94}});const evidences=results.
 map(result=>({asset_type:"service",asset_key:serviceArtifactKey(result.host,result.port),evidence_type:"service_monitor_snapshot",title:`Service Identification \
 Monitor Snapshot: ${result.target}`,content_text:result.available?`${result.serviceName||"unknown"} ${result.productName||""} ${result.version||""}`.trim():result.
 error||"Service unreachable",content_json:snapshots[result.target]||result,source:"service_monitor"}));const relations=successfulResults.map(result=>({from_type:isIpLiteral(

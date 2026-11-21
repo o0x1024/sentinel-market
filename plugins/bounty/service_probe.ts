@@ -134,36 +134,38 @@ surface_artifacts:{type:"object",description:"Structured service probe and finge
 evidences:{type:"array"},relations:{type:"array"}}}}},error:{type:"string"}}}}pluginGlobals.get_output_schema=get_output_schema;function projectServiceProbeOutput(results,rules,timestamp,probeEngine,ruleCount){
 let successfulChecks=0;let failedChecks=0;let reachableServices=0;let unreachableServices=0;const snapshots={};for(const result of results){if(result.available){
 successfulChecks+=1;reachableServices+=1}else{failedChecks+=1;unreachableServices+=1}if(result.success)snapshots[result.target]=buildServiceSnapshot(result,timestamp)}
-const successfulResults=results.filter(result=>result.available);const services=successfulResults.map(result=>({host_key:result.host,ip_or_host:result.host,port:result.
-port,transport_protocol:"tcp",protocol_name:result.protocol,application_service_name:result.serviceName,product_name:result.productName,vendor:result.vendor,version:result.
-version,banner:result.banner||result.serverHeader,source:"service_probe",confidence:.92,experimental:probeEngine.experimental,probe_engine:probeEngine.used}));const fingerprints=successfulResults.
-flatMap(result=>{const key=serviceArtifactKey(result.host,result.port);const matchedRule=matchServiceRule(result,rules);if(!matchedRule){return[]}const ruleMetadata=parseMetadata(
-matchedRule.metadata);const normalizedProduct=ruleMetadata.product||result.productName;const normalizedCategory=ruleMetadata.asset_category;if(!normalizedProduct||
-!normalizedCategory){return[]}const normalizedVendor=ruleMetadata.vendor||result.vendor;const normalizedFamily=ruleMetadata.asset_family||void 0;const ruleBase=(matchedRule.
-word||normalizedProduct).toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"")||"unknown";const ruleId=ruleMetadata.rule_id||matchedRule.id||`service_\
-rule:${ruleBase}`;const ruleWord=matchedRule.word||ruleBase;const ruleName=ruleMetadata.name||matchedRule.word||normalizedProduct;const fingerprintItems=[];if(result.
-banner){fingerprintItems.push({asset_type:"service",asset_key:key,fingerprint_type:"banner",fingerprint_key:"banner",fingerprint_value:result.banner,rule_id:ruleId,
-rule_word:ruleWord,rule_name:ruleName,normalized_product:normalizedProduct,normalized_vendor:normalizedVendor,normalized_category:normalizedCategory,normalized_family:normalizedFamily,
-version:result.version,confidence:.88,evidence:result.banner,source:"service_probe"})}if(result.productName){fingerprintItems.push({asset_type:"service",asset_key:key,
-fingerprint_type:"product",fingerprint_key:"product_name",fingerprint_value:`${result.productName}${result.version?` ${result.version}`:""}`,rule_id:ruleId,rule_word:ruleWord,
-rule_name:ruleName,normalized_product:normalizedProduct,normalized_vendor:normalizedVendor,normalized_category:normalizedCategory,normalized_family:normalizedFamily,
-version:result.version,confidence:.9,source:"service_probe"})}if(fingerprintItems.length===0){fingerprintItems.push({asset_type:"service",asset_key:key,fingerprint_type:"\
-service",fingerprint_key:"service_name",fingerprint_value:result.serviceName||"unknown",rule_id:ruleId,rule_word:ruleWord,rule_name:ruleName,normalized_product:normalizedProduct,
-normalized_vendor:normalizedVendor,normalized_category:normalizedCategory,normalized_family:normalizedFamily,version:result.version,confidence:.86,source:"servi\
-ce_probe"})}return fingerprintItems});const evidences=results.map(result=>({asset_type:"service",asset_key:serviceArtifactKey(result.host,result.port),evidence_type:"\
-service_probe_snapshot",title:`Service Identification Snapshot: ${result.target}`,content_text:result.available?`${result.serviceName||"unknown"} ${result.productName||
-""} ${result.version||""}`.trim():result.error||"Service unreachable",content_json:{...result,probe_engine:probeEngine.used,probe_engine_requested:probeEngine.requested,
-probe_engine_experimental:probeEngine.experimental,probe_engine_fallback_reason:probeEngine.fallbackReason},source:"service_probe"}));const relations=successfulResults.
-map(result=>({from_type:isIpLiteral(result.host)?"ip":"domain",from_key:result.host,to_type:"service",to_key:serviceArtifactKey(result.host,result.port),relation_type:"\
-exposes_service",source:"service_probe",confidence:.92}));return{success:true,data:{results,snapshots,summary:{totalTargets:results.length,successfulChecks,failedChecks,
-reachableServices,unreachableServices,identifiedProducts:successfulResults.filter(result=>Boolean(result.productName)).length,matchedFingerprints:fingerprints.length,
-scannedRules:ruleCount,probeEngineRequested:probeEngine.requested,probeEngineUsed:probeEngine.used,probeEngineExperimental:probeEngine.experimental,probeEngineFallbackReason:probeEngine.
-fallbackReason},surface_artifacts:{services,fingerprints,evidences,relations}}}}async function analyze(input){try{const stream=createMonitorResultStream(input);
-const writeTarget=createMonitorTargetWriter(input,stream,value=>{const parsed=normalizeTarget(value);return parsed?serviceKey(parsed.host,parsed.port):""});const rawTargets=collectRawTargets(
-input);if(rawTargets.length===0){return{success:false,error:"Invalid input: service targets are required"}}const normalizedTargets=dedupeTargets(rawTargets.map(
-normalizeTarget).filter(target=>Boolean(target)));if(normalizedTargets.length===0){return{success:false,error:"No valid service targets provided"}}const followHttpRedirects=input.
-followHttpRedirects!==false;const readBanner=input.readBanner===true;const monitorExecution=input.__monitorExecution;const explicitRules=Array.isArray(input.dictionaryEntries)&&
-input.dictionaryEntries.length>0?await loadRules(input):[];const dictionaryId=explicitRules.length?null:await resolveRuleDictionaryId(input);const timestamp=new Date().
+const nonEmptyString=value=>{if(typeof value!=="string")return void 0;const trimmed=value.trim();return trimmed.length>0?trimmed:void 0};const successfulResults=results.
+filter(result=>result.available);const services=successfulResults.map(result=>{const protocolName=nonEmptyString(result.protocol);const applicationServiceName=nonEmptyString(
+result.serviceName);const productName=nonEmptyString(result.productName);const vendor=nonEmptyString(result.vendor);const version=nonEmptyString(result.version);
+const banner=nonEmptyString(result.banner||result.serverHeader);return{host_key:result.host,ip_or_host:result.host,port:result.port,transport_protocol:"tcp",...protocolName?
+{protocol_name:protocolName}:{},...applicationServiceName?{application_service_name:applicationServiceName}:{},...productName?{product_name:productName}:{},...vendor?
+{vendor}:{},...version?{version}:{},...banner?{banner}:{},source:"service_probe",confidence:.92,experimental:probeEngine.experimental,probe_engine:probeEngine.used}});
+const fingerprints=successfulResults.flatMap(result=>{const key=serviceArtifactKey(result.host,result.port);const matchedRule=matchServiceRule(result,rules);if(!matchedRule){
+return[]}const ruleMetadata=parseMetadata(matchedRule.metadata);const normalizedProduct=nonEmptyString(ruleMetadata.product||result.productName);const normalizedCategory=nonEmptyString(
+ruleMetadata.asset_category);if(!normalizedProduct||!normalizedCategory){return[]}const normalizedVendor=nonEmptyString(ruleMetadata.vendor||result.vendor);const normalizedFamily=nonEmptyString(
+ruleMetadata.asset_family);const version=nonEmptyString(result.version);const banner=nonEmptyString(result.banner);const productName=nonEmptyString(result.productName);
+const serviceName=nonEmptyString(result.serviceName)||"unknown";const ruleBase=(matchedRule.word||normalizedProduct).toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(
+/^_+|_+$/g,"")||"unknown";const ruleId=nonEmptyString(ruleMetadata.rule_id||matchedRule.id)||`service_rule:${ruleBase}`;const ruleWord=nonEmptyString(matchedRule.
+word)||ruleBase;const ruleName=nonEmptyString(ruleMetadata.name||matchedRule.word)||normalizedProduct;const sharedFields={asset_type:"service",asset_key:key,rule_id:ruleId,
+rule_word:ruleWord,rule_name:ruleName,normalized_product:normalizedProduct,...normalizedVendor?{normalized_vendor:normalizedVendor}:{},normalized_category:normalizedCategory,
+...normalizedFamily?{normalized_family:normalizedFamily}:{},...version?{version}:{},source:"service_probe"};const fingerprintItems=[];if(banner){fingerprintItems.
+push({...sharedFields,fingerprint_type:"banner",fingerprint_key:"banner",fingerprint_value:banner,confidence:.88,evidence:banner})}if(productName){fingerprintItems.
+push({...sharedFields,fingerprint_type:"product",fingerprint_key:"product_name",fingerprint_value:`${productName}${version?` ${version}`:""}`,confidence:.9})}if(fingerprintItems.
+length===0){fingerprintItems.push({...sharedFields,fingerprint_type:"service",fingerprint_key:"service_name",fingerprint_value:serviceName,confidence:.86})}return fingerprintItems});
+const evidences=results.map(result=>({asset_type:"service",asset_key:serviceArtifactKey(result.host,result.port),evidence_type:"service_probe_snapshot",title:`S\
+ervice Identification Snapshot: ${result.target}`,content_text:result.available?`${result.serviceName||"unknown"} ${result.productName||""} ${result.version||""}`.
+trim():result.error||"Service unreachable",content_json:{...result,probe_engine:probeEngine.used,probe_engine_requested:probeEngine.requested,probe_engine_experimental:probeEngine.
+experimental,probe_engine_fallback_reason:probeEngine.fallbackReason},source:"service_probe"}));const relations=successfulResults.map(result=>({from_type:isIpLiteral(
+result.host)?"ip":"domain",from_key:result.host,to_type:"service",to_key:serviceArtifactKey(result.host,result.port),relation_type:"exposes_service",source:"ser\
+vice_probe",confidence:.92}));return{success:true,data:{results,snapshots,summary:{totalTargets:results.length,successfulChecks,failedChecks,reachableServices,unreachableServices,
+identifiedProducts:successfulResults.filter(result=>Boolean(result.productName)).length,matchedFingerprints:fingerprints.length,scannedRules:ruleCount,probeEngineRequested:probeEngine.
+requested,probeEngineUsed:probeEngine.used,probeEngineExperimental:probeEngine.experimental,probeEngineFallbackReason:probeEngine.fallbackReason},surface_artifacts:{
+services,fingerprints,evidences,relations}}}}async function analyze(input){try{const stream=createMonitorResultStream(input);const writeTarget=createMonitorTargetWriter(
+input,stream,value=>{const parsed=normalizeTarget(value);return parsed?serviceKey(parsed.host,parsed.port):""});const rawTargets=collectRawTargets(input);if(rawTargets.
+length===0){return{success:false,error:"Invalid input: service targets are required"}}const normalizedTargets=dedupeTargets(rawTargets.map(normalizeTarget).filter(
+target=>Boolean(target)));if(normalizedTargets.length===0){return{success:false,error:"No valid service targets provided"}}const followHttpRedirects=input.followHttpRedirects!==
+false;const readBanner=input.readBanner===true;const monitorExecution=input.__monitorExecution;const explicitRules=Array.isArray(input.dictionaryEntries)&&input.
+dictionaryEntries.length>0?await loadRules(input):[];const dictionaryId=explicitRules.length?null:await resolveRuleDictionaryId(input);const timestamp=new Date().
 toISOString();const requestedProbeEngine=await resolveServiceProbeEngine(input.serviceProbeEngine);const rules=explicitRules.length?explicitRules:await loadRules(
 {...input,dictionaryId:dictionaryId||input.dictionaryId});const probeEngine=requestedProbeEngine;let ruleCount=rules.length;const results=[];await runSequentially(
 normalizedTargets.map((target,index)=>async()=>{stream.assertHealthy();const nativeProbe=await probeServicesWithNativeEngine([target],null,rules,followHttpRedirects,
