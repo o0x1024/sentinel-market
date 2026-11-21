@@ -79,10 +79,10 @@ te batch is forwarded unchanged in one native call"),minItems:1},dictionary_id:{
 native host reads its complete wordlist; the plugin never transfers platform dictionary words into JavaScript."},dictionary:stringArray("Optional inline subdoma\
 in prefixes, forwarded unchanged. Native selection uses inline entries, the selected platform dictionary, or the configured default dictionary."),resolvers:stringArray(
 "DNS resolver IPs or IP:port values; native engine validates and normalizes them"),skip_wildcard:{type:"boolean",default:true},bandwidth_limit:{type:["string","\
-null"],default:"3M",description:"Global native engine bandwidth limit, for example 3M"},verify_mode:{type:"boolean",default:false,description:"Enable native HTT\
-P verification of discovered subdomains"},max_retries:{type:"integer",minimum:1,maximum:10,default:5},dns_timeout_seconds:{type:"integer",minimum:1,maximum:300,
-default:10},max_wait_seconds:{type:"integer",minimum:1,maximum:3600,default:10,description:"Response wait window after the initial batch has been sent. The host\
- execution deadline covers the complete run. Unanswered queries fail rather than producing a successful empty snapshot."},verify_timeout_seconds:{type:"integer",
+null"],default:"500K",description:"Global native engine bandwidth limit, for example 500K or 1M"},verify_mode:{type:"boolean",default:false,description:"Enable \
+native HTTP verification of discovered subdomains"},max_retries:{type:"integer",minimum:1,maximum:10,default:3},dns_timeout_seconds:{type:"integer",minimum:1,maximum:300,
+default:5},max_wait_seconds:{type:"integer",minimum:1,maximum:3600,default:60,description:"Response wait window after the initial batch has been sent. The host \
+execution deadline covers the complete run. Unanswered queries fail rather than producing a successful empty snapshot."},verify_timeout_seconds:{type:"integer",
 minimum:1,maximum:300,default:10},verify_concurrency:{type:"integer",minimum:1,maximum:1e3,default:50},resolve_records:{type:"boolean",default:true},query_types:{
 type:"array",items:{type:"string",enum:["a","aaaa","cname","mx","ns","txt"]},default:["a"]},raw_records:{type:"boolean",default:false},device:{type:["string","n\
 ull"],description:"Explicit network device for ethernet transport where supported"},transport:{type:"string",enum:["udp","ethernet"],default:"udp",description:"\
