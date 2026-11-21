@@ -130,11 +130,13 @@ has(recordIdentity(record)));if(added.length>0||removed.length>0){changeEvents.p
 success?result.records:{target:result.target,error:result.error,status:"failed"},source:"dns_resolver"});for(const record of result.records){const value=record.
 value.replace(/\.$/,"");if(!value)continue;if(record.recordType==="A"||record.recordType==="AAAA"){ips.set(value,{ip_address:value,ip_version:record.recordType===
 "AAAA"?"IPv6":"IPv4",source:"dns_resolver",confidence:.98});relations.set(`${result.target}->${value}->resolves_to`,{from_type:"domain",from_key:result.target,to_type:"\
-ip",to_key:value,relation_type:"resolves_to",source:"dns_resolver",confidence:.98});continue}if(["CNAME","MX","NS"].includes(record.recordType)){domains.set(value,
-{fqdn:value,root_domain:guessRootDomain(value),main_domain:guessRootDomain(value),source:"dns_resolver",confidence:.85});const relationType=record.recordType===
-"CNAME"?"aliases_to":record.recordType==="MX"?"has_mx":"has_ns";relations.set(`${result.target}->${value}->${relationType}`,{from_type:"domain",from_key:result.
-target,to_type:"domain",to_key:value,relation_type:relationType,source:"dns_resolver",confidence:.9})}}}const successfulTargets=results.filter(result=>result.success).
-length;const totalRecords=results.reduce((sum,result)=>sum+result.records.length,0);return{success:true,data:{results,changeEvents,snapshots,summary:{totalTargets:targets.
+ip",to_key:value,relation_type:"resolves_to",source:"dns_resolver",confidence:.98});continue}if(["CNAME","MX","NS"].includes(record.recordType)){const candidateHost=(record.
+recordType==="MX"?value.split(/\s+/).pop()||"":value).trim().toLowerCase().replace(/\.$/,"");const targetLower=result.target.toLowerCase();const withinTargetScope=candidateHost.
+length>0&&(candidateHost===targetLower||candidateHost.endsWith(`.${targetLower}`));if(!withinTargetScope){continue}domains.set(candidateHost,{fqdn:candidateHost,
+root_domain:guessRootDomain(candidateHost),main_domain:guessRootDomain(candidateHost),source:"dns_resolver",confidence:.85});const relationType=record.recordType===
+"CNAME"?"aliases_to":record.recordType==="MX"?"has_mx":"has_ns";relations.set(`${result.target}->${candidateHost}->${relationType}`,{from_type:"domain",from_key:result.
+target,to_type:"domain",to_key:candidateHost,relation_type:relationType,source:"dns_resolver",confidence:.9})}}}const successfulTargets=results.filter(result=>result.
+success).length;const totalRecords=results.reduce((sum,result)=>sum+result.records.length,0);return{success:true,data:{results,changeEvents,snapshots,summary:{totalTargets:targets.
 length,successfulTargets,failedTargets:targets.length-successfulTargets,totalRecords,dnsChanges:changeEvents.length},surface_artifacts:{domains:Array.from(domains.
 values()),ips:Array.from(ips.values()),changes:changeEvents.map(event=>({asset_key:event.assetId,asset_type:"domain",change_type:event.eventType,severity:event.
 severity,title:event.title,description:event.description,old_value:event.oldValue,new_value:event.newValue,risk_score:event.riskScore,source:"dns_resolver",metadata:event.

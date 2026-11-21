@@ -478,10 +478,20 @@ function projectDnsOutput(targets: string[], results: DnsQueryResult[], previous
                 }
 
                 if (["CNAME", "MX", "NS"].includes(record.recordType)) {
-                    domains.set(value, {
-                        fqdn: value,
-                        root_domain: guessRootDomain(value),
-                        main_domain: guessRootDomain(value),
+                    const candidateHost = (record.recordType === "MX"
+                        ? value.split(/\s+/).pop() || ""
+                        : value
+                    ).trim().toLowerCase().replace(/\.$/, "");
+                    const targetLower = result.target.toLowerCase();
+                    const withinTargetScope = candidateHost.length > 0
+                        && (candidateHost === targetLower || candidateHost.endsWith(`.${targetLower}`));
+                    if (!withinTargetScope) {
+                        continue;
+                    }
+                    domains.set(candidateHost, {
+                        fqdn: candidateHost,
+                        root_domain: guessRootDomain(candidateHost),
+                        main_domain: guessRootDomain(candidateHost),
                         source: "dns_resolver",
                         confidence: 0.85,
                     });
@@ -493,11 +503,11 @@ function projectDnsOutput(targets: string[], results: DnsQueryResult[], previous
                               ? "has_mx"
                               : "has_ns";
 
-                    relations.set(`${result.target}->${value}->${relationType}`, {
+                    relations.set(`${result.target}->${candidateHost}->${relationType}`, {
                         from_type: "domain",
                         from_key: result.target,
                         to_type: "domain",
-                        to_key: value,
+                        to_key: candidateHost,
                         relation_type: relationType,
                         source: "dns_resolver",
                         confidence: 0.9,
