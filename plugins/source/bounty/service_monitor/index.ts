@@ -785,14 +785,12 @@ function projectServiceMonitorOutput(results: MonitorResult[], rules: RuleEntry[
             };
         });
 
-        const evidences = results.map((result) => ({
+        const evidences = successfulResults.map((result) => ({
             asset_type: "service",
             asset_key: serviceArtifactKey(result.host, result.port),
             evidence_type: "service_monitor_snapshot",
             title: `Service Identification Monitor Snapshot: ${result.target}`,
-            content_text: result.available
-                ? `${result.serviceName || "unknown"} ${result.productName || ""} ${result.version || ""}`.trim()
-                : (result.error || "Service unreachable"),
+            content_text: `${result.serviceName || "unknown"} ${result.productName || ""} ${result.version || ""}`.trim(),
             content_json: snapshots[result.target] || result,
             source: "service_monitor",
         }));

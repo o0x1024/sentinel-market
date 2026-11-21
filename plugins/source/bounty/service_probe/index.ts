@@ -740,14 +740,12 @@ function projectServiceProbeOutput(results: ProbeResult[], rules: RuleEntry[], t
             return fingerprintItems;
         });
 
-        const evidences = results.map((result) => ({
+        const evidences = successfulResults.map((result) => ({
             asset_type: "service",
             asset_key: serviceArtifactKey(result.host, result.port),
             evidence_type: "service_probe_snapshot",
             title: `Service Identification Snapshot: ${result.target}`,
-            content_text: result.available
-                ? `${result.serviceName || "unknown"} ${result.productName || ""} ${result.version || ""}`.trim()
-                : (result.error || "Service unreachable"),
+            content_text: `${result.serviceName || "unknown"} ${result.productName || ""} ${result.version || ""}`.trim(),
             content_json: {
                 ...result,
                 probe_engine: probeEngine.used,

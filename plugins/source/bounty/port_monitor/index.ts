@@ -668,7 +668,6 @@ function projectPortOutput(nativeResults: NativePortScanResult[], previousSnapsh
 export async function analyze(input: ToolInput): Promise<ToolOutput> {
     try {
         const stream = createMonitorResultStream(input);
-        const writeTarget = createMonitorTargetWriter(input, stream, value => normalizeHostTarget(value)?.host || "");
         const rawTargets = collectRawTargets(input);
         if (rawTargets.length === 0) {
             return {
@@ -677,29 +676,53 @@ export async function analyze(input: ToolInput): Promise<ToolOutput> {
             };
         }
 
-        const normalizedTargetSpecs = rawTargets
-            .map(normalizeHostTarget)
-            .filter((target): target is NonNullable<typeof target> => Boolean(target));
+        const hostTargetsMap = new Map<string, Array<{ raw: string; ports: number[] }>>();
+        const streamTargets: string[] = stream.enabled
+            ? ((input.__monitorExecution as any)?.result_stream?.targets || [])
+            : rawTargets;
+        const targetPortMap = new Map<string, Set<number>>();
+        const hostsWithBareTarget = new Set<string>();
+        const unparseableTargets: string[] = [];
 
-        if (normalizedTargetSpecs.length === 0) {
+        for (const raw of streamTargets) {
+            const spec = normalizeHostTarget(raw);
+            if (!spec) {
+                unparseableTargets.push(raw);
+                continue;
+            }
+            const ports = (spec.ports || []).filter((port) => port > 0);
+            const list = hostTargetsMap.get(spec.host) || [];
+            list.push({ raw, ports });
+            hostTargetsMap.set(spec.host, list);
+
+            const entry = targetPortMap.get(spec.host) || new Set<number>();
+            if (ports.length === 0) {
+                hostsWithBareTarget.add(spec.host);
+            } else {
+                for (const port of ports) entry.add(port);
+            }
+            targetPortMap.set(spec.host, entry);
+        }
+
+        if (stream.enabled) {
+            for (const invalidTarget of unparseableTargets) {
+                await stream.record(
+                    invalidTarget,
+                    "invalid-target",
+                    { success: true, data: { results: [] } },
+                    { complete: true, status: "skipped" },
+                );
+            }
+        }
+
+        if (hostTargetsMap.size === 0) {
             return {
                 success: false,
                 error: "Invalid input: no valid host or service targets provided"
             };
         }
 
-        const targetPortMap = new Map<string, Set<number>>();
-        for (const target of normalizedTargetSpecs) {
-            const entry = targetPortMap.get(target.host) || new Set<number>();
-            for (const port of target.ports || []) {
-                if (port > 0) {
-                    entry.add(port);
-                }
-            }
-            targetPortMap.set(target.host, entry);
-        }
-
-        const validTargets = [...targetPortMap.keys()];
+        const validTargets = [...hostTargetsMap.keys()];
         const defaultPorts = [...new Set(input.ports || COMMON_PORTS)].sort((left, right) => left - right);
         const previousSnapshots = input.previousSnapshots || {};
         const monitorExecution = input.__monitorExecution;
@@ -709,8 +732,14 @@ export async function analyze(input: ToolInput): Promise<ToolOutput> {
         await Promise.all(Array.from({ length: Math.min(2, validTargets.length) }, async () => {
             while (nextHost < validTargets.length) {
                 const host = validTargets[nextHost++];
-                const selected = [...(targetPortMap.get(host) || new Set<number>())].sort((a, b) => a - b);
-                const ports = selected.length ? selected : defaultPorts;
+                const hostEntries = hostTargetsMap.get(host) || [];
+                const bareEntries = hostEntries.filter((item) => item.ports.length === 0);
+                const portEntries = hostEntries.filter((item) => item.ports.length > 0);
+                const portSet = new Set<number>(targetPortMap.get(host) || []);
+                if (hostsWithBareTarget.has(host) || portSet.size === 0) {
+                    for (const port of defaultPorts) portSet.add(port);
+                }
+                const ports = [...portSet].sort((a, b) => a - b);
                 const openPorts = new Set<number>(), resolvedIps = new Set<string>();
                 let error: string | undefined;
                 for (let offset = 0; offset < ports.length; offset += 256) {
@@ -727,29 +756,69 @@ export async function analyze(input: ToolInput): Promise<ToolOutput> {
                         if (!batch.includes(port)) throw new Error("Native port scan returned a port outside its batch");
                         openPorts.add(port);
                     }
-                    const partial: any = projectPortOutput([result], {});
-                    // A bounded port set is discovery evidence, never a complete host baseline.
-                    delete partial.data!.snapshots;
-                    partial.data!.changeEvents = [];
-                    // Batch counters are deltas; host totals are reported only by host-complete.
-                    partial.data!.summary = { portBatches: 1, requestedPorts: batch.length, confirmedOpenPorts: result.open_ports?.length || 0 };
-                    partial.data!.surface_artifacts!.changes = [];
-                    partial.data!.surface_artifacts!.evidences = [{ asset_type: isIpLiteral(host) ? "ip" : "domain", asset_key: host,
-                        evidence_type: "port_probe_batch", title: `Port probe batch: ${host}`, source: "port_monitor",
-                        content_json: { host, ports: batch, open_ports: result.open_ports || [], error } }];
-                    await writeTarget(host, `ports:${offset / 256}`, partial as any, { complete: false, status: error ? "failed" : "ok", error });
+                    if (stream.enabled) {
+                        if (bareEntries.length > 0) {
+                            const partial: any = projectPortOutput([result], {});
+                            delete partial.data!.snapshots;
+                            partial.data!.changeEvents = [];
+                            partial.data!.summary = { portBatches: 1, requestedPorts: batch.length, confirmedOpenPorts: result.open_ports?.length || 0 };
+                            partial.data!.surface_artifacts!.changes = [];
+                            partial.data!.surface_artifacts!.evidences = [{ asset_type: isIpLiteral(host) ? "ip" : "domain", asset_key: host,
+                                evidence_type: "port_probe_batch", title: `Port probe batch: ${host}`, source: "port_monitor",
+                                content_json: { host, ports: batch, open_ports: result.open_ports || [], error } }];
+                            await stream.record(bareEntries[0].raw, `ports:${offset / 256}`, partial as any, { complete: false, status: error ? "failed" : "ok", error });
+                        } else {
+                            for (const entry of portEntries) {
+                                const matchingBatchPorts = entry.ports.filter((port) => batch.includes(port));
+                                if (matchingBatchPorts.length === 0) continue;
+                                const matchingOpenPorts = (result.open_ports || []).filter((port) => matchingBatchPorts.includes(port));
+                                const scopedResult: NativePortScanResult = {
+                                    host,
+                                    open_ports: matchingOpenPorts,
+                                    resolved_ips: result.resolved_ips || [],
+                                    ...(error ? { error } : {}),
+                                };
+                                const partial: any = projectPortOutput([scopedResult], {});
+                                delete partial.data!.snapshots;
+                                partial.data!.changeEvents = [];
+                                partial.data!.summary = { portBatches: 1, requestedPorts: matchingBatchPorts.length, confirmedOpenPorts: matchingOpenPorts.length };
+                                partial.data!.surface_artifacts!.changes = [];
+                                partial.data!.surface_artifacts!.evidences = [];
+                                await stream.record(entry.raw, `ports:${offset / 256}`, partial as any, { complete: false, status: error ? "failed" : "ok", error });
+                            }
+                        }
+                    }
                     if (error) break;
                 }
                 const complete: NativePortScanResult = { host, open_ports: [...openPorts].sort((a, b) => a - b), resolved_ips: [...resolvedIps], ...(error ? { error } : {}) };
                 if (!stream.enabled) completedResults.push(complete);
-                const projected = projectPortOutput([complete], previousSnapshots).data!;
-                await writeTarget(host, "host-complete", { success: true, data: {
-                    results: [{ host, success: !error, ...(error ? { error } : {}), knownOpenPortCount: complete.open_ports.length }],
-                    snapshots: projected.snapshots,
-                    changeEvents: projected.changeEvents,
-                    summary: projected.summary,
-                    surface_artifacts: { changes: projected.surface_artifacts!.changes, evidences: projected.surface_artifacts!.evidences },
-                } }, { snapshot_complete: !error, status: error ? "failed" : "ok", error });
+                if (stream.enabled) {
+                    const projected = projectPortOutput([complete], previousSnapshots).data!;
+                    if (bareEntries.length > 0) {
+                        for (let index = 0; index < bareEntries.length; index++) {
+                            await stream.record(bareEntries[index].raw, "host-complete", index === 0 ? { success: true, data: {
+                                results: [{ host, success: !error, ...(error ? { error } : {}), knownOpenPortCount: complete.open_ports.length }],
+                                snapshots: projected.snapshots,
+                                changeEvents: projected.changeEvents,
+                                summary: projected.summary,
+                                surface_artifacts: { changes: projected.surface_artifacts!.changes, evidences: projected.surface_artifacts!.evidences },
+                            } } : { success: true, data: {} }, { complete: true, snapshot_complete: !error, status: error ? "failed" : "ok", error });
+                        }
+                        for (const entry of portEntries) {
+                            const scopedOpen = complete.open_ports.filter((port) => entry.ports.includes(port));
+                            await stream.record(entry.raw, "port-complete", { success: true, data: {
+                                results: [{ host, ports: entry.ports, open_ports: scopedOpen, success: !error, ...(error ? { error } : {}) }],
+                            } }, { complete: true, snapshot_complete: !error, status: error ? "failed" : "ok", error });
+                        }
+                    } else {
+                        for (const entry of portEntries) {
+                            const scopedOpen = complete.open_ports.filter((port) => entry.ports.includes(port));
+                            await stream.record(entry.raw, "port-complete", { success: true, data: {
+                                results: [{ host, ports: entry.ports, open_ports: scopedOpen, success: !error, ...(error ? { error } : {}) }],
+                            } }, { complete: true, snapshot_complete: !error, status: error ? "failed" : "ok", error });
+                        }
+                    }
+                }
             }
         }));
         return await stream.finish(stream.enabled ? { success: true } : projectPortOutput(completedResults, previousSnapshots));

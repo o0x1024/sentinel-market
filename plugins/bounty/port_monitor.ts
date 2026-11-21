@@ -69,17 +69,7 @@ size})`)}const finalDiagnostics=finalRecord&&isJsonObject(finalRecord.data)&&isJ
 finalRecord.data.summary.diagnostics:{};const pluginMetrics=Object.fromEntries(Object.entries(finalDiagnostics).filter(([,value])=>typeof value==="number"&&Number.
 isFinite(value)&&value>=0));finished=true;return{success:true,data:{stream_complete:true,summary:{diagnostics:{...pluginMetrics,submitted_json_bytes:submittedJsonBytes,
 committed_json_bytes:committedJsonBytes,max_batch_json_bytes:maxBatchJsonBytes,committed_work_items:committedItems,completed_targets:completed.size,submitted_batches:submittedBatches,
-max_pending_commits:maxPendingObserved,backpressure_ms_sum:backpressureMs}}}}})}return{enabled:true,assertHealthy,record,finish}}function createMonitorTargetWriter(input,stream,normalize=target=>target){const context=input?.__monitorExecution;const originals=context?.result_stream?.targets;
-const aliases=new Map;if(stream.enabled){if(!Array.isArray(originals))throw new Error("Monitor stream is missing host target identities");for(const original of originals){
-if(typeof original!=="string")throw new Error("Monitor target identity must be a string");const normalized=normalize(original);if(!normalized)continue;const values=aliases.
-get(normalized)||[];if(!values.includes(original))values.push(original);aliases.set(normalized,values)}}return async(target,key,output,options)=>{if(!stream.enabled)
-return;const owners=aliases.get(target);if(!owners?.length)throw new Error("Completed work does not belong to an injected monitor target");const data=output&&typeof output===
-"object"?output.data:void 0;const artifacts=data?.surface_artifacts;for(let index=0;index<owners.length;index++){let delta=index===0?output:{success:true,data:{}};
-if(artifacts&&typeof artifacts==="object"){const bound=index===0?{...artifacts}:{};for(const kind of["evidences","fingerprints","changes"]){if(!Array.isArray(artifacts[kind]))
-continue;const refersToTarget=artifact=>artifact?.asset_type==="web"&&typeof artifact.asset_key==="string"&&normalize(artifact.asset_key)===target;const entries=index===
-0?artifacts[kind]:artifacts[kind].filter(refersToTarget);if(index>0&&entries.length===0)continue;bound[kind]=entries.map(artifact=>refersToTarget(artifact)?{...artifact,
-asset_key:owners[index]}:artifact)}if(index===0||Object.keys(bound).length>0){delta={success:true,data:{...index===0?data:{},surface_artifacts:bound}}}}await stream.
-record(owners[index],key,delta,options)}}}var pluginGlobals=globalThis;var COMMON_PORTS=[21,22,23,25,53,80,110,111,135,139,143,443,445,993,995,1433,1521,2049,3306,3389,5432,5900,6379,8080,8443,8888,9200,
+max_pending_commits:maxPendingObserved,backpressure_ms_sum:backpressureMs}}}}})}return{enabled:true,assertHealthy,record,finish}}var pluginGlobals=globalThis;var COMMON_PORTS=[21,22,23,25,53,80,110,111,135,139,143,443,445,993,995,1433,1521,2049,3306,3389,5432,5900,6379,8080,8443,8888,9200,
 27017];var HIGH_RISK_PORTS=new Set([21,22,23,25,135,139,445,1433,1521,3306,3389,5432,5900,6379,9200,27017]);function generateId(){return"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;const v=c==="x"?r:r&3|8;return v.toString(16)})}
 function isIpLiteral(value){return/^\d{1,3}(?:\.\d{1,3}){3}$/.test(value)||value.includes(":")}function normalizeHostTarget(target){if(typeof target==="string"){
 const trimmed=target.trim();if(!trimmed)return null;try{if(trimmed.includes("://")){const parsed=new URL(trimmed);const host2=parsed.hostname;const port2=parsed.
@@ -142,28 +132,42 @@ risk_score:event.riskScore,source:"port_monitor",metadata:event.metadata})),evid
 result.host)?"ip":"domain",asset_key:result.host,evidence_type:"port_snapshot",title:`Port Snapshot: ${result.host}`,content_text:`${result.snapshot?.openPorts.
 length||0} open ports`,content_json:result.snapshot,source:"port_monitor"})),relations:results.flatMap(result=>(result.snapshot?.openPorts||result.knownOpenPorts||
 []).map(portInfo=>({from_type:isIpLiteral(result.host)?"ip":"domain",from_key:result.host,to_type:"port",to_key:`${result.host}:${portInfo.port}/${portInfo.protocol}`,
-relation_type:"exposes_port",source:"port_monitor",confidence:.95})))}}}}async function analyze(input){try{const stream=createMonitorResultStream(input);const writeTarget=createMonitorTargetWriter(
-input,stream,value=>normalizeHostTarget(value)?.host||"");const rawTargets=collectRawTargets(input);if(rawTargets.length===0){return{success:false,error:"Invali\
-d input: targets array is required"}}const normalizedTargetSpecs=rawTargets.map(normalizeHostTarget).filter(target=>Boolean(target));if(normalizedTargetSpecs.length===
-0){return{success:false,error:"Invalid input: no valid host or service targets provided"}}const targetPortMap=new Map;for(const target of normalizedTargetSpecs){
-const entry=targetPortMap.get(target.host)||new Set;for(const port of target.ports||[]){if(port>0){entry.add(port)}}targetPortMap.set(target.host,entry)}const validTargets=[
-...targetPortMap.keys()];const defaultPorts=[...new Set(input.ports||COMMON_PORTS)].sort((left,right)=>left-right);const previousSnapshots=input.previousSnapshots||
-{};const monitorExecution=input.__monitorExecution;const completedResults=[];let nextHost=0;await Promise.all(Array.from({length:Math.min(2,validTargets.length)},
-async()=>{while(nextHost<validTargets.length){const host=validTargets[nextHost++];const selected=[...targetPortMap.get(host)||new Set].sort((a,b)=>a-b);const ports=selected.
-length?selected:defaultPorts;const openPorts=new Set,resolvedIps=new Set;let error;for(let offset=0;offset<ports.length;offset+=256){stream.assertHealthy();const batch=ports.
-slice(offset,offset+256);const response=await scanPortsWithNativeEngine([{host,ports:batch}],batch,monitorExecution);if(!Array.isArray(response.results)||response.
-results.length!==1||response.results[0].host!==host){throw new Error(response.error||"Native port scan returned no authoritative host result")}const result=response.
-results[0];error=result.error;for(const ip of result.resolved_ips||[])resolvedIps.add(ip);for(const port of result.open_ports||[]){if(!batch.includes(port))throw new Error(
-"Native port scan returned a port outside its batch");openPorts.add(port)}const partial=projectPortOutput([result],{});delete partial.data.snapshots;partial.data.
-changeEvents=[];partial.data.summary={portBatches:1,requestedPorts:batch.length,confirmedOpenPorts:result.open_ports?.length||0};partial.data.surface_artifacts.
-changes=[];partial.data.surface_artifacts.evidences=[{asset_type:isIpLiteral(host)?"ip":"domain",asset_key:host,evidence_type:"port_probe_batch",title:`Port pro\
-be batch: ${host}`,source:"port_monitor",content_json:{host,ports:batch,open_ports:result.open_ports||[],error}}];await writeTarget(host,`ports:${offset/256}`,partial,
-{complete:false,status:error?"failed":"ok",error});if(error)break}const complete={host,open_ports:[...openPorts].sort((a,b)=>a-b),resolved_ips:[...resolvedIps],
-...error?{error}:{}};if(!stream.enabled)completedResults.push(complete);const projected=projectPortOutput([complete],previousSnapshots).data;await writeTarget(host,
-"host-complete",{success:true,data:{results:[{host,success:!error,...error?{error}:{},knownOpenPortCount:complete.open_ports.length}],snapshots:projected.snapshots,
-changeEvents:projected.changeEvents,summary:projected.summary,surface_artifacts:{changes:projected.surface_artifacts.changes,evidences:projected.surface_artifacts.
-evidences}}},{snapshot_complete:!error,status:error?"failed":"ok",error})}}));return await stream.finish(stream.enabled?{success:true}:projectPortOutput(completedResults,
-previousSnapshots))}catch(error){return{success:false,error:error instanceof Error?error.message:String(error)}}}pluginGlobals.analyze=analyze;export{analyze,get_input_schema,get_output_schema};
+relation_type:"exposes_port",source:"port_monitor",confidence:.95})))}}}}async function analyze(input){try{const stream=createMonitorResultStream(input);const rawTargets=collectRawTargets(
+input);if(rawTargets.length===0){return{success:false,error:"Invalid input: targets array is required"}}const hostTargetsMap=new Map;const streamTargets=stream.
+enabled?input.__monitorExecution?.result_stream?.targets||[]:rawTargets;const targetPortMap=new Map;const hostsWithBareTarget=new Set;const unparseableTargets=[];
+for(const raw of streamTargets){const spec=normalizeHostTarget(raw);if(!spec){unparseableTargets.push(raw);continue}const ports=(spec.ports||[]).filter(port=>port>
+0);const list=hostTargetsMap.get(spec.host)||[];list.push({raw,ports});hostTargetsMap.set(spec.host,list);const entry=targetPortMap.get(spec.host)||new Set;if(ports.
+length===0){hostsWithBareTarget.add(spec.host)}else{for(const port of ports)entry.add(port)}targetPortMap.set(spec.host,entry)}if(stream.enabled){for(const invalidTarget of unparseableTargets){
+await stream.record(invalidTarget,"invalid-target",{success:true,data:{results:[]}},{complete:true,status:"skipped"})}}if(hostTargetsMap.size===0){return{success:false,
+error:"Invalid input: no valid host or service targets provided"}}const validTargets=[...hostTargetsMap.keys()];const defaultPorts=[...new Set(input.ports||COMMON_PORTS)].
+sort((left,right)=>left-right);const previousSnapshots=input.previousSnapshots||{};const monitorExecution=input.__monitorExecution;const completedResults=[];let nextHost=0;
+await Promise.all(Array.from({length:Math.min(2,validTargets.length)},async()=>{while(nextHost<validTargets.length){const host=validTargets[nextHost++];const hostEntries=hostTargetsMap.
+get(host)||[];const bareEntries=hostEntries.filter(item=>item.ports.length===0);const portEntries=hostEntries.filter(item=>item.ports.length>0);const portSet=new Set(
+targetPortMap.get(host)||[]);if(hostsWithBareTarget.has(host)||portSet.size===0){for(const port of defaultPorts)portSet.add(port)}const ports=[...portSet].sort(
+(a,b)=>a-b);const openPorts=new Set,resolvedIps=new Set;let error;for(let offset=0;offset<ports.length;offset+=256){stream.assertHealthy();const batch=ports.slice(
+offset,offset+256);const response=await scanPortsWithNativeEngine([{host,ports:batch}],batch,monitorExecution);if(!Array.isArray(response.results)||response.results.
+length!==1||response.results[0].host!==host){throw new Error(response.error||"Native port scan returned no authoritative host result")}const result=response.results[0];
+error=result.error;for(const ip of result.resolved_ips||[])resolvedIps.add(ip);for(const port of result.open_ports||[]){if(!batch.includes(port))throw new Error(
+"Native port scan returned a port outside its batch");openPorts.add(port)}if(stream.enabled){if(bareEntries.length>0){const partial=projectPortOutput([result],{});
+delete partial.data.snapshots;partial.data.changeEvents=[];partial.data.summary={portBatches:1,requestedPorts:batch.length,confirmedOpenPorts:result.open_ports?.
+length||0};partial.data.surface_artifacts.changes=[];partial.data.surface_artifacts.evidences=[{asset_type:isIpLiteral(host)?"ip":"domain",asset_key:host,evidence_type:"\
+port_probe_batch",title:`Port probe batch: ${host}`,source:"port_monitor",content_json:{host,ports:batch,open_ports:result.open_ports||[],error}}];await stream.
+record(bareEntries[0].raw,`ports:${offset/256}`,partial,{complete:false,status:error?"failed":"ok",error})}else{for(const entry of portEntries){const matchingBatchPorts=entry.
+ports.filter(port=>batch.includes(port));if(matchingBatchPorts.length===0)continue;const matchingOpenPorts=(result.open_ports||[]).filter(port=>matchingBatchPorts.
+includes(port));const scopedResult={host,open_ports:matchingOpenPorts,resolved_ips:result.resolved_ips||[],...error?{error}:{}};const partial=projectPortOutput(
+[scopedResult],{});delete partial.data.snapshots;partial.data.changeEvents=[];partial.data.summary={portBatches:1,requestedPorts:matchingBatchPorts.length,confirmedOpenPorts:matchingOpenPorts.
+length};partial.data.surface_artifacts.changes=[];partial.data.surface_artifacts.evidences=[];await stream.record(entry.raw,`ports:${offset/256}`,partial,{complete:false,
+status:error?"failed":"ok",error})}}}if(error)break}const complete={host,open_ports:[...openPorts].sort((a,b)=>a-b),resolved_ips:[...resolvedIps],...error?{error}:
+{}};if(!stream.enabled)completedResults.push(complete);if(stream.enabled){const projected=projectPortOutput([complete],previousSnapshots).data;if(bareEntries.length>
+0){for(let index=0;index<bareEntries.length;index++){await stream.record(bareEntries[index].raw,"host-complete",index===0?{success:true,data:{results:[{host,success:!error,
+...error?{error}:{},knownOpenPortCount:complete.open_ports.length}],snapshots:projected.snapshots,changeEvents:projected.changeEvents,summary:projected.summary,
+surface_artifacts:{changes:projected.surface_artifacts.changes,evidences:projected.surface_artifacts.evidences}}}:{success:true,data:{}},{complete:true,snapshot_complete:!error,
+status:error?"failed":"ok",error})}for(const entry of portEntries){const scopedOpen=complete.open_ports.filter(port=>entry.ports.includes(port));await stream.record(
+entry.raw,"port-complete",{success:true,data:{results:[{host,ports:entry.ports,open_ports:scopedOpen,success:!error,...error?{error}:{}}]}},{complete:true,snapshot_complete:!error,
+status:error?"failed":"ok",error})}}else{for(const entry of portEntries){const scopedOpen=complete.open_ports.filter(port=>entry.ports.includes(port));await stream.
+record(entry.raw,"port-complete",{success:true,data:{results:[{host,ports:entry.ports,open_ports:scopedOpen,success:!error,...error?{error}:{}}]}},{complete:true,
+snapshot_complete:!error,status:error?"failed":"ok",error})}}}}}));return await stream.finish(stream.enabled?{success:true}:projectPortOutput(completedResults,previousSnapshots))}catch(error){
+return{success:false,error:error instanceof Error?error.message:String(error)}}}pluginGlobals.analyze=analyze;export{analyze,get_input_schema,get_output_schema};
 
 globalThis.get_input_schema = get_input_schema;
 globalThis.get_output_schema = get_output_schema;

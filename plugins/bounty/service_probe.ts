@@ -152,30 +152,30 @@ rule_word:ruleWord,rule_name:ruleName,normalized_product:normalizedProduct,...no
 push({...sharedFields,fingerprint_type:"banner",fingerprint_key:"banner",fingerprint_value:banner,confidence:.88,evidence:banner})}if(productName){fingerprintItems.
 push({...sharedFields,fingerprint_type:"product",fingerprint_key:"product_name",fingerprint_value:`${productName}${version?` ${version}`:""}`,confidence:.9})}if(fingerprintItems.
 length===0){fingerprintItems.push({...sharedFields,fingerprint_type:"service",fingerprint_key:"service_name",fingerprint_value:serviceName,confidence:.86})}return fingerprintItems});
-const evidences=results.map(result=>({asset_type:"service",asset_key:serviceArtifactKey(result.host,result.port),evidence_type:"service_probe_snapshot",title:`S\
-ervice Identification Snapshot: ${result.target}`,content_text:result.available?`${result.serviceName||"unknown"} ${result.productName||""} ${result.version||""}`.
-trim():result.error||"Service unreachable",content_json:{...result,probe_engine:probeEngine.used,probe_engine_requested:probeEngine.requested,probe_engine_experimental:probeEngine.
-experimental,probe_engine_fallback_reason:probeEngine.fallbackReason},source:"service_probe"}));const relations=successfulResults.map(result=>({from_type:isIpLiteral(
-result.host)?"ip":"domain",from_key:result.host,to_type:"service",to_key:serviceArtifactKey(result.host,result.port),relation_type:"exposes_service",source:"ser\
-vice_probe",confidence:.92}));return{success:true,data:{results,snapshots,summary:{totalTargets:results.length,successfulChecks,failedChecks,reachableServices,unreachableServices,
-identifiedProducts:successfulResults.filter(result=>Boolean(result.productName)).length,matchedFingerprints:fingerprints.length,scannedRules:ruleCount,probeEngineRequested:probeEngine.
-requested,probeEngineUsed:probeEngine.used,probeEngineExperimental:probeEngine.experimental,probeEngineFallbackReason:probeEngine.fallbackReason},surface_artifacts:{
-services,fingerprints,evidences,relations}}}}async function analyze(input){try{const stream=createMonitorResultStream(input);const writeTarget=createMonitorTargetWriter(
-input,stream,value=>{const parsed=normalizeTarget(value);return parsed?serviceKey(parsed.host,parsed.port):""});const rawTargets=collectRawTargets(input);if(rawTargets.
-length===0){return{success:false,error:"Invalid input: service targets are required"}}const normalizedTargets=dedupeTargets(rawTargets.map(normalizeTarget).filter(
-target=>Boolean(target)));if(normalizedTargets.length===0){return{success:false,error:"No valid service targets provided"}}const followHttpRedirects=input.followHttpRedirects!==
-false;const readBanner=input.readBanner===true;const monitorExecution=input.__monitorExecution;const explicitRules=Array.isArray(input.dictionaryEntries)&&input.
-dictionaryEntries.length>0?await loadRules(input):[];const dictionaryId=explicitRules.length?null:await resolveRuleDictionaryId(input);const timestamp=new Date().
-toISOString();const requestedProbeEngine=await resolveServiceProbeEngine(input.serviceProbeEngine);const rules=explicitRules.length?explicitRules:await loadRules(
-{...input,dictionaryId:dictionaryId||input.dictionaryId});const probeEngine=requestedProbeEngine;let ruleCount=rules.length;const results=[];await runSequentially(
-normalizedTargets.map((target,index)=>async()=>{stream.assertHealthy();const nativeProbe=await probeServicesWithNativeEngine([target],null,rules,followHttpRedirects,
-readBanner,requestedProbeEngine.used,monitorExecution);if(!nativeProbe||!Array.isArray(nativeProbe.results)||nativeProbe.results.length!==1){throw new Error(nativeProbe?.
-error||"Native service probe returned no authoritative endpoint result")}const result={...nativeProbe.results[0],target:serviceKey(nativeProbe.results[0].host,nativeProbe.
-results[0].port),title:void 0};if(result.host!==target.host||result.port!==target.port||result.target!==serviceKey(target.host,target.port))throw new Error("Nat\
-ive service probe returned an unrelated endpoint");ruleCount=nativeProbe.ruleCount??rules.length;await writeTarget(serviceKey(target.host,target.port),"native-s\
-ervice-endpoint",projectServiceProbeOutput([result],rules,timestamp,probeEngine,ruleCount),{snapshot_complete:result.success,status:result.success?"ok":"failed",
-error:result.error});if(!stream.enabled)results[index]=result}));return await stream.finish(stream.enabled?{success:true}:projectServiceProbeOutput(results,rules,
-timestamp,probeEngine,ruleCount))}catch(error){return{success:false,error:error instanceof Error?error.message:String(error)}}}pluginGlobals.analyze=analyze;export{analyze,get_input_schema,get_output_schema};
+const evidences=successfulResults.map(result=>({asset_type:"service",asset_key:serviceArtifactKey(result.host,result.port),evidence_type:"service_probe_snapshot",
+title:`Service Identification Snapshot: ${result.target}`,content_text:`${result.serviceName||"unknown"} ${result.productName||""} ${result.version||""}`.trim(),
+content_json:{...result,probe_engine:probeEngine.used,probe_engine_requested:probeEngine.requested,probe_engine_experimental:probeEngine.experimental,probe_engine_fallback_reason:probeEngine.
+fallbackReason},source:"service_probe"}));const relations=successfulResults.map(result=>({from_type:isIpLiteral(result.host)?"ip":"domain",from_key:result.host,
+to_type:"service",to_key:serviceArtifactKey(result.host,result.port),relation_type:"exposes_service",source:"service_probe",confidence:.92}));return{success:true,
+data:{results,snapshots,summary:{totalTargets:results.length,successfulChecks,failedChecks,reachableServices,unreachableServices,identifiedProducts:successfulResults.
+filter(result=>Boolean(result.productName)).length,matchedFingerprints:fingerprints.length,scannedRules:ruleCount,probeEngineRequested:probeEngine.requested,probeEngineUsed:probeEngine.
+used,probeEngineExperimental:probeEngine.experimental,probeEngineFallbackReason:probeEngine.fallbackReason},surface_artifacts:{services,fingerprints,evidences,relations}}}}
+async function analyze(input){try{const stream=createMonitorResultStream(input);const writeTarget=createMonitorTargetWriter(input,stream,value=>{const parsed=normalizeTarget(
+value);return parsed?serviceKey(parsed.host,parsed.port):""});const rawTargets=collectRawTargets(input);if(rawTargets.length===0){return{success:false,error:"In\
+valid input: service targets are required"}}const normalizedTargets=dedupeTargets(rawTargets.map(normalizeTarget).filter(target=>Boolean(target)));if(normalizedTargets.
+length===0){return{success:false,error:"No valid service targets provided"}}const followHttpRedirects=input.followHttpRedirects!==false;const readBanner=input.readBanner===
+true;const monitorExecution=input.__monitorExecution;const explicitRules=Array.isArray(input.dictionaryEntries)&&input.dictionaryEntries.length>0?await loadRules(
+input):[];const dictionaryId=explicitRules.length?null:await resolveRuleDictionaryId(input);const timestamp=new Date().toISOString();const requestedProbeEngine=await resolveServiceProbeEngine(
+input.serviceProbeEngine);const rules=explicitRules.length?explicitRules:await loadRules({...input,dictionaryId:dictionaryId||input.dictionaryId});const probeEngine=requestedProbeEngine;
+let ruleCount=rules.length;const results=[];await runSequentially(normalizedTargets.map((target,index)=>async()=>{stream.assertHealthy();const nativeProbe=await probeServicesWithNativeEngine(
+[target],null,rules,followHttpRedirects,readBanner,requestedProbeEngine.used,monitorExecution);if(!nativeProbe||!Array.isArray(nativeProbe.results)||nativeProbe.
+results.length!==1){throw new Error(nativeProbe?.error||"Native service probe returned no authoritative endpoint result")}const result={...nativeProbe.results[0],
+target:serviceKey(nativeProbe.results[0].host,nativeProbe.results[0].port),title:void 0};if(result.host!==target.host||result.port!==target.port||result.target!==
+serviceKey(target.host,target.port))throw new Error("Native service probe returned an unrelated endpoint");ruleCount=nativeProbe.ruleCount??rules.length;await writeTarget(
+serviceKey(target.host,target.port),"native-service-endpoint",projectServiceProbeOutput([result],rules,timestamp,probeEngine,ruleCount),{snapshot_complete:result.
+success,status:result.success?"ok":"failed",error:result.error});if(!stream.enabled)results[index]=result}));return await stream.finish(stream.enabled?{success:true}:
+projectServiceProbeOutput(results,rules,timestamp,probeEngine,ruleCount))}catch(error){return{success:false,error:error instanceof Error?error.message:String(error)}}}
+pluginGlobals.analyze=analyze;export{analyze,get_input_schema,get_output_schema};
 
 globalThis.get_input_schema = get_input_schema;
 globalThis.get_output_schema = get_output_schema;
