@@ -955,7 +955,7 @@
     {
       "id": "port_monitor",
       "name": "Port Monitor",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "author": "Sentinel Team",
       "main_category": "bounty",
       "category": "monitor",

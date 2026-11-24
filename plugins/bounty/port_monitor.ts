@@ -3,7 +3,7 @@
  *
  * @plugin port_monitor
  * @name Port Monitor
- * @version 1.4.0
+ * @version 1.4.1
  * @author Sentinel Team
  * @main_category bounty
  * @monitor_type port
@@ -70,7 +70,25 @@ finalRecord.data.summary.diagnostics:{};const pluginMetrics=Object.fromEntries(O
 isFinite(value)&&value>=0));finished=true;return{success:true,data:{stream_complete:true,summary:{diagnostics:{...pluginMetrics,submitted_json_bytes:submittedJsonBytes,
 committed_json_bytes:committedJsonBytes,max_batch_json_bytes:maxBatchJsonBytes,committed_work_items:committedItems,completed_targets:completed.size,submitted_batches:submittedBatches,
 max_pending_commits:maxPendingObserved,backpressure_ms_sum:backpressureMs}}}}})}return{enabled:true,assertHealthy,record,finish}}var pluginGlobals=globalThis;var COMMON_PORTS=[21,22,23,25,53,80,110,111,135,139,143,443,445,993,995,1433,1521,2049,3306,3389,5432,5900,6379,8080,8443,8888,9200,
-27017];var HIGH_RISK_PORTS=new Set([21,22,23,25,135,139,445,1433,1521,3306,3389,5432,5900,6379,9200,27017]);function generateId(){return"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;const v=c==="x"?r:r&3|8;return v.toString(16)})}
+27017];var WEB_PORTS=[80,81,443,3e3,5e3,7001,8e3,8008,8080,8081,8443,8888,9e3,9090,9443];var DATABASE_PORTS=[1433,1521,3306,5432,6379,9200,9300,11211,27017];var TOP_100_PORTS=[
+7,9,13,21,22,23,25,26,37,53,79,80,81,88,106,110,111,113,119,135,139,143,144,179,199,389,427,443,444,445,465,513,514,515,543,544,548,554,587,631,646,873,990,993,
+995,1025,1026,1027,1028,1029,1110,1433,1521,1720,1723,1755,1900,2e3,2001,2049,2121,2717,3e3,3128,3306,3389,3986,4899,5e3,5009,5051,5060,5101,5190,5357,5432,5631,
+5666,5800,5900,6e3,6001,6379,6646,7001,7070,8e3,8008,8009,8080,8081,8443,8888,9e3,9090,9100,9200,9999,1e4,27017];function parsePortSpec(spec,fieldName){const trimmed=spec.
+trim();if(!trimmed)return[];const ports=new Set;for(const rawToken of trimmed.split(/[\s,]+/)){const token=rawToken.trim();if(!token)continue;const dashIndex=token.
+indexOf("-");if(dashIndex>=0){if(dashIndex!==token.lastIndexOf("-")){throw new Error(`Invalid ${fieldName} range token: ${token}`)}const startStr=token.slice(0,
+dashIndex).trim();const endStr=token.slice(dashIndex+1).trim();if(!/^\d+$/.test(startStr)||!/^\d+$/.test(endStr)){throw new Error(`Invalid ${fieldName} range to\
+ken: ${token}`)}const start=Number(startStr);const end=Number(endStr);if(start<1||end>65535||start>end){throw new Error(`Invalid ${fieldName} port range: ${token}`)}
+for(let port=start;port<=end;port++){ports.add(port)}}else{if(!/^\d+$/.test(token)){throw new Error(`Invalid ${fieldName} port: ${token}`)}const port=Number(token);
+if(port<1||port>65535){throw new Error(`Invalid ${fieldName} port out of range (1-65535): ${token}`)}ports.add(port)}}return[...ports].sort((left,right)=>left-right)}
+function validatePortArray(ports,fieldName){const unique=new Set;for(const port of ports){if(!Number.isInteger(port)||port<1||port>65535){throw new Error(`Inval\
+id ${fieldName} port: ${port}`)}unique.add(port)}return[...unique].sort((left,right)=>left-right)}function resolveConfiguredPorts(input){if(typeof input.portRange===
+"string"&&input.portRange.trim().length>0){return parsePortSpec(input.portRange,"portRange")}if(Array.isArray(input.ports)&&input.ports.length>0){return validatePortArray(
+input.ports,"ports")}const preset=input.portPreset||"common";switch(preset){case"common":return[...COMMON_PORTS].sort((a,b)=>a-b);case"web":return[...WEB_PORTS].
+sort((a,b)=>a-b);case"database":return[...DATABASE_PORTS].sort((a,b)=>a-b);case"top100":return[...TOP_100_PORTS].sort((a,b)=>a-b);case"all":return Array.from({length:65535},
+(_,idx)=>idx+1);case"custom":throw new Error("portPreset is 'custom' but neither portRange nor ports was specified");default:throw new Error(`Unsupported portPr\
+eset: ${String(preset)}`)}}function resolveProbePorts(input){if(typeof input.probePortRange==="string"&&input.probePortRange.trim().length>0){return parsePortSpec(
+input.probePortRange,"probePortRange")}if(Array.isArray(input.probePorts)&&input.probePorts.length>0){return validatePortArray(input.probePorts,"probePorts")}return[]}
+var HIGH_RISK_PORTS=new Set([21,22,23,25,135,139,445,1433,1521,3306,3389,5432,5900,6379,9200,27017]);function generateId(){return"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;const v=c==="x"?r:r&3|8;return v.toString(16)})}
 function isIpLiteral(value){return/^\d{1,3}(?:\.\d{1,3}){3}$/.test(value)||value.includes(":")}function isIpv4Literal(value){const parts=value.split(".");if(parts.
 length!==4)return false;return parts.every(part=>/^\d{1,3}$/.test(part)&&Number(part)>=0&&Number(part)<=255)}function isCidrLiteral(value){const slashIndex=value.
 indexOf("/");if(slashIndex<=0||slashIndex!==value.lastIndexOf("/"))return false;const addr=value.slice(0,slashIndex);const prefixStr=value.slice(slashIndex+1);if(!/^\d{1,3}$/.
@@ -91,69 +109,73 @@ return target.trim().length>0}if(!target||typeof target!=="object"){return false
 "ip"||target.type==="ip_range"})}function calculateRiskScore(severity,eventType,ports){let score=0;switch(severity){case"critical":score+=40;break;case"high":score+=
 30;break;case"medium":score+=20;break;case"low":score+=10;break}switch(eventType){case"ports_opened":score+=20;break;case"ports_closed":score+=5;break;case"high\
 _risk_port_opened":score+=30;break}for(const port of ports){if(HIGH_RISK_PORTS.has(port)){score+=5}}return Math.min(score,100)}function get_input_schema(){return{
-type:"object",properties:{targets:{type:"array",description:"Legacy host targets or service endpoint strings"},target_objects:{type:"array",description:"Structu\
-red monitor targets including service endpoints"},service_targets:{type:"array",description:"Structured service endpoints with host, port, and protocol fields"},
-ports:{type:"array",items:{type:"integer"},description:"Specific ports to scan (default: common ports)"},probePorts:{type:"array",items:{type:"integer"},description:"\
-Optional fast TCP liveness probe ports for CIDR ranges before full port scan; when set, only alive IPs proceed to scan remaining ports"},maxHosts:{type:"integer",
-description:"Maximum number of hosts allowed when expanding a CIDR range",default:4096,minimum:1,maximum:65536},detectService:{type:"boolean",description:"Reser\
-ved for compatibility; service fingerprinting is handled by dedicated service plugins",default:false},previousSnapshots:{type:"object",description:"Previous por\
-t snapshots for comparison"}}}}pluginGlobals.get_input_schema=get_input_schema;function get_output_schema(){return{type:"object",properties:{success:{type:"bool\
-ean",description:"Whether the operation succeeded"},data:{type:"object",properties:{results:{type:"array",items:{type:"object",properties:{host:{type:"string"},
-success:{type:"boolean"},snapshot:{type:"object"},newPorts:{type:"array"},closedPorts:{type:"array"}}},description:"Port scan results"},changeEvents:{type:"arra\
-y",description:"Change events detected"},snapshots:{type:"object",description:"Port snapshots by host"},summary:{type:"object",properties:{totalTargets:{type:"i\
-nteger"},totalOpenPorts:{type:"integer"},newPortsOpened:{type:"integer"},portsClosed:{type:"integer"}}},surface_artifacts:{type:"object",description:"Typed netw\
-ork surface artifacts for surface graph ingestion"}}},error:{type:"string",description:"Error message if failed"}}}}pluginGlobals.get_output_schema=get_output_schema;
-function mapOpenPorts(openPorts){return[...new Set(openPorts)].filter(port=>Number.isInteger(port)&&port>0).sort((left,right)=>left-right).map(port=>({port,state:"\
-open",protocol:"tcp"}))}async function scanPortsWithNativeEngine(targets,defaultPorts,monitorExecution,options){if(typeof Sentinel==="undefined"||!Sentinel.Network||
-typeof Sentinel.Network.scanPorts!=="function"){throw new Error("Native port scanning engine is not available")}const request={targets,ports:defaultPorts,tries:1,
-monitor_progress:monitorExecution?{taskId:monitorExecution.task_id,taskName:monitorExecution.task_name,programId:monitorExecution.program_id,executionMode:monitorExecution.
-execution_mode,startedAt:monitorExecution.started_at,currentPlugin:monitorExecution.current_plugin,currentPluginIndex:monitorExecution.current_plugin_index,completedSteps:monitorExecution.
-completed_steps,totalSteps:monitorExecution.total_steps,importedAssets:monitorExecution.imported_assets||0}:void 0};if(options?.maxHosts!==void 0){request.max_hosts=
-options.maxHosts}if(options?.onlyOpen!==void 0){request.only_open=options.onlyOpen}return await Sentinel.Network.scanPorts(request)}function projectPortOutput(nativeResults,previousSnapshots,sourceCidrMap){
-const results=[],changeEvents=[];const newSnapshots={};let successfulScans=0,failedScans=0,totalOpenPorts=0,newPortsOpened=0,portsClosed=0;for(const nativeResult of nativeResults){
-const host=nativeResult.host;const result={host,success:false,knownOpenPorts:mapOpenPorts(nativeResult.open_ports||[])};totalOpenPorts+=result.knownOpenPorts.length;
-try{if(nativeResult.error){throw new Error(nativeResult.error)}const openPorts=mapOpenPorts(nativeResult.open_ports||[]);result.success=true;successfulScans++;const snapshot={
-host,openPorts,lastChecked:new Date().toISOString()};result.snapshot=snapshot;newSnapshots[host]=snapshot;const prevSnapshot=previousSnapshots[host];if(prevSnapshot){
-const prevPortSet=new Set(prevSnapshot.openPorts.map(p=>p.port));const newPortSet=new Set(openPorts.map(p=>p.port));const newPorts=openPorts.filter(p=>!prevPortSet.
-has(p.port));const closedPorts=prevSnapshot.openPorts.filter(p=>!newPortSet.has(p.port));result.newPorts=newPorts;result.closedPorts=closedPorts;if(newPorts.length>
-0){newPortsOpened+=newPorts.length;const highRiskNew=newPorts.filter(p=>HIGH_RISK_PORTS.has(p.port));const severity=highRiskNew.length>0?"high":"medium";const eventType=highRiskNew.
-length>0?"high_risk_port_opened":"ports_opened";const event={id:generateId(),assetId:host,eventType,severity,title:`New Ports Opened: ${host}`,description:`${newPorts.
-length} new port(s) detected: ${newPorts.map(p=>`${p.port}/tcp`).join(", ")}`,newValue:JSON.stringify(newPorts.map(p=>p.port)),detectionMethod:"port_monitor",tags:[
-"port","open","change",...highRiskNew.length>0?["high-risk"]:[]],autoTriggerEnabled:severity==="high",riskScore:0,metadata:{newPorts,highRiskPorts:highRiskNew.map(
-p=>p.port),resolvedIps:nativeResult.resolved_ips||[]}};event.riskScore=calculateRiskScore(event.severity,event.eventType,newPorts.map(p=>p.port));changeEvents.push(
-event)}if(closedPorts.length>0){portsClosed+=closedPorts.length;const event={id:generateId(),assetId:host,eventType:"ports_closed",severity:"low",title:`Ports C\
-losed: ${host}`,description:`${closedPorts.length} port(s) no longer accessible: ${closedPorts.map(p=>`${p.port}/tcp`).join(", ")}`,oldValue:JSON.stringify(closedPorts.
-map(p=>p.port)),detectionMethod:"port_monitor",tags:["port","closed","change"],autoTriggerEnabled:false,riskScore:0,metadata:{closedPorts}};event.riskScore=calculateRiskScore(
-event.severity,event.eventType,closedPorts.map(p=>p.port));changeEvents.push(event)}}else{if(openPorts.length>0){const highRiskPorts=openPorts.filter(p=>HIGH_RISK_PORTS.
-has(p.port));const event={id:generateId(),assetId:host,eventType:"ports_discovered",severity:highRiskPorts.length>0?"medium":"low",title:`Open Ports Discovered:\
- ${host}`,description:`Initial scan found ${openPorts.length} open port(s): ${openPorts.map(p=>`${p.port}/tcp`).join(", ")}`,newValue:JSON.stringify(openPorts.map(
-p=>p.port)),detectionMethod:"port_monitor",tags:["port","discovery","initial-scan"],autoTriggerEnabled:false,riskScore:0,metadata:{openPorts,highRiskPorts:highRiskPorts.
-map(p=>p.port),resolvedIps:nativeResult.resolved_ips||[]}};event.riskScore=calculateRiskScore(event.severity,event.eventType,openPorts.map(p=>p.port));changeEvents.
-push(event)}}}catch(error){result.error=error.message||String(error);failedScans++}results.push(result)}return{success:true,data:{results,changeEvents,snapshots:newSnapshots,
-summary:{totalTargets:nativeResults.length,successfulScans,failedScans,totalOpenPorts,newPortsOpened,portsClosed,serviceChanges:0},surface_artifacts:{domains:[...new Set(
-results.map(result=>result.host).filter(host=>!isIpLiteral(host)))].map(domainName=>({domain_name:domainName,fqdn:domainName,source:"port_monitor",confidence:.95})),
-ips:[...new Set(results.map(result=>result.host).filter(host=>isIpLiteral(host)))].map(ipAddress=>({ip_address:ipAddress,ip_version:ipAddress.includes(":")?"IPv\
-6":"IPv4",...sourceCidrMap?.get(ipAddress)?{cidr:sourceCidrMap.get(ipAddress)}:{},source:"port_monitor",confidence:.95})),ports:results.flatMap(result=>(result.
-snapshot?.openPorts||result.knownOpenPorts||[]).map(portInfo=>({host_key:result.host,ip_or_host:result.host,port:portInfo.port,transport_protocol:portInfo.protocol,
-state:portInfo.state,source:"port_monitor",confidence:.95}))),changes:changeEvents.map(event=>({asset_key:event.assetId,asset_type:isIpLiteral(event.assetId)?"i\
-p":"domain",change_type:event.eventType,severity:event.severity,title:event.title,description:event.description,old_value:event.oldValue,new_value:event.newValue,
-risk_score:event.riskScore,source:"port_monitor",metadata:event.metadata})),evidences:results.filter(result=>result.snapshot).map(result=>({asset_type:isIpLiteral(
-result.host)?"ip":"domain",asset_key:result.host,evidence_type:"port_snapshot",title:`Port Snapshot: ${result.host}`,content_text:`${result.snapshot?.openPorts.
-length||0} open ports`,content_json:result.snapshot,source:"port_monitor"})),relations:results.flatMap(result=>(result.snapshot?.openPorts||result.knownOpenPorts||
-[]).map(portInfo=>({from_type:isIpLiteral(result.host)?"ip":"domain",from_key:result.host,to_type:"port",to_key:`${result.host}:${portInfo.port}/${portInfo.protocol}`,
-relation_type:"exposes_port",source:"port_monitor",confidence:.95})))}}}}async function analyze(input){try{const stream=createMonitorResultStream(input);const rawTargets=collectRawTargets(
-input);if(rawTargets.length===0){return{success:false,error:"Invalid input: targets array is required"}}const hostTargetsMap=new Map;const cidrTargetsMap=new Map;
-const streamTargets=stream.enabled?input.__monitorExecution?.result_stream?.targets||[]:rawTargets;const targetPortMap=new Map;const hostsWithBareTarget=new Set;
-const unparseableTargets=[];for(const raw of streamTargets){const spec=normalizeHostTarget(raw);if(!spec){if(typeof raw==="string")unparseableTargets.push(raw);
-continue}const rawKey=typeof raw==="string"?raw:spec.host;if(spec.sourceType==="ip_range"||isCidrLiteral(spec.host)){const list2=cidrTargetsMap.get(spec.host)||
-[];list2.push(rawKey);cidrTargetsMap.set(spec.host,list2);continue}const ports=(spec.ports||[]).filter(port=>port>0);const list=hostTargetsMap.get(spec.host)||[];
-list.push({raw:rawKey,ports});hostTargetsMap.set(spec.host,list);const entry=targetPortMap.get(spec.host)||new Set;if(ports.length===0){hostsWithBareTarget.add(
-spec.host)}else{for(const port of ports)entry.add(port)}targetPortMap.set(spec.host,entry)}if(stream.enabled){for(const invalidTarget of unparseableTargets){await stream.
-record(invalidTarget,"invalid-target",{success:true,data:{results:[]}},{complete:true,status:"skipped"})}}if(hostTargetsMap.size===0&&cidrTargetsMap.size===0){return{
-success:false,error:"Invalid input: no valid host, CIDR, or service targets provided"}}const validTargets=[...hostTargetsMap.keys()];const defaultPorts=[...new Set(
-input.ports||COMMON_PORTS)].sort((left,right)=>left-right);const probePorts=Array.isArray(input.probePorts)?[...new Set(input.probePorts.filter(p=>Number.isInteger(
-p)&&p>0&&p<=65535))].sort((a,b)=>a-b):[];const maxHosts=input.maxHosts!==void 0?input.maxHosts:4096;const previousSnapshots=input.previousSnapshots||{};const monitorExecution=input.
-__monitorExecution;const sourceCidrMap=new Map;const completedResults=[];for(const[cidr,rawEntries]of cidrTargetsMap.entries()){stream.assertHealthy();const discoveredByIp=new Map;
+type:"object",properties:{targets:{type:"array",description:"Legacy host targets, CIDR ranges, or service endpoint strings"},target_objects:{type:"array",description:"\
+Structured monitor targets including IP ranges and service endpoints"},service_targets:{type:"array",description:"Structured service endpoints with host, port, \
+and protocol fields"},portPreset:{type:"string",enum:["common","web","database","top100","all","custom"],default:"common",description:"Preset port profile to sc\
+an when portRange and ports are not specified (common: 28 common ports, web: 15 web ports, database: 9 DB ports, top100: top 100 TCP ports, all: 1-65535, custom\
+: requires portRange or ports)"},portRange:{type:"string",description:"Custom ports or ranges separated by commas (e.g. 80,443,8000-8080 or 1-1024). Overrides p\
+ortPreset when set."},probePortRange:{type:"string",description:"Optional fast TCP liveness probe ports for CIDR ranges before full port scan (e.g. 22,80,443,44\
+5,3389,8080). Only alive IPs proceed to scan remaining ports."},maxHosts:{type:"integer",description:"Maximum number of hosts allowed when expanding a CIDR rang\
+e",default:4096,minimum:1,maximum:65536},ports:{type:"array",items:{type:"integer",minimum:1,maximum:65535},description:"Specific ports to scan as an integer li\
+st (alternative to portRange; overrides portPreset when set)"},probePorts:{type:"array",items:{type:"integer",minimum:1,maximum:65535},description:"Optional fas\
+t TCP liveness probe ports as an integer list (alternative to probePortRange)"},detectService:{type:"boolean",description:"Reserved for compatibility; service f\
+ingerprinting is handled by dedicated service plugins",default:false},previousSnapshots:{type:"object",description:"Previous port snapshots for comparison"}}}}pluginGlobals.
+get_input_schema=get_input_schema;function get_output_schema(){return{type:"object",properties:{success:{type:"boolean",description:"Whether the operation succe\
+eded"},data:{type:"object",properties:{results:{type:"array",items:{type:"object",properties:{host:{type:"string"},success:{type:"boolean"},snapshot:{type:"obje\
+ct"},newPorts:{type:"array"},closedPorts:{type:"array"}}},description:"Port scan results"},changeEvents:{type:"array",description:"Change events detected"},snapshots:{
+type:"object",description:"Port snapshots by host"},summary:{type:"object",properties:{totalTargets:{type:"integer"},totalOpenPorts:{type:"integer"},newPortsOpened:{
+type:"integer"},portsClosed:{type:"integer"}}},surface_artifacts:{type:"object",description:"Typed network surface artifacts for surface graph ingestion"}}},error:{
+type:"string",description:"Error message if failed"}}}}pluginGlobals.get_output_schema=get_output_schema;function mapOpenPorts(openPorts){return[...new Set(openPorts)].
+filter(port=>Number.isInteger(port)&&port>0).sort((left,right)=>left-right).map(port=>({port,state:"open",protocol:"tcp"}))}async function scanPortsWithNativeEngine(targets,defaultPorts,monitorExecution,options){
+if(typeof Sentinel==="undefined"||!Sentinel.Network||typeof Sentinel.Network.scanPorts!=="function"){throw new Error("Native port scanning engine is not availab\
+le")}const request={targets,ports:defaultPorts,tries:1,monitor_progress:monitorExecution?{taskId:monitorExecution.task_id,taskName:monitorExecution.task_name,programId:monitorExecution.
+program_id,executionMode:monitorExecution.execution_mode,startedAt:monitorExecution.started_at,currentPlugin:monitorExecution.current_plugin,currentPluginIndex:monitorExecution.
+current_plugin_index,completedSteps:monitorExecution.completed_steps,totalSteps:monitorExecution.total_steps,importedAssets:monitorExecution.imported_assets||0}:
+void 0};if(options?.maxHosts!==void 0){request.max_hosts=options.maxHosts}if(options?.onlyOpen!==void 0){request.only_open=options.onlyOpen}return await Sentinel.
+Network.scanPorts(request)}function projectPortOutput(nativeResults,previousSnapshots,sourceCidrMap){const results=[],changeEvents=[];const newSnapshots={};let successfulScans=0,
+failedScans=0,totalOpenPorts=0,newPortsOpened=0,portsClosed=0;for(const nativeResult of nativeResults){const host=nativeResult.host;const result={host,success:false,
+knownOpenPorts:mapOpenPorts(nativeResult.open_ports||[])};totalOpenPorts+=result.knownOpenPorts.length;try{if(nativeResult.error){throw new Error(nativeResult.error)}
+const openPorts=mapOpenPorts(nativeResult.open_ports||[]);result.success=true;successfulScans++;const snapshot={host,openPorts,lastChecked:new Date().toISOString()};
+result.snapshot=snapshot;newSnapshots[host]=snapshot;const prevSnapshot=previousSnapshots[host];if(prevSnapshot){const prevPortSet=new Set(prevSnapshot.openPorts.
+map(p=>p.port));const newPortSet=new Set(openPorts.map(p=>p.port));const newPorts=openPorts.filter(p=>!prevPortSet.has(p.port));const closedPorts=prevSnapshot.openPorts.
+filter(p=>!newPortSet.has(p.port));result.newPorts=newPorts;result.closedPorts=closedPorts;if(newPorts.length>0){newPortsOpened+=newPorts.length;const highRiskNew=newPorts.
+filter(p=>HIGH_RISK_PORTS.has(p.port));const severity=highRiskNew.length>0?"high":"medium";const eventType=highRiskNew.length>0?"high_risk_port_opened":"ports_o\
+pened";const event={id:generateId(),assetId:host,eventType,severity,title:`New Ports Opened: ${host}`,description:`${newPorts.length} new port(s) detected: ${newPorts.
+map(p=>`${p.port}/tcp`).join(", ")}`,newValue:JSON.stringify(newPorts.map(p=>p.port)),detectionMethod:"port_monitor",tags:["port","open","change",...highRiskNew.
+length>0?["high-risk"]:[]],autoTriggerEnabled:severity==="high",riskScore:0,metadata:{newPorts,highRiskPorts:highRiskNew.map(p=>p.port),resolvedIps:nativeResult.
+resolved_ips||[]}};event.riskScore=calculateRiskScore(event.severity,event.eventType,newPorts.map(p=>p.port));changeEvents.push(event)}if(closedPorts.length>0){
+portsClosed+=closedPorts.length;const event={id:generateId(),assetId:host,eventType:"ports_closed",severity:"low",title:`Ports Closed: ${host}`,description:`${closedPorts.
+length} port(s) no longer accessible: ${closedPorts.map(p=>`${p.port}/tcp`).join(", ")}`,oldValue:JSON.stringify(closedPorts.map(p=>p.port)),detectionMethod:"po\
+rt_monitor",tags:["port","closed","change"],autoTriggerEnabled:false,riskScore:0,metadata:{closedPorts}};event.riskScore=calculateRiskScore(event.severity,event.
+eventType,closedPorts.map(p=>p.port));changeEvents.push(event)}}else{if(openPorts.length>0){const highRiskPorts=openPorts.filter(p=>HIGH_RISK_PORTS.has(p.port));
+const event={id:generateId(),assetId:host,eventType:"ports_discovered",severity:highRiskPorts.length>0?"medium":"low",title:`Open Ports Discovered: ${host}`,description:`\
+Initial scan found ${openPorts.length} open port(s): ${openPorts.map(p=>`${p.port}/tcp`).join(", ")}`,newValue:JSON.stringify(openPorts.map(p=>p.port)),detectionMethod:"\
+port_monitor",tags:["port","discovery","initial-scan"],autoTriggerEnabled:false,riskScore:0,metadata:{openPorts,highRiskPorts:highRiskPorts.map(p=>p.port),resolvedIps:nativeResult.
+resolved_ips||[]}};event.riskScore=calculateRiskScore(event.severity,event.eventType,openPorts.map(p=>p.port));changeEvents.push(event)}}}catch(error){result.error=
+error.message||String(error);failedScans++}results.push(result)}return{success:true,data:{results,changeEvents,snapshots:newSnapshots,summary:{totalTargets:nativeResults.
+length,successfulScans,failedScans,totalOpenPorts,newPortsOpened,portsClosed,serviceChanges:0},surface_artifacts:{domains:[...new Set(results.map(result=>result.
+host).filter(host=>!isIpLiteral(host)))].map(domainName=>({domain_name:domainName,fqdn:domainName,source:"port_monitor",confidence:.95})),ips:[...new Set(results.
+map(result=>result.host).filter(host=>isIpLiteral(host)))].map(ipAddress=>({ip_address:ipAddress,ip_version:ipAddress.includes(":")?"IPv6":"IPv4",...sourceCidrMap?.
+get(ipAddress)?{cidr:sourceCidrMap.get(ipAddress)}:{},source:"port_monitor",confidence:.95})),ports:results.flatMap(result=>(result.snapshot?.openPorts||result.
+knownOpenPorts||[]).map(portInfo=>({host_key:result.host,ip_or_host:result.host,port:portInfo.port,transport_protocol:portInfo.protocol,state:portInfo.state,source:"\
+port_monitor",confidence:.95}))),changes:changeEvents.map(event=>({asset_key:event.assetId,asset_type:isIpLiteral(event.assetId)?"ip":"domain",change_type:event.
+eventType,severity:event.severity,title:event.title,description:event.description,old_value:event.oldValue,new_value:event.newValue,risk_score:event.riskScore,source:"\
+port_monitor",metadata:event.metadata})),evidences:results.filter(result=>result.snapshot).map(result=>({asset_type:isIpLiteral(result.host)?"ip":"domain",asset_key:result.
+host,evidence_type:"port_snapshot",title:`Port Snapshot: ${result.host}`,content_text:`${result.snapshot?.openPorts.length||0} open ports`,content_json:result.snapshot,
+source:"port_monitor"})),relations:results.flatMap(result=>(result.snapshot?.openPorts||result.knownOpenPorts||[]).map(portInfo=>({from_type:isIpLiteral(result.
+host)?"ip":"domain",from_key:result.host,to_type:"port",to_key:`${result.host}:${portInfo.port}/${portInfo.protocol}`,relation_type:"exposes_port",source:"port_\
+monitor",confidence:.95})))}}}}async function analyze(input){try{const stream=createMonitorResultStream(input);const rawTargets=collectRawTargets(input);if(rawTargets.
+length===0){return{success:false,error:"Invalid input: targets array is required"}}const hostTargetsMap=new Map;const cidrTargetsMap=new Map;const streamTargets=stream.
+enabled?input.__monitorExecution?.result_stream?.targets||[]:rawTargets;const targetPortMap=new Map;const hostsWithBareTarget=new Set;const unparseableTargets=[];
+for(const raw of streamTargets){const spec=normalizeHostTarget(raw);if(!spec){if(typeof raw==="string")unparseableTargets.push(raw);continue}const rawKey=typeof raw===
+"string"?raw:spec.host;if(spec.sourceType==="ip_range"||isCidrLiteral(spec.host)){const list2=cidrTargetsMap.get(spec.host)||[];list2.push(rawKey);cidrTargetsMap.
+set(spec.host,list2);continue}const ports=(spec.ports||[]).filter(port=>port>0);const list=hostTargetsMap.get(spec.host)||[];list.push({raw:rawKey,ports});hostTargetsMap.
+set(spec.host,list);const entry=targetPortMap.get(spec.host)||new Set;if(ports.length===0){hostsWithBareTarget.add(spec.host)}else{for(const port of ports)entry.
+add(port)}targetPortMap.set(spec.host,entry)}if(stream.enabled){for(const invalidTarget of unparseableTargets){await stream.record(invalidTarget,"invalid-target",
+{success:true,data:{results:[]}},{complete:true,status:"skipped"})}}if(hostTargetsMap.size===0&&cidrTargetsMap.size===0){return{success:false,error:"Invalid inp\
+ut: no valid host, CIDR, or service targets provided"}}const validTargets=[...hostTargetsMap.keys()];const defaultPorts=resolveConfiguredPorts(input);const probePorts=resolveProbePorts(
+input);const maxHosts=input.maxHosts!==void 0?input.maxHosts:4096;const previousSnapshots=input.previousSnapshots||{};const monitorExecution=input.__monitorExecution;
+const sourceCidrMap=new Map;const completedResults=[];for(const[cidr,rawEntries]of cidrTargetsMap.entries()){stream.assertHealthy();const discoveredByIp=new Map;
 let scannedHostCount=0;let cidrError;try{if(probePorts.length>0){const probeResponse=await scanPortsWithNativeEngine([{host:cidr,ports:probePorts}],probePorts,monitorExecution,
 {maxHosts,onlyOpen:true});if(!probeResponse.success&&probeResponse.error){throw new Error(probeResponse.error)}scannedHostCount=probeResponse.summary?.total_targets||
 0;for(const item of probeResponse.results||[]){if(!item.open_ports||item.open_ports.length===0)continue;const portSet=discoveredByIp.get(item.host)||new Set;for(const port of item.

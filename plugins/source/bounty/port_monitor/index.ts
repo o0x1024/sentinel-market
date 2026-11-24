@@ -3,7 +3,7 @@
  *
  * @plugin port_monitor
  * @name Port Monitor
- * @version 1.4.0
+ * @version 1.4.1
  * @author Sentinel Team
  * @main_category bounty
  * @monitor_type port
@@ -23,8 +23,11 @@ interface ToolInput {
     targets?: Array<string | ServiceTarget>;  // Legacy host list, CIDR ranges, or service endpoints
     target_objects?: Array<string | ServiceTarget>;
     service_targets?: Array<string | ServiceTarget>;
-    ports?: number[];   // Specific ports to scan (default: common ports)
-    probePorts?: number[];  // Optional fast TCP liveness probe ports for CIDR ranges before full port scan
+    portPreset?: "common" | "web" | "database" | "top100" | "all" | "custom";
+    portRange?: string; // Comma-separated ports and ranges, e.g. "80,443,8000-8080"
+    ports?: number[];   // Specific ports to scan (array form, overrides preset if portRange is empty)
+    probePortRange?: string; // Optional fast TCP liveness probe ports for CIDR ranges, e.g. "22,80,443,445,3389,8080"
+    probePorts?: number[];  // Optional fast TCP liveness probe ports (array form)
     maxHosts?: number;  // Maximum hosts allowed when expanding CIDR ranges (default: 4096)
     detectService?: boolean;
     previousSnapshots?: Record<string, PortSnapshot>;
@@ -189,6 +192,110 @@ const COMMON_PORTS = [
     21, 22, 23, 25, 53, 80, 110, 111, 135, 139, 143, 443, 445, 993, 995,
     1433, 1521, 2049, 3306, 3389, 5432, 5900, 6379, 8080, 8443, 8888, 9200, 27017
 ];
+
+const WEB_PORTS = [
+    80, 81, 443, 3000, 5000, 7001, 8000, 8008, 8080, 8081, 8443, 8888, 9000, 9090, 9443
+];
+
+const DATABASE_PORTS = [
+    1433, 1521, 3306, 5432, 6379, 9200, 9300, 11211, 27017
+];
+
+const TOP_100_PORTS = [
+    7, 9, 13, 21, 22, 23, 25, 26, 37, 53, 79, 80, 81, 88, 106, 110, 111, 113, 119, 135,
+    139, 143, 144, 179, 199, 389, 427, 443, 444, 445, 465, 513, 514, 515, 543, 544, 548,
+    554, 587, 631, 646, 873, 990, 993, 995, 1025, 1026, 1027, 1028, 1029, 1110, 1433, 1521,
+    1720, 1723, 1755, 1900, 2000, 2001, 2049, 2121, 2717, 3000, 3128, 3306, 3389, 3986,
+    4899, 5000, 5009, 5051, 5060, 5101, 5190, 5357, 5432, 5631, 5666, 5800, 5900, 6000,
+    6001, 6379, 6646, 7001, 7070, 8000, 8008, 8009, 8080, 8081, 8443, 8888, 9000, 9090,
+    9100, 9200, 9999, 10000, 27017
+];
+
+function parsePortSpec(spec: string, fieldName: string): number[] {
+    const trimmed = spec.trim();
+    if (!trimmed) return [];
+    const ports = new Set<number>();
+    for (const rawToken of trimmed.split(/[\s,]+/)) {
+        const token = rawToken.trim();
+        if (!token) continue;
+        const dashIndex = token.indexOf("-");
+        if (dashIndex >= 0) {
+            if (dashIndex !== token.lastIndexOf("-")) {
+                throw new Error(`Invalid ${fieldName} range token: ${token}`);
+            }
+            const startStr = token.slice(0, dashIndex).trim();
+            const endStr = token.slice(dashIndex + 1).trim();
+            if (!/^\d+$/.test(startStr) || !/^\d+$/.test(endStr)) {
+                throw new Error(`Invalid ${fieldName} range token: ${token}`);
+            }
+            const start = Number(startStr);
+            const end = Number(endStr);
+            if (start < 1 || end > 65535 || start > end) {
+                throw new Error(`Invalid ${fieldName} port range: ${token}`);
+            }
+            for (let port = start; port <= end; port++) {
+                ports.add(port);
+            }
+        } else {
+            if (!/^\d+$/.test(token)) {
+                throw new Error(`Invalid ${fieldName} port: ${token}`);
+            }
+            const port = Number(token);
+            if (port < 1 || port > 65535) {
+                throw new Error(`Invalid ${fieldName} port out of range (1-65535): ${token}`);
+            }
+            ports.add(port);
+        }
+    }
+    return [...ports].sort((left, right) => left - right);
+}
+
+function validatePortArray(ports: number[], fieldName: string): number[] {
+    const unique = new Set<number>();
+    for (const port of ports) {
+        if (!Number.isInteger(port) || port < 1 || port > 65535) {
+            throw new Error(`Invalid ${fieldName} port: ${port}`);
+        }
+        unique.add(port);
+    }
+    return [...unique].sort((left, right) => left - right);
+}
+
+function resolveConfiguredPorts(input: ToolInput): number[] {
+    if (typeof input.portRange === "string" && input.portRange.trim().length > 0) {
+        return parsePortSpec(input.portRange, "portRange");
+    }
+    if (Array.isArray(input.ports) && input.ports.length > 0) {
+        return validatePortArray(input.ports, "ports");
+    }
+    const preset = input.portPreset || "common";
+    switch (preset) {
+        case "common":
+            return [...COMMON_PORTS].sort((a, b) => a - b);
+        case "web":
+            return [...WEB_PORTS].sort((a, b) => a - b);
+        case "database":
+            return [...DATABASE_PORTS].sort((a, b) => a - b);
+        case "top100":
+            return [...TOP_100_PORTS].sort((a, b) => a - b);
+        case "all":
+            return Array.from({ length: 65535 }, (_, idx) => idx + 1);
+        case "custom":
+            throw new Error("portPreset is 'custom' but neither portRange nor ports was specified");
+        default:
+            throw new Error(`Unsupported portPreset: ${String(preset)}`);
+    }
+}
+
+function resolveProbePorts(input: ToolInput): number[] {
+    if (typeof input.probePortRange === "string" && input.probePortRange.trim().length > 0) {
+        return parsePortSpec(input.probePortRange, "probePortRange");
+    }
+    if (Array.isArray(input.probePorts) && input.probePorts.length > 0) {
+        return validatePortArray(input.probePorts, "probePorts");
+    }
+    return [];
+}
 
 // High-risk ports
 const HIGH_RISK_PORTS = new Set([
@@ -359,25 +466,29 @@ export function get_input_schema() {
         properties: {
             targets: {
                 type: "array",
-                description: "Legacy host targets or service endpoint strings"
+                description: "Legacy host targets, CIDR ranges, or service endpoint strings"
             },
             target_objects: {
                 type: "array",
-                description: "Structured monitor targets including service endpoints"
+                description: "Structured monitor targets including IP ranges and service endpoints"
             },
             service_targets: {
                 type: "array",
                 description: "Structured service endpoints with host, port, and protocol fields"
             },
-            ports: {
-                type: "array",
-                items: { type: "integer" },
-                description: "Specific ports to scan (default: common ports)"
+            portPreset: {
+                type: "string",
+                enum: ["common", "web", "database", "top100", "all", "custom"],
+                default: "common",
+                description: "Preset port profile to scan when portRange and ports are not specified (common: 28 common ports, web: 15 web ports, database: 9 DB ports, top100: top 100 TCP ports, all: 1-65535, custom: requires portRange or ports)"
             },
-            probePorts: {
-                type: "array",
-                items: { type: "integer" },
-                description: "Optional fast TCP liveness probe ports for CIDR ranges before full port scan; when set, only alive IPs proceed to scan remaining ports"
+            portRange: {
+                type: "string",
+                description: "Custom ports or ranges separated by commas (e.g. 80,443,8000-8080 or 1-1024). Overrides portPreset when set."
+            },
+            probePortRange: {
+                type: "string",
+                description: "Optional fast TCP liveness probe ports for CIDR ranges before full port scan (e.g. 22,80,443,445,3389,8080). Only alive IPs proceed to scan remaining ports."
             },
             maxHosts: {
                 type: "integer",
@@ -385,6 +496,16 @@ export function get_input_schema() {
                 default: 4096,
                 minimum: 1,
                 maximum: 65536
+            },
+            ports: {
+                type: "array",
+                items: { type: "integer", minimum: 1, maximum: 65535 },
+                description: "Specific ports to scan as an integer list (alternative to portRange; overrides portPreset when set)"
+            },
+            probePorts: {
+                type: "array",
+                items: { type: "integer", minimum: 1, maximum: 65535 },
+                description: "Optional fast TCP liveness probe ports as an integer list (alternative to probePortRange)"
             },
             detectService: {
                 type: "boolean",
@@ -791,10 +912,8 @@ export async function analyze(input: ToolInput): Promise<ToolOutput> {
         }
 
         const validTargets = [...hostTargetsMap.keys()];
-        const defaultPorts = [...new Set(input.ports || COMMON_PORTS)].sort((left, right) => left - right);
-        const probePorts = Array.isArray(input.probePorts)
-            ? [...new Set(input.probePorts.filter((p) => Number.isInteger(p) && p > 0 && p <= 65535))].sort((a, b) => a - b)
-            : [];
+        const defaultPorts = resolveConfiguredPorts(input);
+        const probePorts = resolveProbePorts(input);
         const maxHosts = input.maxHosts !== undefined ? input.maxHosts : 4096;
         const previousSnapshots = input.previousSnapshots || {};
         const monitorExecution = input.__monitorExecution;

@@ -270,7 +270,7 @@
         "capability:network-scan",
         "capability:monitor-events"
       ],
-      "version": "1.4.0",
+      "version": "1.4.1",
       "stream_tag": "monitor:results-stream-v2",
       "target_sources": [
         "surface_asset",

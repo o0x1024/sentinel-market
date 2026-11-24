@@ -242,3 +242,46 @@ test('port_monitor scans CIDR ip_range targets with only_open and two-phase prob
   assert.equal(completeRecord.output.data.results[0].aliveHosts, 1);
   assert.equal(completeRecord.output.data.results[0].scannedHosts, 254);
 });
+
+test('port_monitor resolves configurable portRange, portPreset, and probePortRange and rejects invalid specs', async () => {
+  const seenPorts = [];
+  globalThis.Sentinel.Network = {
+    scanPorts: async (req) => {
+      seenPorts.push(req.ports);
+      return {
+        success: true,
+        summary: { total_targets: 1, successful_scans: 1, failed_scans: 0, total_open_ports: 0 },
+        results: req.targets.map(t => ({ host: t.host, resolved_ips: [t.host], open_ports: [] })),
+      };
+    },
+  };
+  const rangeRes = await modules.port_monitor.analyze({
+    targets: ['127.0.0.1'],
+    portRange: '80, 443, 8080-8082',
+    __monitorExecution: ctx(['127.0.0.1']),
+  });
+  assert.equal(rangeRes.success, true);
+  assert.deepEqual(seenPorts[0], [80, 443, 8080, 8081, 8082]);
+
+  const presetRes = await modules.port_monitor.analyze({
+    targets: ['127.0.0.1'],
+    portPreset: 'database',
+    __monitorExecution: ctx(['127.0.0.1']),
+  });
+  assert.equal(presetRes.success, true);
+  assert.deepEqual(seenPorts[1], [1433, 1521, 3306, 5432, 6379, 9200, 9300, 11211, 27017]);
+
+  const customEmpty = await modules.port_monitor.analyze({
+    targets: ['127.0.0.1'],
+    portPreset: 'custom',
+  });
+  assert.equal(customEmpty.success, false);
+  assert.match(customEmpty.error, /custom/);
+
+  const badRange = await modules.port_monitor.analyze({
+    targets: ['127.0.0.1'],
+    portRange: '9000-8000',
+  });
+  assert.equal(badRange.success, false);
+  assert.match(badRange.error, /Invalid portRange/);
+});
