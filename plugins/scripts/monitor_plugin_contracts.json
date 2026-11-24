@@ -262,6 +262,7 @@
       "input_mode": "asset",
       "target_asset_types": [
         "ip",
+        "ip_range",
         "service"
       ],
       "seed_bindings": [],
@@ -269,7 +270,7 @@
         "capability:network-scan",
         "capability:monitor-events"
       ],
-      "version": "1.3.10",
+      "version": "1.4.0",
       "stream_tag": "monitor:results-stream-v2",
       "target_sources": [
         "surface_asset",

@@ -199,3 +199,46 @@ test('subdomain source failure records redact configured provider credentials', 
   assert.ok(!JSON.stringify(commits).includes(secret));
   assert.ok(JSON.stringify(commits).includes('[REDACTED]'));
 });
+
+test('port_monitor scans CIDR ip_range targets with only_open and two-phase probePorts, ingesting only alive IPs', async () => {
+  const requests = [];
+  globalThis.Sentinel.Network = {
+    scanPorts: async (req) => {
+      requests.push(req);
+      if (req.targets.length === 1 && req.targets[0].host === '192.0.2.0/24') {
+        return {
+          success: true,
+          summary: { total_targets: 254, successful_scans: 254, failed_scans: 0, total_open_ports: 1 },
+          results: [{ host: '192.0.2.10', resolved_ips: ['192.0.2.10'], open_ports: [80] }],
+        };
+      }
+      return {
+        success: true,
+        summary: { total_targets: 1, successful_scans: 1, failed_scans: 0, total_open_ports: 1 },
+        results: [{ host: '192.0.2.10', resolved_ips: ['192.0.2.10'], open_ports: [22] }],
+      };
+    },
+  };
+  const output = await modules.port_monitor.analyze({
+    targets: ['192.0.2.0/24'],
+    target_objects: [{ type: 'ip_range', value: '192.0.2.0/24', source: 'scope' }],
+    probePorts: [80, 443],
+    ports: [22, 80, 443],
+    maxHosts: 512,
+    __monitorExecution: ctx(['192.0.2.0/24']),
+  });
+  assert.equal(output.success, true);
+  assert.equal(requests.length, 2);
+  assert.equal(requests[0].only_open, true);
+  assert.equal(requests[0].max_hosts, 512);
+  assert.deepEqual(requests[0].ports, [80, 443]);
+  assert.deepEqual(requests[1].targets, [{ host: '192.0.2.10', ports: [22] }]);
+  const aliveRecord = commits.flatMap(commit => commit.work).find(item => item.key === 'cidr-alive:0');
+  assert.ok(aliveRecord);
+  assert.deepEqual(aliveRecord.output.data.surface_artifacts.ips.map(ip => ({ ip: ip.ip_address, cidr: ip.cidr })), [{ ip: '192.0.2.10', cidr: '192.0.2.0/24' }]);
+  assert.deepEqual(aliveRecord.output.data.surface_artifacts.ports.map(p => p.port), [22, 80]);
+  const completeRecord = commits.flatMap(commit => commit.work).find(item => item.key === 'cidr-complete');
+  assert.ok(completeRecord && completeRecord.complete === true);
+  assert.equal(completeRecord.output.data.results[0].aliveHosts, 1);
+  assert.equal(completeRecord.output.data.results[0].scannedHosts, 254);
+});

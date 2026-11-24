@@ -3,27 +3,29 @@
  *
  * @plugin port_monitor
  * @name Port Monitor
- * @version 1.3.10
+ * @version 1.4.0
  * @author Sentinel Team
  * @main_category bounty
  * @monitor_type port
  * @input_mode asset
- * @target_asset_types ["ip","service"]
+ * @target_asset_types ["ip","ip_range","service"]
  * @category monitor
  * @target_sources ["surface_asset","scope"]
  * @seed_bindings []
  * @default_severity medium
- * @tags port, monitor, network, asm, surface, ip, host, change-detection, native, capability:network-scan, capability:monitor-events, monitor:results-stream-v2
- * @description Monitor typed host and IP targets for port exposure changes using native Rust-backed port discovery, prioritizing structured monitor targets and preserving strict IP-only execution semantics for ASM workflows
+ * @tags port, monitor, network, asm, surface, ip, ip_range, cidr, host, change-detection, native, capability:network-scan, capability:monitor-events, monitor:results-stream-v2
+ * @description Monitor typed host, IP, and CIDR IP-range targets for alive hosts and port exposure changes using native Rust-backed port discovery, ingesting only alive IPs and open ports for ASM workflows
  */
 import { createMonitorResultStream } from "../../shared/monitor_results.ts";
 import { createMonitorTargetWriter } from "../../shared/monitor_target_writer.ts";
 
 interface ToolInput {
-    targets?: Array<string | ServiceTarget>;  // Legacy host list or service endpoints
+    targets?: Array<string | ServiceTarget>;  // Legacy host list, CIDR ranges, or service endpoints
     target_objects?: Array<string | ServiceTarget>;
     service_targets?: Array<string | ServiceTarget>;
     ports?: number[];   // Specific ports to scan (default: common ports)
+    probePorts?: number[];  // Optional fast TCP liveness probe ports for CIDR ranges before full port scan
+    maxHosts?: number;  // Maximum hosts allowed when expanding CIDR ranges (default: 4096)
     detectService?: boolean;
     previousSnapshots?: Record<string, PortSnapshot>;
     __monitorExecution?: MonitorExecutionContext;
@@ -166,7 +168,7 @@ async function reportMonitorProgress(
     }
 }
 
-type NormalizedTargetType = "generic" | "service" | "host" | "ip";
+type NormalizedTargetType = "generic" | "service" | "host" | "ip" | "ip_range";
 
 interface NormalizedHostTarget {
     host: string;
@@ -209,10 +211,36 @@ function isIpLiteral(value: string): boolean {
     return /^\d{1,3}(?:\.\d{1,3}){3}$/.test(value) || value.includes(":");
 }
 
+function isIpv4Literal(value: string): boolean {
+    const parts = value.split(".");
+    if (parts.length !== 4) return false;
+    return parts.every((part) => /^\d{1,3}$/.test(part) && Number(part) >= 0 && Number(part) <= 255);
+}
+
+function isCidrLiteral(value: string): boolean {
+    const slashIndex = value.indexOf("/");
+    if (slashIndex <= 0 || slashIndex !== value.lastIndexOf("/")) return false;
+    const addr = value.slice(0, slashIndex);
+    const prefixStr = value.slice(slashIndex + 1);
+    if (!/^\d{1,3}$/.test(prefixStr)) return false;
+    const prefix = Number(prefixStr);
+    if (isIpv4Literal(addr)) {
+        return prefix >= 0 && prefix <= 32;
+    }
+    if (addr.includes(":") && /^[0-9a-fA-F:]+$/.test(addr)) {
+        return prefix >= 0 && prefix <= 128;
+    }
+    return false;
+}
+
 function normalizeHostTarget(target: string | ServiceTarget): NormalizedHostTarget | null {
     if (typeof target === "string") {
         const trimmed = target.trim();
         if (!trimmed) return null;
+
+        if (isCidrLiteral(trimmed)) {
+            return { host: trimmed, sourceType: "ip_range" };
+        }
 
         try {
             if (trimmed.includes("://")) {
@@ -248,6 +276,9 @@ function normalizeHostTarget(target: string | ServiceTarget): NormalizedHostTarg
         if (sourceType === "ip" && !isIpLiteral(normalized.host)) {
             return null;
         }
+        if (sourceType === "ip_range" && !isCidrLiteral(normalized.host)) {
+            return null;
+        }
         return {
             ...normalized,
             sourceType: sourceType || normalized.sourceType,
@@ -260,10 +291,13 @@ function normalizeHostTarget(target: string | ServiceTarget): NormalizedHostTarg
     if (sourceType === "ip" && !isIpLiteral(host)) {
         return null;
     }
+    if (sourceType === "ip_range" && !isCidrLiteral(host)) {
+        return null;
+    }
     return {
         host,
         ports: port > 0 ? [port] : undefined,
-        sourceType: sourceType || "generic",
+        sourceType: sourceType || (isCidrLiteral(host) ? "ip_range" : "generic"),
     };
 }
 
@@ -285,7 +319,7 @@ function collectRawTargets(input: ToolInput): Array<string | ServiceTarget> {
         if (!target || typeof target !== "object") {
             return false;
         }
-        return !target.type || target.type === "service" || target.type === "host" || target.type === "ip";
+        return !target.type || target.type === "service" || target.type === "host" || target.type === "ip" || target.type === "ip_range";
     });
 }
 
@@ -339,6 +373,18 @@ export function get_input_schema() {
                 type: "array",
                 items: { type: "integer" },
                 description: "Specific ports to scan (default: common ports)"
+            },
+            probePorts: {
+                type: "array",
+                items: { type: "integer" },
+                description: "Optional fast TCP liveness probe ports for CIDR ranges before full port scan; when set, only alive IPs proceed to scan remaining ports"
+            },
+            maxHosts: {
+                type: "integer",
+                description: "Maximum number of hosts allowed when expanding a CIDR range",
+                default: 4096,
+                minimum: 1,
+                maximum: 65536
             },
             detectService: {
                 type: "boolean",
@@ -418,13 +464,14 @@ function mapOpenPorts(openPorts: number[]): PortInfo[] {
 async function scanPortsWithNativeEngine(
     targets: NativePortScanTarget[],
     defaultPorts: number[],
-    monitorExecution?: MonitorExecutionContext
+    monitorExecution?: MonitorExecutionContext,
+    options?: { maxHosts?: number; onlyOpen?: boolean }
 ): Promise<NativePortScanResponse> {
     if (typeof Sentinel === "undefined" || !Sentinel.Network || typeof Sentinel.Network.scanPorts !== "function") {
         throw new Error("Native port scanning engine is not available");
     }
 
-    return await Sentinel.Network.scanPorts({
+    const request: Record<string, unknown> = {
         targets,
         ports: defaultPorts,
         tries: 1,
@@ -440,13 +487,25 @@ async function scanPortsWithNativeEngine(
             totalSteps: monitorExecution.total_steps,
             importedAssets: monitorExecution.imported_assets || 0,
         } : undefined,
-    });
+    };
+    if (options?.maxHosts !== undefined) {
+        request.max_hosts = options.maxHosts;
+    }
+    if (options?.onlyOpen !== undefined) {
+        request.only_open = options.onlyOpen;
+    }
+
+    return await Sentinel.Network.scanPorts(request);
 }
 
 /**
  * Main analysis function
  */
-function projectPortOutput(nativeResults: NativePortScanResult[], previousSnapshots: Record<string, PortSnapshot>): ToolOutput {
+function projectPortOutput(
+    nativeResults: NativePortScanResult[],
+    previousSnapshots: Record<string, PortSnapshot>,
+    sourceCidrMap?: Map<string, string>
+): ToolOutput {
         const results: PortResult[] = [], changeEvents: ChangeEvent[] = [];
         const newSnapshots: Record<string, PortSnapshot> = {};
         let successfulScans = 0, failedScans = 0, totalOpenPorts = 0, newPortsOpened = 0, portsClosed = 0;
@@ -610,6 +669,7 @@ function projectPortOutput(nativeResults: NativePortScanResult[], previousSnapsh
                     )].map(ipAddress => ({
                         ip_address: ipAddress,
                         ip_version: ipAddress.includes(":") ? "IPv6" : "IPv4",
+                        ...(sourceCidrMap?.get(ipAddress) ? { cidr: sourceCidrMap.get(ipAddress) } : {}),
                         source: "port_monitor",
                         confidence: 0.95,
                     })),
@@ -677,7 +737,8 @@ export async function analyze(input: ToolInput): Promise<ToolOutput> {
         }
 
         const hostTargetsMap = new Map<string, Array<{ raw: string; ports: number[] }>>();
-        const streamTargets: string[] = stream.enabled
+        const cidrTargetsMap = new Map<string, string[]>();
+        const streamTargets: Array<string | ServiceTarget> = stream.enabled
             ? ((input.__monitorExecution as any)?.result_stream?.targets || [])
             : rawTargets;
         const targetPortMap = new Map<string, Set<number>>();
@@ -687,12 +748,19 @@ export async function analyze(input: ToolInput): Promise<ToolOutput> {
         for (const raw of streamTargets) {
             const spec = normalizeHostTarget(raw);
             if (!spec) {
-                unparseableTargets.push(raw);
+                if (typeof raw === "string") unparseableTargets.push(raw);
+                continue;
+            }
+            const rawKey = typeof raw === "string" ? raw : spec.host;
+            if (spec.sourceType === "ip_range" || isCidrLiteral(spec.host)) {
+                const list = cidrTargetsMap.get(spec.host) || [];
+                list.push(rawKey);
+                cidrTargetsMap.set(spec.host, list);
                 continue;
             }
             const ports = (spec.ports || []).filter((port) => port > 0);
             const list = hostTargetsMap.get(spec.host) || [];
-            list.push({ raw, ports });
+            list.push({ raw: rawKey, ports });
             hostTargetsMap.set(spec.host, list);
 
             const entry = targetPortMap.get(spec.host) || new Set<number>();
@@ -715,19 +783,157 @@ export async function analyze(input: ToolInput): Promise<ToolOutput> {
             }
         }
 
-        if (hostTargetsMap.size === 0) {
+        if (hostTargetsMap.size === 0 && cidrTargetsMap.size === 0) {
             return {
                 success: false,
-                error: "Invalid input: no valid host or service targets provided"
+                error: "Invalid input: no valid host, CIDR, or service targets provided"
             };
         }
 
         const validTargets = [...hostTargetsMap.keys()];
         const defaultPorts = [...new Set(input.ports || COMMON_PORTS)].sort((left, right) => left - right);
+        const probePorts = Array.isArray(input.probePorts)
+            ? [...new Set(input.probePorts.filter((p) => Number.isInteger(p) && p > 0 && p <= 65535))].sort((a, b) => a - b)
+            : [];
+        const maxHosts = input.maxHosts !== undefined ? input.maxHosts : 4096;
         const previousSnapshots = input.previousSnapshots || {};
         const monitorExecution = input.__monitorExecution;
+        const sourceCidrMap = new Map<string, string>();
 
         const completedResults: NativePortScanResult[] = [];
+        for (const [cidr, rawEntries] of cidrTargetsMap.entries()) {
+            stream.assertHealthy();
+            const discoveredByIp = new Map<string, Set<number>>();
+            let scannedHostCount = 0;
+            let cidrError: string | undefined;
+
+            try {
+                if (probePorts.length > 0) {
+                    const probeResponse = await scanPortsWithNativeEngine(
+                        [{ host: cidr, ports: probePorts }],
+                        probePorts,
+                        monitorExecution,
+                        { maxHosts, onlyOpen: true },
+                    );
+                    if (!probeResponse.success && probeResponse.error) {
+                        throw new Error(probeResponse.error);
+                    }
+                    scannedHostCount = probeResponse.summary?.total_targets || 0;
+                    for (const item of probeResponse.results || []) {
+                        if (!item.open_ports || item.open_ports.length === 0) continue;
+                        const portSet = discoveredByIp.get(item.host) || new Set<number>();
+                        for (const port of item.open_ports) portSet.add(port);
+                        discoveredByIp.set(item.host, portSet);
+                    }
+                    const probePortSet = new Set(probePorts);
+                    const remainingPorts = defaultPorts.filter((port) => !probePortSet.has(port));
+                    const aliveIps = [...discoveredByIp.keys()].sort();
+                    if (aliveIps.length > 0 && remainingPorts.length > 0) {
+                        for (let offset = 0; offset < remainingPorts.length; offset += 256) {
+                            stream.assertHealthy();
+                            const batch = remainingPorts.slice(offset, offset + 256);
+                            const followUp = await scanPortsWithNativeEngine(
+                                aliveIps.map((ip) => ({ host: ip, ports: batch })),
+                                batch,
+                                monitorExecution,
+                                { onlyOpen: true },
+                            );
+                            if (!followUp.success && followUp.error) {
+                                throw new Error(followUp.error);
+                            }
+                            for (const item of followUp.results || []) {
+                                if (!item.open_ports || item.open_ports.length === 0) continue;
+                                const portSet = discoveredByIp.get(item.host) || new Set<number>();
+                                for (const port of item.open_ports) portSet.add(port);
+                                discoveredByIp.set(item.host, portSet);
+                            }
+                        }
+                    }
+                } else {
+                    for (let offset = 0; offset < defaultPorts.length; offset += 256) {
+                        stream.assertHealthy();
+                        const batch = defaultPorts.slice(offset, offset + 256);
+                        const response = await scanPortsWithNativeEngine(
+                            [{ host: cidr, ports: batch }],
+                            batch,
+                            monitorExecution,
+                            { maxHosts, onlyOpen: true },
+                        );
+                        if (!response.success && response.error) {
+                            throw new Error(response.error);
+                        }
+                        scannedHostCount = Math.max(scannedHostCount, response.summary?.total_targets || 0);
+                        for (const item of response.results || []) {
+                            if (!item.open_ports || item.open_ports.length === 0) continue;
+                            const portSet = discoveredByIp.get(item.host) || new Set<number>();
+                            for (const port of item.open_ports) portSet.add(port);
+                            discoveredByIp.set(item.host, portSet);
+                        }
+                    }
+                }
+            } catch (cause: any) {
+                cidrError = cause instanceof Error ? cause.message : String(cause);
+            }
+
+            const aliveResults: NativePortScanResult[] = [...discoveredByIp.entries()]
+                .sort(([left], [right]) => left.localeCompare(right))
+                .map(([ip, portSet]) => {
+                    sourceCidrMap.set(ip, cidr);
+                    return {
+                        host: ip,
+                        resolved_ips: [ip],
+                        open_ports: [...portSet].sort((a, b) => a - b),
+                    };
+                });
+
+            if (!stream.enabled) {
+                completedResults.push(...aliveResults);
+                if (cidrError) {
+                    throw new Error(cidrError);
+                }
+            } else {
+                for (let offset = 0; offset < aliveResults.length; offset += 32) {
+                    const chunk = aliveResults.slice(offset, offset + 32);
+                    const projectedChunk = projectPortOutput(chunk, previousSnapshots, sourceCidrMap);
+                    delete (projectedChunk.data as any).snapshots;
+                    await stream.record(
+                        rawEntries[0],
+                        `cidr-alive:${offset / 32}`,
+                        projectedChunk as any,
+                        { complete: false, status: "ok" },
+                    );
+                }
+                const totalOpenPorts = aliveResults.reduce((sum, item) => sum + item.open_ports.length, 0);
+                for (let index = 0; index < rawEntries.length; index++) {
+                    await stream.record(
+                        rawEntries[index],
+                        "cidr-complete",
+                        index === 0
+                            ? {
+                                success: true,
+                                data: {
+                                    results: [{
+                                        host: cidr,
+                                        success: !cidrError,
+                                        ...(cidrError ? { error: cidrError } : {}),
+                                        scannedHosts: scannedHostCount,
+                                        aliveHosts: aliveResults.length,
+                                        knownOpenPortCount: totalOpenPorts,
+                                    }],
+                                    summary: {
+                                        totalTargets: scannedHostCount,
+                                        successfulScans: cidrError ? 0 : scannedHostCount,
+                                        failedScans: cidrError ? 1 : 0,
+                                        totalOpenPorts,
+                                    },
+                                },
+                            }
+                            : { success: true, data: {} },
+                        { complete: true, status: cidrError ? "failed" : "ok", error: cidrError },
+                    );
+                }
+            }
+        }
         let nextHost = 0;
         await Promise.all(Array.from({ length: Math.min(2, validTargets.length) }, async () => {
             while (nextHost < validTargets.length) {
@@ -821,7 +1027,7 @@ export async function analyze(input: ToolInput): Promise<ToolOutput> {
                 }
             }
         }));
-        return await stream.finish(stream.enabled ? { success: true } : projectPortOutput(completedResults, previousSnapshots));
+        return await stream.finish(stream.enabled ? { success: true } : projectPortOutput(completedResults, previousSnapshots, sourceCidrMap));
 
     } catch (error: any) {
         return {
